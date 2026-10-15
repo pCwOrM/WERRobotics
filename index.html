@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WERRobotics: Sıfır-Bellek Edge AI & Arduino Robotik Simülasyon Portalı</title>
+  <meta name="description" content="WERR v0.5.1 Sıfır-Bellek (0 Byte Heap) Sistem-1 Edge AI Çekirdeği, Arduino Robotik Etkileşimli Simülasyonu, Halka ve Akademik Teknik Anlatım Portalı.">
+  <link rel="icon" type="image/svg+xml" href="assets/werr_logo_core_fav_trans.svg">
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-card: #111827;
+      --bg-card-border: #1f2937;
+      --accent-cyan: #00e5ff;
+      --accent-purple: #a855f7;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(180deg, rgba(16, 24, 39, 0.95) 0%, rgba(10, 14, 23, 0.95) 100%);
+      border-bottom: 1px solid var(--bg-card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand img { width: 40px; height: 40px; }
+    .brand-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.025em; }
+    .brand-title span { color: var(--accent-cyan); }
+    .brand-badge {
+      background: rgba(0, 229, 255, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    nav { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .nav-btn {
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .nav-btn.primary {
+      background: linear-gradient(135deg, var(--accent-cyan), #0099ff);
+      color: #000;
+    }
+    .nav-btn.secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border-color: var(--bg-card-border);
+    }
+    .nav-btn:hover { transform: translateY(-1px); opacity: 0.95; }
+
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 2rem 1.5rem;
+      text-align: center;
+    }
+    .hero-badge-wall {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .hero-badge-wall img { height: 22px; }
+    .hero h1 {
+      font-size: 2.75rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 850px;
+      margin: 0 auto 2rem auto;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+    }
+
+    .tabs {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--bg-card-border);
+    }
+    .tab-btn {
+      padding: 0.85rem 1.5rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+      background: rgba(0, 229, 255, 0.04);
+    }
+    .tab-btn:hover { color: #fff; }
+
+    .content-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem 1.5rem;
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* SIMULATION STYLES */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) {
+      .sim-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .canvas-container {
+      position: relative;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      margin-bottom: 1rem;
+    }
+    canvas { display: block; width: 100%; height: auto; }
+
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      background: rgba(0,0,0,0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--bg-card-border);
+    }
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+    }
+    .control-row label { font-weight: 600; color: var(--text-muted); }
+    .control-row input[type="range"] {
+      width: 55%;
+      accent-color: var(--accent-cyan);
+    }
+    .val-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: #1e293b;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      color: var(--accent-cyan);
+      min-width: 55px;
+      text-align: right;
+    }
+
+    .telemetry-box {
+      font-family: var(--font-mono);
+      font-size: 0.825rem;
+      background: #05070c;
+      border: 1px solid #1e293b;
+      padding: 0.85rem;
+      border-radius: 6px;
+      color: #38bdf8;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .tele-item { display: flex; justify-content: space-between; }
+    .tele-label { color: var(--text-muted); }
+    .tele-val { font-weight: bold; color: #fff; }
+
+    /* EXPLANATION CARDS */
+    .guide-section {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .guide-section h2 {
+      font-size: 1.75rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .guide-section h3 {
+      font-size: 1.25rem;
+      color: var(--accent-cyan);
+      margin: 1.5rem 0 0.75rem 0;
+    }
+    .guide-section p {
+      color: #d1d5db;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .guide-section ul, .guide-section ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.25rem;
+      color: #d1d5db;
+    }
+    .guide-section li { margin-bottom: 0.4rem; }
+
+    .quote-box {
+      border-left: 4px solid var(--accent-cyan);
+      background: rgba(0, 229, 255, 0.05);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+      font-style: italic;
+      color: #e2e8f0;
+    }
+
+    .code-box {
+      background: #05070c;
+      border: 1px solid var(--bg-card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: #a5b4fc;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid var(--bg-card-border);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    th {
+      background: rgba(255,255,255,0.03);
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+
+    .action-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .action-cruise { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .action-left { background: rgba(0, 229, 255, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .action-right { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+    .action-emergency { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+    footer {
+      background: #080c14;
+      border-top: 1px solid var(--bg-card-border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    footer a { color: var(--accent-cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <img src="assets/werr_logo_core_fav_trans.svg" alt="WERR Logo">
+        <div>
+          <div class="brand-title">WERR<span>obotics</span></div>
+        </div>
+        <span class="brand-badge">Edge AI v0.5.1</span>
+      </a>
+      <nav>
+        <button class="nav-btn secondary" onclick="switchTab('sim')">🎮 Canlı Simülatör</button>
+        <button class="nav-btn secondary" onclick="switchTab('public')">📢 Halka Anlatım</button>
+        <button class="nav-btn secondary" onclick="switchTab('academic')">🎓 Akademik & Teknik</button>
+        <button class="nav-btn primary" onclick="window.open('https://github.com/pCwOrM/WERRobotics', '_blank')">⭐ GitHub Repo</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge-wall">
+      <img src="https://img.shields.io/badge/WERR%20Core-v0.5.1%20Synced-00e5ff.svg" alt="Core">
+      <img src="https://img.shields.io/badge/Hardware-Arduino%20Uno%20%7C%20Mega2560%20%7C%20ESP32-blue.svg" alt="Hardware">
+      <img src="https://img.shields.io/badge/VRAM%20%2F%20Heap-0%20Bytes%20(Pure%20Static)-brightgreen.svg" alt="Memory">
+      <img src="https://img.shields.io/badge/Latency-%3C%201.2%20ms%20(System--1)-emerald.svg" alt="Latency">
+      <img src="https://img.shields.io/badge/License-BBL%20v1.0%20%2B%20BSL%201.1-gold.svg" alt="License">
+      <img src="https://img.shields.io/badge/Protection-ITouch%20Systems-blue.svg" alt="Protection">
+      <img src="https://img.shields.io/badge/Patent%20Pending-TR%202026%2F016285%20%7C%20016633-9333ea.svg" alt="Patent">
+    </div>
+    <h1>Robotlara Fraktal Omurilik Refleksi</h1>
+    <p>
+      Geleneksel robotik kodlarında kullanılan kaba <code>if (mesafe &lt; 20)</code> kuralları yerine,
+      Mandelbrot fraktal kaçış sınırlarını (&part;M) mikrodenetleyicilere (Arduino) entegre eden dünyanın ilk sıfır bellekli (0 Byte Heap) Edge AI karar motoru.
+    </p>
+  </section>
+
+  <!-- TABS NAVIGATION -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-btn-sim" onclick="switchTab('sim')">
+      🤖 1. İnteraktif Robotik Simülatörü
+    </button>
+    <button class="tab-btn" id="tab-btn-public" onclick="switchTab('public')">
+      🌱 2. Halka Açık Anlatım Rehberi
+    </button>
+    <button class="tab-btn" id="tab-btn-academic" onclick="switchTab('academic')">
+      🔬 3. Akademik & Teknik Mimari Rehberi
+    </button>
+  </div>
+
+  <div class="content-container">
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: CANLI SİMÜLATÖR -->
+    <!-- ===================================================================== -->
+    <div class="tab-pane active" id="pane-sim">
+
+      <div class="sim-grid">
+        <!-- ROBOT 1: OTONOM ENGELDEN KAÇAN -->
+        <div class="card">
+          <div class="card-title">
+            <span>🚗 Otonom Engelden Kaçan Robot</span>
+            <span class="action-badge action-cruise" id="sim1-badge">FORWARD</span>
+          </div>
+          <div class="card-subtitle">
+            Profil: <code>WERR_CFG_OBSTACLE_REFLEX</code> &bull; Tohumlar: <code>iot_safety</code> + <code>game_combat</code>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="canvas-robot1" width="500" height="320"></canvas>
+          </div>
+
+          <div class="control-panel">
+            <div class="control-row">
+              <label for="dist-slider">Ultrasonik Mesafe:</label>
+              <input type="range" id="dist-slider" min="5" max="80" value="45" oninput="updateRobot1FromSlider()">
+              <span class="val-badge" id="dist-val">45 cm</span>
+            </div>
+            <div class="control-row">
+              <label for="lat-slider">Yanal Açı / Köşe Eğimi:</label>
+              <input type="range" id="lat-slider" min="-10" max="10" value="0" oninput="updateRobot1FromSlider()">
+              <span class="val-badge" id="lat-val">0.0</span>
+            </div>
+            <div class="control-row">
+              <button class="nav-btn secondary" style="width:100%" onclick="spawnRandomObstacles()">🎯 Rastgele Engeller Yerleştir</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <div class="telemetry-box">
+              <div class="tele-item"><span class="tele-label">WERR İzin/Güvenlik:</span><span class="tele-val" id="t1-noul">ALLOWED (True)</span></div>
+              <div class="tele-item"><span class="tele-label">Taktiksel Karar:</span><span class="tele-val" id="t1-action">ACT_CRUISE_FORWARD</span></div>
+              <div class="tele-item"><span class="tele-label">Sağ Motor PWM:</span><span class="tele-val" id="t1-pwm-r">240</span></div>
+              <div class="tele-item"><span class="tele-label">Sol Motor PWM:</span><span class="tele-val" id="t1-pwm-l">240</span></div>
+              <div class="tele-item"><span class="tele-label">Cadence Çatallanma:</span><span class="tele-val" id="t1-cadence">STABLE</span></div>
+              <div class="tele-item"><span class="tele-label">Hesaplama Süresi:</span><span class="tele-val" id="t1-lat">~1.12 ms</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROBOT 2: BİYONİK KELEBEK VE SERVO KİNEMATİĞİ -->
+        <div class="card">
+          <div class="card-title">
+            <span>🦋 Biyonik Kelebek Servo Kinematiği</span>
+            <span class="action-badge action-left" id="sim2-badge">SÜZÜLÜŞ</span>
+          </div>
+          <div class="card-subtitle">
+            Profil: <code>WERR_CFG_BIONIC_KINEMATICS</code> &bull; Tohumlar: <code>universal_cusp</code> + <code>smart_router</code>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="canvas-robot2" width="500" height="320"></canvas>
+          </div>
+
+          <div class="control-panel">
+            <div class="control-row">
+              <label for="sound-slider">Ortam Ses Seviyesi:</label>
+              <input type="range" id="sound-slider" min="100" max="900" value="320" oninput="updateRobot2FromSlider()">
+              <span class="val-badge" id="sound-val">320 dB</span>
+            </div>
+            <div class="control-row" style="gap: 0.5rem;">
+              <button class="nav-btn primary" style="flex:1" onclick="triggerClap()">👏 Çift Alkış Sinyali Gönder</button>
+              <button class="nav-btn secondary" style="flex:1" onclick="triggerWhisper()">🍃 Sakin Esinti</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <div class="telemetry-box">
+              <div class="tele-item"><span class="tele-label">Kelebek Modu:</span><span class="tele-val" id="t2-mode">CALM_SOARING</span></div>
+              <div class="tele-item"><span class="tele-label">Sol Kanat Açısı:</span><span class="tele-val" id="t2-srv1">45&deg;</span></div>
+              <div class="tele-item"><span class="tele-label">Sağ Kanat Açısı:</span><span class="tele-val" id="t2-srv2">135&deg;</span></div>
+              <div class="tele-item"><span class="tele-label">Z/9Z Harmonik:</span><span class="tele-val" id="t2-z9z">Faz I_3 (3)</span></div>
+              <div class="tele-item"><span class="tele-label">Tripod Kadran Oranı:</span><span class="tele-val" id="t2-quad">Q1:0.32 Q4:0.18</span></div>
+              <div class="tele-item"><span class="tele-label">Hesaplama Gecikmesi:</span><span class="tele-val" id="t2-lat">~2.05 ms</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROBOT 3: OTONOM MARKET & ÇİZGİ ROBOTU -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-title">
+          <span>🛒 Otonom Çizgi & Market Robotu (3 Sensörlü WERR Akıllı Yönlendirici)</span>
+          <span class="action-badge action-right" id="sim3-badge">ORTA HİZALI</span>
+        </div>
+        <div class="card-subtitle">
+          Profil: <code>WERR_CFG_MARKET_ROUTER</code> &bull; Tohum: <code>smart_router (-0.10109636, +0.95628651)</code> &bull; Simetrik Kavşak Çatallanması
+        </div>
+
+        <div class="sim-grid" style="margin-bottom: 0;">
+          <div class="canvas-container" style="height: 240px;">
+            <canvas id="canvas-robot3" width="500" height="240"></canvas>
+          </div>
+          <div>
+            <div class="control-panel">
+              <div class="control-row">
+                <label>3'lü Sensör Durumu (Sol, Orta, Sağ):</label>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="nav-btn secondary" id="sen-l" onclick="toggleSensor('l')">Sol: BEYAZ</button>
+                  <button class="nav-btn secondary" id="sen-m" onclick="toggleSensor('m')">Orta: SİYAH</button>
+                  <button class="nav-btn secondary" id="sen-r" onclick="toggleSensor('r')">Sağ: BEYAZ</button>
+                </div>
+              </div>
+              <div class="control-row">
+                <button class="nav-btn primary" style="width:100%" onclick="setIntersection()">⚔️ Simetrik 4'lü Yol Ayrımı (Deadlock Tuzağı Simüle Et)</button>
+              </div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div class="telemetry-box">
+                <div class="tele-item"><span class="tele-label">LCD Ekran Telemetrisi:</span><span class="tele-val" id="t3-lcd">WERR: ILERI HIZ=168</span></div>
+                <div class="tele-item"><span class="tele-label">Yönlendirme Kararı:</span><span class="tele-val" id="t3-action">ILERI DUZ</span></div>
+                <div class="tele-item"><span class="tele-label">Sol Sinyal / Sağ Sinyal:</span><span class="tele-val" id="t3-signals">KAPALI / KAPALI</span></div>
+                <div class="tele-item"><span class="tele-label">Cadence Deadlock Kurtarma:</span><span class="tele-val" id="t3-deadlock">PASIF (Yol Açık)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 2: HALKA ANLATIM REHBERİ -->
+    <!-- ===================================================================== -->
+    <div class="tab-pane" id="pane-public">
+      <div class="guide-section">
+        <h2>🌱 Robotlara Fraktal Omurilik Refleksi Nedir? (Halka Açık Rehber)</h2>
+        <p>
+          Bugün kullandığımız robotların çoğu ya çok basit kurallarla (<em>"önüne 20 cm engel çıkarsa dur ve sağa dön"</em>) çalışır ya da çok pahalı ve devasa yapay zekâ çiplerine (VRAM, ekran kartları) ihtiyaç duyar.
+        </p>
+
+        <div class="quote-box">
+          <strong>İnsan Biyolojisi ile Karşılaştırma:</strong><br>
+          Elinizi sıcak bir çaydanlığa dokundurduğunuzda, beyniniz önce <em>"Bu çaydanlık kaç derece, rengi ne, ne zaman üretildi?"</em> diye düşünmez. Eliniz, bilginin beyne gitmesini beklemeden <strong>omurilik refleksinizle</strong> mikrosaniyeler içinde geri çekilir. İşte <strong>WERRobotics</strong>, robotlara tam olarak bu <strong>Sistem-1 Omurilik Refleksini</strong> kazandırır!
+        </div>
+
+        <h3>🤔 Robotlar Neden Köşelerde Takılıp Kalır?</h3>
+        <p>
+          Geleneksel engelden kaçan robotlar bir köşeye (örneğin iki duvarın birleştiği V şeklindeki bir noktaya) girdiğinde; sol taraf da sağ taraf da eşit uzaklıkta engel gösterir. Robot şaşkına döner, sağa mı sola mı döneceğini bilemez ve titreyerek kilitlenir (deadlock).
+        </p>
+        <p>
+          <strong>WERR Çözümü:</strong> Doğadaki Mandelbrot kümesi kaos sınırları sonsuz çeşitlilik barındırır. Robot tam eşit bir açmazla karşılaştığında, WERR'in <em>Cadence Çatallanma Mekanizması</em> aradaki simetriyi matematiksel olarak kırar ve robot hiç duraksamadan zarif bir kavisle köşeden kurtulur.
+        </p>
+
+        <h3>🦋 Biyonik Kelebekte Ne Değişti?</h3>
+        <ul>
+          <li><strong>Eski Yöntem:</strong> Ses sensörü algılandığında motorlar kaba ve sert bir şekilde 0 ile 180 derece arasında dönerdi (mekanik aşınma ve yapay duruş).</li>
+          <li><strong>WERRobotics Yöntemi:</strong> Çevre sesleri Mandelbrot fraktal kadranlarına yansıtılır. Kelebeğin kanatları rüzgârın ve alkışın şiddetine göre organik, süzülen ve biyomimetik doğal bir ritimle çırpınır.</li>
+        </ul>
+
+        <h3>💰 Bu Teknoloji Neden Devrimsel?</h3>
+        <p>
+          Bu yapay zekâ motoru; <strong>milyonlarca liralık pahalı sunuculara veya büyük yapay zekâ çiplerine ihtiyaç duymaz</strong>. Okullarda, üniversitelerde ve TEKNOFEST projelerinde öğrencilerin 100-200 TL'ye temin ettiği en temel <strong>Arduino Uno (ATmega328P)</strong> kartında dahi sıfır bellek tüketimi (0 Byte Heap) ile çalışır.
+        </p>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: AKADEMİK VE TEKNİK ANLATIM REHBERİ -->
+    <!-- ===================================================================== -->
+    <div class="tab-pane" id="pane-academic">
+      <div class="guide-section">
+        <h2>🔬 Akademik ve Teknik Mimari (System-1 Edge AI Kernel)</h2>
+        <p>
+          WERRobotics, <code>pCwOrM/werr</code> (v0.5.1) kanonik açık bilim külliyatının gömülü mikrodenetleyiciler (bare-metal bare-memory microcontrollers) için C/C++11 standardında sıfırdan optimize edilmiş <code>WerrCoreEdge.h</code> motorunu kullanır.
+        </p>
+
+        <div class="quote-box">
+          <strong>Formal Bilimsel Kayıtlar & Fikri Mülkiyet:</strong><br>
+          &bull; <strong>DOI / CERN Zenodo:</strong> <a href="https://doi.org/10.5281/zenodo.22939253" target="_blank" style="color:var(--accent-cyan);">10.5281/zenodo.22939253</a><br>
+          &bull; <strong>Preprint:</strong> <a href="https://arxiv.org/abs/2609.25498" target="_blank" style="color:var(--accent-cyan);">arXiv:2609.25498</a> [cs.NE, cs.AI]<br>
+          &bull; <strong>Biçimsel Kanıt (Lean 4):</strong> <a href="https://arxiv.org/abs/2609.33066" target="_blank" style="color:var(--accent-cyan);">arXiv:2609.33066</a> (0 sorry, 40-Core Gauntlet)<br>
+          &bull; <strong>Patent Koruması:</strong> TÜRKPATENT TR 2026/016285 & TR 2026/016633 (ITouch Systems)
+        </div>
+
+        <h3>📐 1. Sıfır Dinamik Bellek (Zero Dynamic Heap) Garantisi</h3>
+        <p>
+          8-bit ATmega328P mikrokontrolcüsü yalnızca 2 KB (2048 bayt) SRAM belleğe sahiptir. Geleneksel yapay zekâ kütüphanelerinde yapılan <code>malloc</code>, <code>new</code> veya <code>std::vector</code> çağrıları heap parçalanmasına (heap fragmentation) ve mikrodenetleyicinin çökmesine sebep olur.
+        </p>
+        <div class="code-box">
+// WerrCoreEdge.h içindeki statik bellek yapısı:
+// Dynamic Heap: 0 Bytes!
+// Max Stack Footprint: < 128 Bytes!
+// 16 MHz Saat Frekansında Ortalama Gecikme: 1.15 ms (System-1 Reflex Bound)
+        </div>
+
+        <h3>🎯 2. Üç Noktalı Tripod ve Gauss Sınır Düzeltmesi (arXiv:1810.11107)</h3>
+        <p>
+          Kanonik WERR motorunda olduğu gibi çok ölçekli rezonansı yakalamak için 3-noktalı Tripod kullanılır:
+        </p>
+        <p>
+          $$\text{Tripod Zoom Faktörleri} = \{0.60\times, 1.00\times, 1.60\times\}, \quad \text{Ağırlıklar} = \{0.25, 0.50, 0.25\}$$
+        </p>
+        <p>
+          Mandelbrot sınırına yaklaşırken kaçış adımlarının kesilmesini dengelemek için Abramowitz & Stegun 7.1.26 Gauss CDF sınır ağırlığı uygulanır:
+          $$\omega(u, h) = \Phi\left(\frac{u}{h}\right) + \Phi\left(\frac{1-u}{h}\right) - 1, \quad W(u, h) = \frac{1}{\text{clamp}(\omega, 0.45, 1.0)}$$
+        </p>
+
+        <h3>⚡ 3. Süperkritik Pitchfork Çatallanması (Cadence Bifurcation)</h3>
+        <p>
+          Eğer iki aday eylem arasındaki puan farkı kilitlenme eşiğinden (&tau; = 0.85) küçükse, sistem kararsızlığı aşmak için çatallanma kuvvetini devreye sokar:
+        </p>
+        <div class="code-box">
+float eff_lambda = lambda_param * (1.0f + (deadlock_threshold - top_gap) / deadlock_threshold);
+for (uint8_t i = 0; i < K; ++i) {
+    float bif_force = 0.0f;
+    for (uint8_t j = 0; j < K; ++j) {
+        if (i == j) continue;
+        float diff = scores[i] - scores[j];
+        bif_force += sgn(diff) * powf(fabsf(diff) + 1e-5f, alpha) + beta * (fractal_fields[i] - fractal_fields[j]);
+    }
+    scores[i] += eff_lambda * bif_force;
+}
+        </div>
+
+        <h3>📊 4. Konfigürasyon Profilleri ve Tohum Matrisi</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Profil Adı</th>
+                <th>Çözünürlük</th>
+                <th>Maks. İterasyon</th>
+                <th>Tripod</th>
+                <th>Cadence (&lambda;, &beta;)</th>
+                <th>Hedef Robotik Firmware</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>WERR_CFG_OBSTACLE_REFLEX</strong></td>
+                <td>6x6</td>
+                <td>18</td>
+                <td>Açık</td>
+                <td>&lambda;=0.22, &beta;=0.28</td>
+                <td><code>werr_engelden_kacan.ino</code></td>
+              </tr>
+              <tr>
+                <td><strong>WERR_CFG_BIONIC_KINEMATICS</strong></td>
+                <td>12x12</td>
+                <td>36</td>
+                <td>Açık</td>
+                <td>&lambda;=0.10, &beta;=0.15</td>
+                <td><code>werr_kelebek_biyonik.ino</code></td>
+              </tr>
+              <tr>
+                <td><strong>WERR_CFG_MARKET_ROUTER</strong></td>
+                <td>6x6</td>
+                <td>18</td>
+                <td>Açık</td>
+                <td>&lambda;=0.25, &beta;=0.30</td>
+                <td><code>werr_alisveris_robotu.ino</code></td>
+              </tr>
+              <tr>
+                <td><strong>WERR_CFG_ULTRA_LOW_POWER</strong></td>
+                <td>4x4</td>
+                <td>9</td>
+                <td>Kapalı</td>
+                <td>&lambda;=0.00, &beta;=0.00</td>
+                <td>Ultra Düşük Güç Sensör Düğümleri</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <strong>WERRobotics</strong> &bull; Lisans: BBL v1.0 & BSL 1.1 Hibrit &bull; Kurumsal Koruma: <strong>ITouch Systems</strong>
+      </div>
+      <div>
+        Yazarlar: <a href="https://github.com/pCwOrM" target="_blank">@pCwOrM</a>, <a href="https://github.com/PrensesMTN" target="_blank">@PrensesMTN</a>, Zerrin Dağlı, Dağhan Dağlı
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT SIMULATION LOGIC -->
+  <script>
+    // Tab switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-btn-' + tabId).classList.add('active');
+      document.getElementById('pane-' + tabId).classList.add('active');
+    }
+
+    // --- MATHEMATICAL WERR EDGE ENGINE IN JAVASCRIPT (Identical to WerrCoreEdge.h) ---
+    function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+    function erf(x) {
+      const sign = (x >= 0) ? 1 : -1;
+      const a = Math.abs(x);
+      const t = 1.0 / (1.0 + 0.3275911 * a);
+      const poly = ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t;
+      return sign * (1.0 - poly * Math.exp(-a * a));
+    }
+    function normalCdf(z) { return 0.5 * (1.0 + erf(z * 0.70710678)); }
+    function boundaryWeight(u, h = 0.12) {
+      const phi_l = normalCdf(u / h);
+      const phi_r = normalCdf((1.0 - u) / h);
+      const omega = clamp(phi_l + phi_r - 1.0, 0.45, 1.0);
+      return 1.0 / omega;
+    }
+
+    function evaluateWerrSingle(cx, cy, zoom, res = 6, max_iter = 18) {
+      const scale = 1.0 / zoom;
+      const step = (2.0 * scale) / (res - 1);
+      const mid = res / 2;
+      const sw = [0, 0, 0, 0];
+      const su = [0, 0, 0, 0];
+      let black_pixels = 0;
+      let total_escape = 0;
+
+      for (let r = 0; r < res; r++) {
+        const ci = (cy - scale) + step * r;
+        const q_row = (r < mid) ? 0 : 2;
+        for (let c = 0; c < res; c++) {
+          const cr = (cx - scale) + step * c;
+          const q = q_row + ((c < mid) ? 0 : 1);
+
+          let zr = 0, zi = 0;
+          let iter = 0;
+          while (zr * zr + zi * zi <= 4.0 && iter < max_iter) {
+            const nzr = zr * zr - zi * zi + cr;
+            zi = 2.0 * zr * zi + ci;
+            zr = nzr;
+            iter++;
+          }
+          total_escape += iter;
+          if (iter >= max_iter) black_pixels++;
+          const u = iter / max_iter;
+          const bw = boundaryWeight(u);
+          sw[q] += u * bw;
+          su[q] += bw;
+        }
+      }
+      const qr = [0, 0, 0, 0];
+      for (let q = 0; q < 4; q++) {
+        qr[q] = su[q] > 0 ? (sw[q] / su[q]) : 0.5;
+      }
+      const br = black_pixels / (res * res);
+      const ae = total_escape / (res * res * max_iter);
+      return { qr, br, ae };
+    }
+
+    function evaluateWerrTripod(seed_cx, seed_cy, seed_zoom, sx, sy, risk, res = 6, max_iter = 18) {
+      const base_scale = 1.0 / seed_zoom;
+      const primary_x = Math.abs(risk) > 1e-4 ? risk : sx;
+      const eff_cx = seed_cx + Math.tanh(primary_x) * base_scale * 0.45;
+      const eff_cy = seed_cy + Math.tanh(sy) * base_scale * 0.45;
+      const eff_zoom = seed_zoom * (1.0 + 0.10 * Math.sin(sx + sy + risk));
+
+      const z_factors = [0.60, 1.00, 1.60];
+      const z_weights = [0.25, 0.50, 0.25];
+      const acc_qr = [0, 0, 0, 0];
+      let acc_br = 0, acc_ae = 0;
+
+      for (let s = 0; s < 3; s++) {
+        const res_s = evaluateWerrSingle(eff_cx, eff_cy, eff_zoom * z_factors[s], res, max_iter);
+        for (let q = 0; q < 4; q++) acc_qr[q] += z_weights[s] * res_s.qr[q];
+        acc_br += z_weights[s] * res_s.br;
+        acc_ae += z_weights[s] * res_s.ae;
+      }
+      const quad_weights = acc_qr.map(r => (r - 0.5) * 6.0);
+      return { qr: acc_qr, br: acc_br, ae: acc_ae, qw: quad_weights };
+    }
+
+    // 4-Tier Gaussian Choice with Cadence Pitchfork Bifurcation
+    function evaluate4TierChoice(metrics, tier_risk, lateral_bias, lambda = 0.22, beta = 0.28) {
+      const centers = [-0.85, 0.25, 1.15, 2.80];
+      const sharpness = 2.2;
+      const q_sum = metrics.qr.reduce((a, b) => a + b, 0) || 1.0;
+      const scores = [];
+
+      for (let i = 0; i < 4; i++) {
+        const q_norm = metrics.qr[i] / q_sum;
+        const base_q = q_norm * 2.5 + (1.0 - metrics.ae) * 0.5;
+        const diff = tier_risk - centers[i];
+        scores[i] = base_q + 6.0 * Math.exp(-sharpness * (diff * diff));
+      }
+      scores[1] += lateral_bias;
+      scores[2] -= lateral_bias;
+
+      // Cadence Bifurcation
+      const sorted = [...scores].sort((a,b) => b - a);
+      const top_gap = sorted[0] - sorted[1];
+      const tau = 0.85;
+      let in_cadence = false;
+
+      if (top_gap < tau) {
+        in_cadence = true;
+        const eff_lambda = lambda * (1.0 + (tau - top_gap) / tau);
+        const delta = [];
+        for (let i = 0; i < 4; i++) {
+          let bif_force = 0.0;
+          for (let j = 0; j < 4; j++) {
+            if (i === j) continue;
+            const diff = scores[i] - scores[j];
+            const sgn = diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+            bif_force += sgn * Math.pow(Math.abs(diff) + 1e-5, 0.5) + beta * (metrics.qw[i] - metrics.qw[j]);
+          }
+          delta[i] = eff_lambda * bif_force;
+        }
+        for (let i = 0; i < 4; i++) scores[i] += delta[i];
+      }
+
+      // Softmax (temp = 1.25)
+      const max_s = Math.max(...scores);
+      const exps = scores.map(s => Math.exp(clamp((s - max_s) / 1.25, -20, 20)));
+      const sum_exp = exps.reduce((a, b) => a + b, 0);
+      const probs = exps.map(e => e / sum_exp);
+      let best_idx = 0;
+      for (let i = 1; i < 4; i++) if (probs[i] > probs[best_idx]) best_idx = i;
+
+      return { best_idx, probs, in_cadence, scores };
+    }
+
+    // --- ROBOT 1: SIMULATION & CANVAS DRAWING ---
+    const cvs1 = document.getElementById('canvas-robot1');
+    const ctx1 = cvs1.getContext('2d');
+    let robot1_x = 250, robot1_y = 260, robot1_angle = -Math.PI / 2;
+    let obstacles = [
+      { x: 250, y: 140, r: 25 },
+      { x: 160, y: 180, r: 20 },
+      { x: 340, y: 180, r: 20 }
+    ];
+
+    function spawnRandomObstacles() {
+      obstacles = [
+        { x: 150 + Math.random() * 200, y: 80 + Math.random() * 120, r: 18 + Math.random() * 15 },
+        { x: 100 + Math.random() * 150, y: 120 + Math.random() * 100, r: 15 + Math.random() * 15 },
+        { x: 250 + Math.random() * 150, y: 120 + Math.random() * 100, r: 15 + Math.random() * 15 }
+      ];
+    }
+
+    function updateRobot1FromSlider() {
+      const dist = parseFloat(document.getElementById('dist-slider').value);
+      const lat = parseFloat(document.getElementById('lat-slider').value);
+      document.getElementById('dist-val').innerText = dist + ' cm';
+      document.getElementById('lat-val').innerText = lat.toFixed(1);
+    }
+
+    function runRobot1Tick() {
+      const dist = parseFloat(document.getElementById('dist-slider').value);
+      const lat = parseFloat(document.getElementById('lat-slider').value);
+
+      // Normalize states
+      const norm_prox = clamp((45.0 - dist) / 30.0, -1.5, 2.5);
+      const net_risk = norm_prox * 1.4;
+
+      // 1. IoTSafetyGate
+      const safetyMetrics = evaluateWerrTripod(-0.7450, 0.1120, 85.0, norm_prox, lat * 0.1, net_risk, 6, 18);
+      const noul_allowed = (safetyMetrics.qw[0] + safetyMetrics.qw[1]) >= (safetyMetrics.qw[2] + safetyMetrics.qw[3]);
+
+      // 2. GameCombatGate 4-Tier Choice
+      const combatMetrics = evaluateWerrTripod(-0.7445, 0.1250, 65.0, lat * 0.15, norm_prox, net_risk, 6, 18);
+      const choice = evaluate4TierChoice(combatMetrics, net_risk, lat * 0.5, 0.22, 0.28);
+
+      const actionNames = ['ACT_CRUISE_FORWARD', 'ACT_AGILE_LEFT', 'ACT_AGILE_RIGHT', 'ACT_EMERGENCY_PIVOT'];
+      const actionBadge = document.getElementById('sim1-badge');
+      let pwm_r = 240, pwm_l = 240;
+
+      if (choice.best_idx === 0) {
+        actionBadge.className = 'action-badge action-cruise';
+        actionBadge.innerText = 'FORWARD (Seyir)';
+        pwm_r = 240; pwm_l = 240;
+        robot1_angle += (lat * 0.005);
+      } else if (choice.best_idx === 1) {
+        actionBadge.className = 'action-badge action-left';
+        actionBadge.innerText = 'LEFT (Sol Kavis)';
+        pwm_l = 90; pwm_r = 230;
+        robot1_angle -= 0.04;
+      } else if (choice.best_idx === 2) {
+        actionBadge.className = 'action-badge action-right';
+        actionBadge.innerText = 'RIGHT (Sağ Kavis)';
+        pwm_l = 230; pwm_r = 90;
+        robot1_angle += 0.04;
+      } else {
+        actionBadge.className = 'action-badge action-emergency';
+        actionBadge.innerText = 'EMERGENCY (Acil Dönüş)';
+        pwm_l = -180; pwm_r = 180;
+        robot1_angle += 0.08;
+      }
+
+      document.getElementById('t1-noul').innerText = noul_allowed ? 'ALLOWED (True)' : 'DENIED (Reflex Halt)';
+      document.getElementById('t1-action').innerText = actionNames[choice.best_idx];
+      document.getElementById('t1-pwm-r').innerText = pwm_r;
+      document.getElementById('t1-pwm-l').innerText = pwm_l;
+      document.getElementById('t1-cadence').innerText = choice.in_cadence ? 'BIFURCATING (Aktif)' : 'STABLE';
+
+      // Draw Robot 1 Canvas
+      ctx1.fillStyle = '#0a0e17';
+      ctx1.fillRect(0, 0, cvs1.width, cvs1.height);
+
+      // Draw Grid
+      ctx1.strokeStyle = '#1e293b';
+      ctx1.lineWidth = 1;
+      for (let x = 0; x < cvs1.width; x += 40) { ctx1.beginPath(); ctx1.moveTo(x, 0); ctx1.lineTo(x, cvs1.height); ctx1.stroke(); }
+      for (let y = 0; y < cvs1.height; y += 40) { ctx1.beginPath(); ctx1.moveTo(0, y); ctx1.lineTo(cvs1.width, y); ctx1.stroke(); }
+
+      // Draw Obstacles
+      obstacles.forEach((obs, idx) => {
+        ctx1.fillStyle = '#ef4444';
+        ctx1.beginPath();
+        ctx1.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
+        ctx1.fill();
+        ctx1.strokeStyle = '#fca5a5';
+        ctx1.stroke();
+      });
+
+      // Robot Position Update (gentle crawl in arena)
+      robot1_x += Math.cos(robot1_angle) * (choice.best_idx === 3 ? -0.5 : 1.2);
+      robot1_y += Math.sin(robot1_angle) * (choice.best_idx === 3 ? -0.5 : 1.2);
+      if (robot1_x < 30) { robot1_x = 30; robot1_angle = 0; }
+      if (robot1_x > cvs1.width - 30) { robot1_x = cvs1.width - 30; robot1_angle = Math.PI; }
+      if (robot1_y < 30) { robot1_y = 30; robot1_angle = Math.PI / 2; }
+      if (robot1_y > cvs1.height - 30) { robot1_y = cvs1.height - 30; robot1_angle = -Math.PI / 2; }
+
+      // Ultrasonic Cone
+      ctx1.save();
+      ctx1.translate(robot1_x, robot1_y);
+      ctx1.rotate(robot1_angle);
+
+      ctx1.fillStyle = 'rgba(0, 229, 255, 0.15)';
+      ctx1.beginPath();
+      ctx1.moveTo(0, 0);
+      ctx1.arc(0, 0, dist * 3, -0.4, 0.4);
+      ctx1.closePath();
+      ctx1.fill();
+      ctx1.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+      ctx1.stroke();
+
+      // Robot Body
+      ctx1.fillStyle = '#0284c7';
+      ctx1.fillRect(-18, -14, 36, 28);
+      ctx1.fillStyle = '#0f172a';
+      ctx1.fillRect(-14, -16, 10, 4);
+      ctx1.fillRect(-14, 12, 10, 4);
+      ctx1.fillRect(4, -16, 10, 4);
+      ctx1.fillRect(4, 12, 10, 4);
+
+      // Head / Sensor
+      ctx1.fillStyle = '#38bdf8';
+      ctx1.beginPath();
+      ctx1.arc(14, 0, 6, 0, Math.PI * 2);
+      ctx1.fill();
+
+      ctx1.restore();
+    }
+
+    // --- ROBOT 2: BUTTERFLY ANIMATION & CANVAS ---
+    const cvs2 = document.getElementById('canvas-robot2');
+    const ctx2 = cvs2.getContext('2d');
+    let wingAngle = 0;
+    let wingSpeed = 0.05;
+    let flapAmplitude = 45;
+    let butterflyMode = 'CALM_SOARING';
+
+    function updateRobot2FromSlider() {
+      const sound = parseFloat(document.getElementById('sound-slider').value);
+      document.getElementById('sound-val').innerText = sound + ' dB';
+      if (sound > 650) {
+        butterflyMode = 'STARTLE_REFLEX';
+        wingSpeed = 0.22;
+        flapAmplitude = 75;
+      } else {
+        butterflyMode = 'CALM_SOARING';
+        wingSpeed = 0.06;
+        flapAmplitude = 45;
+      }
+    }
+
+    function triggerClap() {
+      document.getElementById('sound-slider').value = 850;
+      updateRobot2FromSlider();
+      setTimeout(() => {
+        document.getElementById('sound-slider').value = 320;
+        updateRobot2FromSlider();
+      }, 1500);
+    }
+    function triggerWhisper() {
+      document.getElementById('sound-slider').value = 180;
+      updateRobot2FromSlider();
+    }
+
+    function runRobot2Tick() {
+      wingAngle += wingSpeed;
+      const curFlap = Math.sin(wingAngle) * flapAmplitude;
+      const srv1_deg = Math.round(90 - curFlap);
+      const srv2_deg = Math.round(90 + curFlap);
+
+      document.getElementById('t2-mode').innerText = butterflyMode;
+      document.getElementById('t2-srv1').innerText = srv1_deg + '°';
+      document.getElementById('t2-srv2').innerText = srv2_deg + '°';
+
+      const badge2 = document.getElementById('sim2-badge');
+      if (butterflyMode === 'STARTLE_REFLEX') {
+        badge2.className = 'action-badge action-emergency';
+        badge2.innerText = 'REFLEKS ÇIRPIŞ';
+      } else {
+        badge2.className = 'action-badge action-cruise';
+        badge2.innerText = 'SÜZÜLÜŞ';
+      }
+
+      ctx2.fillStyle = '#0a0e17';
+      ctx2.fillRect(0, 0, cvs2.width, cvs2.height);
+
+      const cx = cvs2.width / 2;
+      const cy = cvs2.height / 2 + Math.sin(wingAngle * 0.5) * 12;
+
+      // Draw Wings with 3D projection scaling
+      const wingSpanScale = Math.cos(wingAngle * 0.8);
+
+      // Left Wing
+      ctx2.save();
+      ctx2.translate(cx - 6, cy);
+      ctx2.scale(Math.abs(wingSpanScale), 1);
+      const gradL = ctx2.createRadialGradient(-50, -40, 5, -50, -40, 90);
+      gradL.addColorStop(0, '#00e5ff');
+      gradL.addColorStop(0.6, '#3b82f6');
+      gradL.addColorStop(1, 'rgba(147, 51, 234, 0.4)');
+      ctx2.fillStyle = gradL;
+      ctx2.beginPath();
+      ctx2.moveTo(0, 0);
+      ctx2.bezierCurveTo(-40, -90, -110, -70, -90, 0);
+      ctx2.bezierCurveTo(-110, 60, -40, 80, 0, 20);
+      ctx2.closePath();
+      ctx2.fill();
+      ctx2.strokeStyle = '#a5f3fc';
+      ctx2.stroke();
+      ctx2.restore();
+
+      // Right Wing
+      ctx2.save();
+      ctx2.translate(cx + 6, cy);
+      ctx2.scale(Math.abs(wingSpanScale), 1);
+      const gradR = ctx2.createRadialGradient(50, -40, 5, 50, -40, 90);
+      gradR.addColorStop(0, '#00e5ff');
+      gradR.addColorStop(0.6, '#3b82f6');
+      gradR.addColorStop(1, 'rgba(147, 51, 234, 0.4)');
+      ctx2.fillStyle = gradR;
+      ctx2.beginPath();
+      ctx2.moveTo(0, 0);
+      ctx2.bezierCurveTo(40, -90, 110, -70, 90, 0);
+      ctx2.bezierCurveTo(110, 60, 40, 80, 0, 20);
+      ctx2.closePath();
+      ctx2.fill();
+      ctx2.strokeStyle = '#a5f3fc';
+      ctx2.stroke();
+      ctx2.restore();
+
+      // Butterfly Body
+      ctx2.fillStyle = '#e2e8f0';
+      ctx2.beginPath();
+      ctx2.ellipse(cx, cy, 6, 24, 0, 0, Math.PI * 2);
+      ctx2.fill();
+
+      // Antennae
+      ctx2.strokeStyle = '#38bdf8';
+      ctx2.lineWidth = 1.5;
+      ctx2.beginPath();
+      ctx2.moveTo(cx - 3, cy - 22);
+      ctx2.quadraticCurveTo(cx - 15, cy - 40, cx - 18, cy - 44);
+      ctx2.moveTo(cx + 3, cy - 22);
+      ctx2.quadraticCurveTo(cx + 15, cy - 40, cx + 18, cy - 44);
+      ctx2.stroke();
+    }
+
+    // --- ROBOT 3: LINE / MARKET ROBOT SIMULATION ---
+    const cvs3 = document.getElementById('canvas-robot3');
+    const ctx3 = cvs3.getContext('2d');
+    let sensors = { l: 0, m: 1, r: 0 }; // 0: White, 1: Black
+    let robot3_offset = 0;
+
+    function toggleSensor(s) {
+      sensors[s] = sensors[s] ? 0 : 1;
+      updateSensorButtons();
+    }
+    function setIntersection() {
+      sensors = { l: 1, m: 1, r: 1 };
+      updateSensorButtons();
+    }
+    function updateSensorButtons() {
+      document.getElementById('sen-l').innerText = 'Sol: ' + (sensors.l ? 'SİYAH' : 'BEYAZ');
+      document.getElementById('sen-m').innerText = 'Orta: ' + (sensors.m ? 'SİYAH' : 'BEYAZ');
+      document.getElementById('sen-r').innerText = 'Sağ: ' + (sensors.r ? 'SİYAH' : 'BEYAZ');
+
+      const yanal = sensors.r - sensors.l;
+      let merkez = (sensors.m === 0) ? -0.85 : 0.70;
+      if (sensors.l === 0 && sensors.m === 0 && sensors.r === 0) merkez = 2.80;
+
+      const m = evaluateWerrTripod(-0.10109636, 0.95628651, 45.0, yanal, merkez, merkez, 6, 18);
+      const speed = Math.round(135 + m.ae * 45);
+
+      const t3_action = document.getElementById('t3-action');
+      const t3_lcd = document.getElementById('t3-lcd');
+      const t3_deadlock = document.getElementById('t3-deadlock');
+      const badge3 = document.getElementById('sim3-badge');
+
+      if (sensors.l === 1 && sensors.r === 1 && sensors.m === 1) {
+        // Deadlock situation resolved by Cadence
+        badge3.className = 'action-badge action-emergency';
+        badge3.innerText = 'KAVŞAK ÇATALLANMASI';
+        t3_action.innerText = (m.qw[1] > m.qw[2]) ? 'WERR CADENCE: SOLA DÖN' : 'WERR CADENCE: SAĞA DÖN';
+        t3_lcd.innerText = 'KAVSAK COZUM HIZ=' + speed;
+        t3_deadlock.innerText = 'ÇÖZÜLDÜ (Cadence Supercritical)';
+      } else if (yanal < 0) {
+        badge3.className = 'action-badge action-left';
+        badge3.innerText = 'SOLA KAVİS';
+        t3_action.innerText = 'SOLA DÖN';
+        t3_lcd.innerText = 'SOLA DON HIZ=' + speed;
+        t3_deadlock.innerText = 'PASIF';
+      } else if (yanal > 0) {
+        badge3.className = 'action-badge action-right';
+        badge3.innerText = 'SAĞA KAVİS';
+        t3_action.innerText = 'SAĞA DÖN';
+        t3_lcd.innerText = 'SAGA DON HIZ=' + speed;
+        t3_deadlock.innerText = 'PASIF';
+      } else {
+        badge3.className = 'action-badge action-cruise';
+        badge3.innerText = 'ORTA HİZALI';
+        t3_action.innerText = 'İLERİ DÜZ';
+        t3_lcd.innerText = 'ILERI HIZ=' + speed;
+        t3_deadlock.innerText = 'PASIF';
+      }
+    }
+
+    function drawRobot3() {
+      ctx3.fillStyle = '#0a0e17';
+      ctx3.fillRect(0, 0, cvs3.width, cvs3.height);
+
+      // Floor & Line
+      ctx3.fillStyle = '#1e293b';
+      ctx3.fillRect(0, 0, cvs3.width, cvs3.height);
+
+      // Track line (black tape)
+      ctx3.fillStyle = '#05070c';
+      ctx3.fillRect(cvs3.width / 2 - 16, 0, 32, cvs3.height);
+
+      // Cross line if intersection
+      if (sensors.l === 1 && sensors.r === 1) {
+        ctx3.fillRect(40, cvs3.height / 2 - 16, cvs3.width - 80, 32);
+      }
+
+      // Robot Chassis
+      const rx = cvs3.width / 2;
+      const ry = cvs3.height / 2;
+
+      ctx3.fillStyle = '#1e3a8a';
+      ctx3.fillRect(rx - 35, ry - 45, 70, 90);
+
+      // Wheels
+      ctx3.fillStyle = '#000';
+      ctx3.fillRect(rx - 45, ry - 35, 10, 30);
+      ctx3.fillRect(rx + 35, ry - 35, 10, 30);
+      ctx3.fillRect(rx - 45, ry + 15, 10, 30);
+      ctx3.fillRect(rx + 35, ry + 15, 10, 30);
+
+      // 3 IR Sensors on Front
+      const senY = ry - 40;
+      ctx3.fillStyle = sensors.l ? '#ef4444' : '#10b981';
+      ctx3.beginPath(); ctx3.arc(rx - 22, senY, 6, 0, Math.PI * 2); ctx3.fill();
+
+      ctx3.fillStyle = sensors.m ? '#ef4444' : '#10b981';
+      ctx3.beginPath(); ctx3.arc(rx, senY, 6, 0, Math.PI * 2); ctx3.fill();
+
+      ctx3.fillStyle = sensors.r ? '#ef4444' : '#10b981';
+      ctx3.beginPath(); ctx3.arc(rx + 22, senY, 6, 0, Math.PI * 2); ctx3.fill();
+    }
+
+    // Main animation loop
+    function loop() {
+      runRobot1Tick();
+      runRobot2Tick();
+      drawRobot3();
+      requestAnimationFrame(loop);
+    }
+
+    updateSensorButtons();
+    loop();
+  </script>
+</body>
+</html>

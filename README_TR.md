@@ -24,6 +24,7 @@
 [![answerr Platform](https://img.shields.io/badge/answerr-Platform%20Repo-8b5cf6.svg)](https://github.com/pCwOrM/answerr)
 [![werracle Web3 Oracle](https://img.shields.io/badge/werracle-On--Chain%20Oracle-f59e0b.svg?logo=ethereum&logoColor=white)](https://github.com/pCwOrM/werracle)
 [![WerreduR v4.0](https://img.shields.io/badge/WerreduR%20v4.0-10.5281%2Fzenodo.23128224-059669.svg)](https://doi.org/10.5281/zenodo.23128224)
+[![Canlı Simülasyon Portalı](https://img.shields.io/badge/Canl%C4%B1%20Portal-pcworm.github.io%2FWERRobotics-38bdf8.svg?logo=githubpages&logoColor=white)](https://pcworm.github.io/WERRobotics/)
 [![Heap Allocation: 0 Bytes](https://img.shields.io/badge/Heap%20RAM-0%20Bayt%20(Zero--Malloc)-emerald.svg)](./src/WerrCoreEdge/WerrCoreEdge.h)
 [![Arduino MCU](https://img.shields.io/badge/MCU-ATmega328P%20%7C%20Mega2560%20%7C%20ESP32-ff9100.svg?logo=arduino&logoColor=white)](./firmware/)
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?logo=github&logoColor=white)](https://github.com/sponsors/pCwOrM)
@@ -31,8 +32,10 @@
 > **Motto:** *"When the Wave meets Error, we Recurse (werr)."*  
 > *"Hızlı Olan Değil, Sınırda Kararlı Kalan Kazanır."*
 
-🌐 **Dil Seçici / Language Switcher:**  
-**[🇬🇧 English Main Page (README.md)](README.md)** | **🇹🇷 Türkçe Dokümantasyon (Aktif)**
+🌐 **Dil Seçici & İnteraktif Canlı Web Simülatörü:**  
+**[🇬🇧 English Main Page (README.md)](README.md)** | **🇹🇷 Türkçe Dokümantasyon (Aktif)** | **[🚀 Canlı Web Simülatörü & Portalı (pcworm.github.io/WERRobotics)](https://pcworm.github.io/WERRobotics/)**
+
+> 🎮 **[İnteraktif Web Simülasyonu & Anlatım Portalını Başlat](https://pcworm.github.io/WERRobotics/)**: Tarayıcı üzerinden doğrudan test edebileceğiniz Engelden Kaçan Robot, Biyonik Kelebek ve Çizgi/Market Robotu WERR omurilik refleksi laboratuvarı.
 
 ---
 

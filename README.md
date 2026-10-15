@@ -24,6 +24,7 @@
 [![answerr Platform](https://img.shields.io/badge/answerr-Platform%20Repo-8b5cf6.svg)](https://github.com/pCwOrM/answerr)
 [![werracle Web3 Oracle](https://img.shields.io/badge/werracle-On--Chain%20Oracle-f59e0b.svg?logo=ethereum&logoColor=white)](https://github.com/pCwOrM/werracle)
 [![WerreduR v4.0](https://img.shields.io/badge/WerreduR%20v4.0-10.5281%2Fzenodo.23128224-059669.svg)](https://doi.org/10.5281/zenodo.23128224)
+[![Live Simulation Portal](https://img.shields.io/badge/Live%20Portal-pcworm.github.io%2FWERRobotics-38bdf8.svg?logo=githubpages&logoColor=white)](https://pcworm.github.io/WERRobotics/)
 [![Heap Allocation: 0 Bytes](https://img.shields.io/badge/Heap%20RAM-0%20Bytes%20(Zero--Malloc)-emerald.svg)](./src/WerrCoreEdge/WerrCoreEdge.h)
 [![Arduino MCU](https://img.shields.io/badge/MCU-ATmega328P%20%7C%20Mega2560%20%7C%20ESP32-ff9100.svg?logo=arduino&logoColor=white)](./firmware/)
 [![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?logo=github&logoColor=white)](https://github.com/sponsors/pCwOrM)
@@ -33,11 +34,12 @@
 
 ---
 
-## 🌐 Language Switcher / Türkçe Dokümantasyon Yönlendirmesi
+## 🌐 Language Switcher & Interactive Web Simulator
 
-**🇬🇧 English (Default Main Page)** | **[🇹🇷 Türkçe Ana Dokümantasyon (README_TR.md)](README_TR.md)**
+**🇬🇧 English (Default Main Page)** | **[🇹🇷 Türkçe Ana Dokümantasyon (README_TR.md)](README_TR.md)** | **[🚀 Canlı Web Simülatörü & Portalı (pcworm.github.io/WERRobotics)](https://pcworm.github.io/WERRobotics/)**
 
 > 🇹🇷 **Türkçe Kılavuzlar ve Hızlı Erişim Bağlantıları:**
+> - 🎮 **[Canlı İnteraktif Web Simülasyonu & Anlatım Portalı](https://pcworm.github.io/WERRobotics/)**: Tarayıcı üzerinde çalışan Engelden Kaçan Robot, Biyonik Kelebek ve Otonom Çizgi/Market Robotu WERR omurilik refleksi simülatörü.
 > - 📘 **[Türkçe Ana Rehber (README_TR.md)](README_TR.md)**: Projenin kapsamlı Türkçe açıklaması, mimari şeması, ham kodlar ile WERR entegrasyonu karşılaştırması ve kurulum adımları.
 > - 📐 **[Türkçe Edge AI Mimari ve Optimum Parametre Kılavuzu (`docs/WERR_EDGE_ARCHITECTURE_TR.md`)](docs/WERR_EDGE_ARCHITECTURE_TR.md)**: Tanjant düzlemi projeksiyonu, 3-Noktalı Tripod, 4-Katmanlı Gaussian Risk Çekirdeği, Cadence Süperkritik Dirgen Çatallanması, GAP-0331 $\mathbb{Z}/9\mathbb{Z}$ (Tesla 3-6-9) modüler cebiri ve her robot için seçilen optimum `WerrConfig` parametrelerinin teknik gerekçeleri.
 > - 🔌 **[Türkçe Donanım Pin Bağlantıları ve Devre Rehberi (`docs/HARDWARE_PINOUT_AND_WIRING_TR.md`)](docs/HARDWARE_PINOUT_AND_WIRING_TR.md)**: Engelden Kaçan Robot, Biyonik Kelebek ve Otonom Market Robotu için eksiksiz Arduino bacak (pin) tabloları.
