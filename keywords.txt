@@ -1,0 +1,35 @@
+#######################################
+# Syntax Coloring Map For WerrCoreEdge
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+WerrSeed	KEYWORD1
+WerrPatchMetrics	KEYWORD1
+WerrDynamicCalibration	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+werrEvaluateState	KEYWORD2
+werrComputeSingleScale	KEYWORD2
+werrApplyCadenceBifurcation	KEYWORD2
+werrBoundaryWeight	KEYWORD2
+werrIsUnitMod9	KEYWORD2
+werrIsResonantSubidealI3	KEYWORD2
+werrConstructiveInverseMod9	KEYWORD2
+werrNeutralizePerturbationMod9	KEYWORD2
+observeAndCalibrate	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+WERR_SEED_UNIVERSAL_CUSP	LITERAL1
+WERR_SEED_SECURITY_GUARD	LITERAL1
+WERR_SEED_SMART_ROUTER	LITERAL1
+WERR_SEED_RISK_EVALUATOR	LITERAL1
+WERR_SEED_IOT_SAFETY	LITERAL1
+WERR_SEED_GAME_COMBAT	LITERAL1
+WERR_SEED_FINANCIAL_RISK	LITERAL1
+WERR_SEED_ECOMMERCE_FRAUD	LITERAL1
