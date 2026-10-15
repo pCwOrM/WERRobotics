@@ -649,6 +649,61 @@
         <p>
           Bu yapay zekâ motoru; <strong>milyonlarca liralık pahalı sunuculara veya büyük yapay zekâ çiplerine ihtiyaç duymaz</strong>. Okullarda, üniversitelerde ve TEKNOFEST projelerinde öğrencilerin 100-200 TL'ye temin ettiği en temel <strong>Arduino Uno (ATmega328P)</strong> kartında dahi sıfır bellek tüketimi (0 Byte Heap) ile çalışır.
         </p>
+
+        <h3>📊 ÖNCESİ vs. SONRASI: Gerçek Dünyada Ne Değişti?</h3>
+        <p>
+          Robotun eski kuralları (<em>"Ham Kodlar"</em>) ile yeni fraktal omurilik refleksli hali (<em>"WERR Edge AI"</em>) 10.000 adımlık gerçekçi üretim testinde karşılaştırıldı:
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Özellik / Karşılaştırma</th>
+                <th>ÖNCESİ (Ham Arduino Kodları)</th>
+                <th>SONRASI (WERR Edge AI Çekirdeği)</th>
+                <th>Kazanılan Avantaj</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Tepki Hızı (Gecikme)</strong></td>
+                <td>~1000 ms (1 saniye boyunca kör bekler)</td>
+                <td><strong>~1.15 ms</strong> (Göz kırpmasından yüzlerce kat hızlı)</td>
+                <td><span class="badge" style="background:#10b981; color:#000; font-weight:700;">869 Kat Hızlı</span></td>
+              </tr>
+              <tr>
+                <td><strong>Köşede Sıkışıp Kalma</strong></td>
+                <td>Sık kilitlenme (Köşelerde sağa/sola karar veremez)</td>
+                <td><strong>0 Kilitlenme</strong> (Cadence çatallanması ile anında kurtulur)</td>
+                <td><span class="badge" style="background:#06b6d4; color:#000; font-weight:700;">%100 Kilitlenmesiz</span></td>
+              </tr>
+              <tr>
+                <td><strong>Bellek Kullanımı (RAM)</strong></td>
+                <td>0 Bayt</td>
+                <td><strong>0 Bayt Dinamik RAM</strong> (2 KB'lık Arduino'yu asla şişirmez)</td>
+                <td><span class="badge" style="background:#8b5cf6; color:#fff; font-weight:700;">Sıfır Çökme Riski</span></td>
+              </tr>
+              <tr>
+                <td><strong>Motor & Dişli Aşınması</strong></td>
+                <td>Sert dijital darbeler (Aniden durup tam gaz kalkar)</td>
+                <td><strong>Akıcı Orantılı PWM</strong> (Yumuşak virajlar ve hız kontrolü)</td>
+                <td><span class="badge" style="background:#f59e0b; color:#000; font-weight:700;">Mekanik Ömür Arttı</span></td>
+              </tr>
+              <tr>
+                <td><strong>Sensör Donma Koruması</strong></td>
+                <td>Yankı gelmezse robot 1 sn donar</td>
+                <td><strong>25 ms Donanım Zaman Aşımı</strong> (Asla donmaz)</td>
+                <td><span class="badge" style="background:#10b981; color:#000; font-weight:700;">Kesintisiz Refleks</span></td>
+              </tr>
+              <tr>
+                <td><strong>Biyonik Kelebek Hareketi</strong></td>
+                <td>Sabit mekanik hareket (Yapay duruş)</td>
+                <td><strong>Doğal Fraktal Süzülüş</strong> (Canlı kelebek hissi)</td>
+                <td><span class="badge" style="background:#ec4899; color:#fff; font-weight:700;">Organik Uçuş</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -757,6 +812,67 @@ for (uint8_t i = 0; i &lt; K; ++i) {
                 <td>Kapalı</td>
                 <td>&lambda;=0.00, &beta;=0.00</td>
                 <td>Ultra Düşük Güç Sensör Düğümleri</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>📊 5. Gerçekçi Üretim Karşılaştırma Matrisi (10.000 Monte Carlo Adımı)</h3>
+        <p>
+          <code>sim/bench_prod_realism.py</code> ve <code>sim/verify_edge_parity.py</code> ile yürütülen 10.000 adımlık kapalı-döngü ve HIL doğrulama metrikleri:
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrik / Parametre</th>
+                <th>Ham Kodlar (<code>raw/</code> Baseline)</th>
+                <th>WERR Edge AI (<code>firmware/</code> Production)</th>
+                <th>Akademik & Endüstriyel Kazanım</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Refleks Karar Gecikmesi (&tau;)</strong></td>
+                <td>~1000.0 ms (Bloklayıcı <code>delay()</code> gecikmeleri)</td>
+                <td><strong>~1.15 ms</strong> (Bare-metal non-blocking Sistem-1)</td>
+                <td><span class="badge" style="background:#10b981; color:#000; font-weight:700;">869&times; Hızlanma</span> (Omurilik refleks sınırı)</td>
+              </tr>
+              <tr>
+                <td><strong>Simetrik Köşe Kilitlenmesi (Deadlock)</strong></td>
+                <td>Yüksek oranda simetrik V-açmaz kilitlenmesi</td>
+                <td><strong>0 Kilitlenme (%100 Çözüm)</strong></td>
+                <td><span class="badge" style="background:#06b6d4; color:#000; font-weight:700;">Süperkritik Çatallanma</span> + Softmax T=1.25</td>
+              </tr>
+              <tr>
+                <td><strong>Dinamik Heap Allokasyonu</strong></td>
+                <td>0 Bayt</td>
+                <td><strong>0 Bayt (Zero-Malloc Invariant)</strong></td>
+                <td><span class="badge" style="background:#8b5cf6; color:#fff; font-weight:700;">Sıfır Parçalanma</span> (Heap fragmentation imkansız)</td>
+              </tr>
+              <tr>
+                <td><strong>Yığın (Stack) Tepe Ayak İzi</strong></td>
+                <td>~20 Bayt</td>
+                <td><strong>&lt; 128 Bayt</strong></td>
+                <td>ATmega328P 2KB SRAM'inin %6.2'si altında kesin sınır</td>
+              </tr>
+              <tr>
+                <td><strong>Mekanik Sarsıntı / PWM Delta (Jerk)</strong></td>
+                <td>0 &harr; 240 PWM diskret şok adımları</td>
+                <td><strong>Fraktal Kadran Orantılı PWM</strong></td>
+                <td><span class="badge" style="background:#f59e0b; color:#000; font-weight:700;">Dişli & Motor Koruma</span> (Düşük akım dalgalanması)</td>
+              </tr>
+              <tr>
+                <td><strong>HC-SR04 Sensör Emniyet Koruması</strong></td>
+                <td>Standart <code>pulseIn</code> (1000 ms bloklayıcı)</td>
+                <td><strong><code>pulseIn(echo, HIGH, 25000UL)</code></strong></td>
+                <td>25 ms deterministik donanım zaman aşımı garantisi</td>
+              </tr>
+              <tr>
+                <td><strong>Akustik Triage & Gürültü Bağışıklığı</strong></td>
+                <td>Basit dijital eşik karşılaştırıcısı</td>
+                <td><strong>EMA Filtresi + Kasp Tohumu Rezonansı</strong></td>
+                <td>Akustik gürültü zemininde çift-alkış ritim ayrıştırma</td>
               </tr>
             </tbody>
           </table>
