@@ -8,8 +8,7 @@
 
 # 🤖 WERRobotics: WERR v0.5.1 Sıfır-Bellek (Zero-Memory) Sistem-1 Edge AI & Arduino Robotik Çekirdeği
 
-[![Lisans: BBL v1.0 (Barış Bilim Liyakat)](https://img.shields.io/badge/Lisans-BBL%20v1.0%20(Bar%C4%B1%C5%9F%20Bilim%20Liyakat)-gold.svg)](./LICENSE)
-[![Kurumsal Koruma: BSL 1.1 (ITouch Systems)](https://img.shields.io/badge/Koruma-BSL%201.1%20(ITouch%20Systems)-blue.svg)](./LICENSE)
+[![Lisans: BSL 1.1 (ITouch Systems)](https://img.shields.io/badge/Lisans-BSL%201.1%20(ITouch%20Systems)-blue.svg)](./LICENSE)
 [![Patent Başvurusu: TR 2026/016285 | 016633](https://img.shields.io/badge/Patent%20Korumas%C4%B1-TR%202026%2F016285%20%7C%20016633-9333ea.svg)](./LICENSE)
 [![WERR Core: v0.5.1 Synced](https://img.shields.io/badge/WERR%20Core-v0.5.1%20Senkronize-00e5ff.svg)](https://github.com/pCwOrM/werr)
 [![arXiv: 2609.25498](https://img.shields.io/badge/arXiv-2609.25498-b31b1b.svg)](https://arxiv.org/abs/2609.25498)
@@ -135,15 +134,13 @@ Aşağıdaki sonuçlar, **10.000 adımlık gerçekçi Monte Carlo robotik simül
 
 ---
 
-## ⚖️ Lisans ve Hukuki Statü (BBL v1.0 & ITouch Systems Kurumsal Koruması)
+## ⚖️ Lisans ve Hukuki Statü (Business Source License 1.1 — BSL 1.1)
 
-Bu depo, gömülü C/C++11 çekirdek kütüphanesi (`WerrCoreEdge.h`) ve refleks karar algoritmaları **ITouch Systems (`ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ`)** kurumsal ve sınai mülkiyet koruması altında **[BBL v1.0 (Barış, Bilim, Liyakat & Beerware/Çay Rev. 53) ve BSL 1.1 Hibrit Lisansı](LICENSE)** ile korunmaktadır:
+Bu depo, gömülü C/C++11 çekirdek kütüphanesi (`WerrCoreEdge.h`) ve refleks karar algoritmaları **ITouch Systems (`ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ`)** kurumsal ve sınai mülkiyet koruması altında **[Business Source License 1.1 (BSL 1.1)](LICENSE)** ile lisanslanmıştır:
 
-1. **Barış (Peace):** Bu yazılım, otonom robotik çekirdek ve matematiksel kuram hiçbir askeri taarruz, yıkıcı silah, gözetim veya insan onuruna aykırı amaçla kullanılamaz.
-2. **Bilim (Science):** Kod, algoritma, fraktal karar sınırları ve donanım-döngüde (HIL) doğrulama testleri akademik araştırmalara, üniversite eğitimine, öğrenci robotik yarışmalarına (örn. TEKNOFEST) ve hakemli bilimsel doğrulamaya tamamen açıktır.
-3. **Liyakat (Merit):** Geliştirici ve katkıcı hakları (`@pCwOrM`, `@PrensesMTN`, `@jesmaat`, `@Lexovian`), Mustafa Kemal Atatürk'ün bilimsel mirası, WERR külliyatı atıf zinciri ve **ITouch Systems** kurumsal fikri mülkiyet şerhi asla silinemez.
-4. **Beerware / Çay Maddesi:** Bir gün geliştiricilerle karşılaşırsanız ve bu yazılımın robotunuza, biliminize veya eğitiminize bir değer kattığını düşünüyorsanız; yazarlara bir bardak çay/kahve ısmarlayabilir veya Mustafa Kemal Atatürk'ün aziz hatırasına bir fidan dikebilirsiniz.
-5. **ITouch Systems Ticari ve Patent Koruması (BSL 1.1):** Kodların ticari bir robotik ürün, seri üretim donanım yazılımı, SaaS platformu veya ücretli bulut/uç API servisi olarak sunulması; **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.) resmi yazılı Ticari Lisans (*Commercial Enterprise License*) alınmasını gerektirir. Prosedürel karar algoritmaları ve nöromorfik arayüz mimarileri **TÜRKPATENT TR 2026/016285** ve **TR 2026/016633** patent başvuruları ile korunmaktadır (Apache 2.0 Dönüşüm Tarihi: **01.01.2030**).
+1. **Akademik, Eğitim ve Bilimsel Araştırma İzni (Non-Commercial Grant):** Kodlar, fraktal karar motoru ve donanım-döngüde (HIL) doğrulama testleri kâr amacı gütmeyen akademik araştırmalara, üniversite eğitimine, öğrenci robotik yarışmalarına (örn. TEKNOFEST) ve hakemli bilimsel doğrulamaya tamamen açıktır.
+2. **Liyakat ve Atıf Hakkı:** Geliştirici ve katkıcı hakları (`@pCwOrM`, `@PrensesMTN`, Dr. Zerrin Dağlı, Dağhan Dağlı), WERR külliyatı atıf zinciri ve **ITouch Systems** kurumsal fikri mülkiyet şerhi korunmalıdır.
+3. **Ticari ve Endüstriyel Kısıtlama (BSL 1.1):** Kodların ticari bir robotik ürün, seri üretim donanım yazılımı, SaaS platformu veya ücretli bulut/uç API servisi olarak sunulması; **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.) resmi yazılı Ticari Lisans (*Commercial Enterprise License*) alınmasını gerektirir. Prosedürel karar algoritmaları ve nöromorfik arayüz mimarileri **TÜRKPATENT TR 2026/016285** ve **TR 2026/016633** patent başvuruları ile korunmaktadır (Apache 2.0 Dönüşüm Tarihi: **01.01.2030**).
 - **Kurumsal İletişim & Lisanslama:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Teknokent - Adana, Türkiye) &bull; E-Posta: [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
 
 ---

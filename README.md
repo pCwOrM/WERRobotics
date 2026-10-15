@@ -8,8 +8,7 @@
 
 # 🤖 WERRobotics: Zero-Memory Fractal System-One Edge AI & Arduino Robotics Core (`v0.5.1`)
 
-[![License: BBL v1.0 (Barış Bilim Liyakat)](https://img.shields.io/badge/License-BBL%20v1.0%20(Bar%C4%B1%C5%9F%20Bilim%20Liyakat)-gold.svg)](./LICENSE)
-[![Corporate Protection: BSL 1.1 (ITouch Systems)](https://img.shields.io/badge/Protection-BSL%201.1%20(ITouch%20Systems)-blue.svg)](./LICENSE)
+[![License: BSL 1.1 (ITouch Systems)](https://img.shields.io/badge/License-BSL%201.1%20(ITouch%20Systems)-blue.svg)](./LICENSE)
 [![Patent Pending: TR 2026/016285 | 016633](https://img.shields.io/badge/Patent%20Pending-TR%202026%2F016285%20%7C%20016633-9333ea.svg)](./LICENSE)
 [![WERR Core: v0.5.1 Synced](https://img.shields.io/badge/WERR%20Core-v0.5.1%20Synced-00e5ff.svg)](https://github.com/pCwOrM/werr)
 [![arXiv: 2609.25498](https://img.shields.io/badge/arXiv-2609.25498-b31b1b.svg)](https://arxiv.org/abs/2609.25498)
@@ -238,15 +237,13 @@ WERRobotics/
 
 ---
 
-## ⚖️ License & Legal Status (BBL v1.0 & ITouch Systems Corporate Protection)
+## ⚖️ License & Legal Status (Business Source License 1.1 — BSL 1.1)
 
-This repository, its embedded C/C++11 header kernel (`WerrCoreEdge.h`), and its reflex decision algorithms are governed by the **[BBL v1.0 (Barış, Bilim, Liyakat & Beerware/Çay Rev. 53) & BSL 1.1 Hybrid License](LICENSE)** under the corporate and industrial intellectual property protection of **ITouch Systems (`ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ`)**:
+This repository, its embedded C/C++11 header kernel (`WerrCoreEdge.h`), and its reflex decision algorithms are governed by the **[Business Source License 1.1 (BSL 1.1)](LICENSE)** under the corporate and industrial intellectual property protection of **ITouch Systems (`ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ`)**:
 
-1. **Barış (Peace):** This software, autonomous robotics kernel, and mathematical theory may never be used for offensive military applications, destructive weaponry, surveillance, or any purpose contrary to human dignity.
-2. **Bilim (Science):** All source code, fractal boundary algorithms, and hardware-in-the-loop (HIL) verification proofs are open to transparent academic, educational, student robotics (e.g., TEKNOFEST), and peer-reviewed scientific verification.
-3. **Liyakat (Merit):** Authorship and contributor rights (`@pCwOrM`, `@PrensesMTN`, `@jesmaat`, `@Lexovian`), Mustafa Kemal Atatürk's scientific legacy, the WERR corpus citation chain, and **ITouch Systems** corporate attribution notices must always be preserved.
-4. **Beerware / Çay Clause:** If we meet one day and you think this software added value to your robot, research, or education, you can buy the authors a glass of Turkish tea/coffee or plant a sapling in memory of Mustafa Kemal Atatürk.
-5. **ITouch Systems Commercial & Patent Protection (BSL 1.1):** Any commercial hardware deployment, mass-manufactured robotics product, hosted SaaS, or paid cloud/edge service requires an express written Commercial Enterprise License from **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.). Procedural synthesis and neuromorphic interfacing mechanisms are protected by **TÜRKPATENT TR 2026/016285** and **TR 2026/016633** (Change Date to Apache 2.0: **2030-01-01**).
+1. **Non-Commercial Academic & Research Grant:** All source code, fractal boundary algorithms, and hardware-in-the-loop (HIL) verification proofs are open to transparent academic, educational, student robotics (e.g., TEKNOFEST), and peer-reviewed scientific verification.
+2. **Authorship & Attribution:** Authorship and contributor rights (`@pCwOrM`, `@PrensesMTN`, Dr. Zerrin Dağlı, Dağhan Dağlı), WERR corpus citations, and **ITouch Systems** corporate notices must always be preserved.
+3. **ITouch Systems Commercial & Patent Protection (BSL 1.1):** Any commercial hardware deployment, mass-manufactured robotics product, hosted SaaS, or paid cloud/edge service requires an express written Commercial Enterprise License from **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.). Procedural synthesis and neuromorphic interfacing mechanisms are protected by **TÜRKPATENT TR 2026/016285** and **TR 2026/016633** (Change Date to Apache 2.0: **2030-01-01**).
 - **Commercial & Institutional Inquiries:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Teknokent - Adana, Türkiye) via [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
 
 ---

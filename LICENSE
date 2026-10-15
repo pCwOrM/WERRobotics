@@ -1,99 +1,62 @@
-================================================================================
-WERRobotics — BBL v1.0 (Barış, Bilim, Liyakat & Beerware Rev. 53)
-& ITouch Systems Corporate / Industrial IP Protection (BSL 1.1 Hybrid)
-================================================================================
+Business Source License 1.1
 
-/*
- * ----------------------------------------------------------------------------
- * "WERROBOTICS BBL LİSANSI" (Barış, Bilim, Liyakat & Beerware/Çay Rev. 53)
- * Corporate & Legal Guardian:
- *   ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LTD. ŞTİ.
- *   (ITouch Systems — Çukurova Teknokent, Adana, Türkiye)
- *   MERSİS: 0469094455800001 | VKN: 4690944558 | Sanayi Sicil No: 827254
- *
- * Authors & Inventors:
- *   Volkan Dağlı <pcworm@pcworm.net / vdagli@itouch.com.tr> (@pCwOrM)
- *   Prenses Metin (@PrensesMTN) — Robotics Hardware & Sketch Architecture
- *   Dr. Zerrin Dağlı (@jesmaat) & Dağhan Dağlı (@Lexovian) — WERR Core Theory
- *
- * Bu bildirimi ve ITouch Systems kurumsal koruma şerhini koruduğunuz sürece,
- * bu materyali akademik, eğitim ve bilimsel araştırmalarda özgürce
- * kullanabilir, inceleyebilir ve geliştirebilirsiniz.
- *
- * Dört Temel BBL (Barış, Bilim, Liyakat & Çay) Şartı Saklıdır:
- * 1. BARIŞ (Peace): Bu yazılım, otonom robotik çekirdek ve matematiksel kuram
- *    hiçbir askeri taarruz, yıkıcı silah, gözetim veya insan onuruna aykırı
- *    amaçla kullanılamaz.
- * 2. BİLİM (Science): Kod, algoritma ve fraktal karar sınırları tamamen
- *    şeffaf, akademik ve hakemli bilimsel doğrulamaya açıktır.
- * 3. LİYAKAT (Merit): Geliştirici ve katkıcı hakları (@pCwOrM, @PrensesMTN),
- *    Mustafa Kemal Atatürk'ün bilimsel mirası, WERR külliyatı atıf zinciri ve
- *    ITouch Systems fikri mülkiyet şerhi asla silinemez.
- * 4. BEERWARE / ÇAY MADDESİ: Bir gün geliştiricilerle karşılaşırsanız ve bu
- *    yazılımın robotunuza, biliminize veya eğitiminize bir değer kattığını
- *    düşünüyorsanız; yazarlara bir bardak çay/kahve ısmarlayabilir veya
- *    Mustafa Kemal Atatürk'ün aziz hatırasına bir fidan dikebilirsiniz.
- * ----------------------------------------------------------------------------
- */
+Parameters:
 
-================================================================================
-PART II — ITOUCH SYSTEMS CORPORATE & PATENT PROTECTION (BSL 1.1 CLAUSE)
-================================================================================
-
-Licensor & Institutional Guardian:
+Licensor:
   ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ
-  (MERSİS: 0469094455800001, Ticaret Sicil No: 77766, Tax ID / VKN: 4690944558,
-  Yüreğir V.D., Sanayi Sicil No: 827254 - Çukurova Teknokent, Adana, Türkiye)
-  and Volkan Dağlı (@pCwOrM), alongside co-authors Zerrin Dağlı, Dağhan Dağlı,
-  and Robotics Hardware Collaborator Prenses Metin (@PrensesMTN).
+  (MERSİS: 0469094455800001, Ticaret Sicil No: 77766, Tax ID / VKN: 4690944558, Yüreğir V.D., Sanayi Sicil No: 827254 - Çukurova Teknokent, Adana, Türkiye)
+  and Volkan Dağlı (@pCwOrM), alongside Robotics Hardware Collaborator Prenses Metin (@PrensesMTN),
+  and co-authors Zerrin Dağlı and Dağhan Dağlı.
 
 Licensed Work:
   WERRobotics: Zero-Memory Fractal System-One Edge AI Kernel for Robotics &
-  Embedded Microcontrollers (WerrCoreEdge.h), including all 8 canonical
-  Mandelbrot boundary coordinate seeds, 3-Point Multi-Scale Tripod evaluation,
-  4-Tier Gaussian Choice Kernels, Coupled Cadence Supercritical Pitchfork
-  Bifurcation, Z/9Z modular algebraic invariants, hardware-in-the-loop (HIL)
-  verification suites, and Arduino robotics firmware contained in this repository.
+  Embedded Microcontrollers (WerrCoreEdge.h), including all canonical Mandelbrot
+  boundary coordinate seeds, 3-Point Multi-Scale Tripod evaluation, 4-Tier Gaussian
+  Choice Kernels, Coupled Cadence Supercritical Pitchfork Bifurcation, Z/9Z modular
+  algebraic invariants, hardware-in-the-loop (HIL) verification suites, and Arduino
+  robotics firmware contained in this repository.
 
-1. Peace, Science & Merit Grant (BBL v1.0 Non-Commercial Use):
-   You may run, compile, flash onto educational/research microcontrollers,
-   inspect, benchmark, test, study, fork, and reproduce the Licensed Work free
-   of charge for peaceful, non-commercial research, academic, educational,
-   student robotics competitions (e.g., TEKNOFEST, university labs), and
-   personal evaluations, strictly subject to the BBL v1.0 ethical principles
-   (Peace, Science, Merit) above.
+Additional Use Grant:
+  1. Non-Commercial, Educational, and Academic Research Use:
+     You may run, compile, flash onto educational/research microcontrollers,
+     inspect, benchmark, test, study, fork, and reproduce the Licensed Work 
+     free of charge for non-commercial research, academic, educational,
+     student robotics competitions (e.g., TEKNOFEST, university labs), and personal evaluations.
+     Academic citation and scientific replication of results are explicitly permitted and encouraged.
+  2. Commercial Restriction:
+     Any production use, deployment, manufacturing, or provision of the Licensed Work (or substantial parts thereof) 
+     as a commercial robotics product, mass-produced embedded hardware, hosted software-as-a-service (SaaS), 
+     paid API, or commercial edge AI service—or in direct commercial competition with services offered by 
+     ITouch Bilişim Sistemleri Ltd. Şti. or answerr.me—requires an express written Commercial Enterprise License from the Licensor.
+  3. Commercial Licensing Inquiries:
+     For commercial and enterprise licensing agreements, please contact:
+     ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ
+     Address: Balcalı Mah. Güney Kampüs/5 Sk. No: 4/1 Daire: 26 Sarıçam / Adana, Türkiye (Çukurova Teknokent)
+     MERSİS No: 0469094455800001 | Ticaret Sicil No: 77766 | Tax ID / VKN: 4690944558 (Yüreğir V.D.)
+     Sanayi Sicil No: 827254 | Registered Trademarks: ITouch® (No: 2018/43211, 2022/209583), TEKNOSANAT® (No: 2024/169039)
+     KEP: itouchbilisim@hs01.kep.tr | Email: info@itouch.com.tr | Web: https://answerr.me
 
-2. ITouch Systems Commercial Protection & Restriction (BSL 1.1):
-   Any commercial production use, industrial manufacturing deployment, mass-produced
-   embedded hardware distribution, hosted software-as-a-service (SaaS), or paid
-   commercial robotics integration of the Licensed Work (or substantial parts
-   thereof) is strictly prohibited without a separate prior written commercial
-   license agreement from ITouch Systems (ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ.).
+Change Date:
+  2030-01-01
 
-3. Change Date & Change License:
-   Change Date: 2030-01-01
-   Change License: Apache License, Version 2.0 (subject to BBL v1.0 Peace &
-   Attribution ethical clauses).
+Change License:
+  Apache License, Version 2.0
 
-4. Industrial Property & Patent Protection Notice:
-   The procedural weight synthesis, Mandelbrot boundary decision mechanisms,
-   and bio-synthetic neuromorphic reflex architectures embodied in the Licensed
-   Work are protected under pending national and international patent applications
-   held by the inventors and protected by ITouch Systems, including:
-   - TÜRKPATENT Application No: TR 2026/016285 (Orbital Error Dynamics &
-     Zero-Storage Fractal Neural Synthesis / OED / MFNS / WERR Engine)
-   - TÜRKPATENT Application No: TR 2026/016633 (Bio-Synthetic Neuromorphic
-     Interfacing & Zero-Memory Fractal Reflex Engine)
-   Nothing in this License grants any commercial patent license or right to
-   manufacture or sell patented hardware/software systems prior to the Change
-   Date without explicit written authorization from ITouch Systems.
+Patent Notice:
+  Certain procedural algorithms and neural synthesis formulations embodied in this work are subject 
+  to pending patent applications TÜRKPATENT TR 2026/016285 and TR 2026/016633. No commercial patent license 
+  or implied patent rights are granted herein without an express written agreement from the patent applicant.
 
-Commercial Licensing & Institutional Inquiries:
-  ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ
-  Address : Balcalı Mah. Güney Kampüs/5 Sk. No: 4/1 İç Kapı No: 26
-            Sarıçam / Adana, Türkiye (Çukurova Teknokent)
-  E-Mail  : info@itouch.com.tr | vdagli@itouch.com.tr | pcworm@pcworm.net | ask@answerr.me
-  Web     : https://answerr.me
+================================================================================
 
-Copyright (c) 2026 ITouch Systems (ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ.),
-Volkan Dağlı (@pCwOrM), and Prenses Metin (@PrensesMTN). All rights reserved.
+Terms
+
+The Licensor hereby grants you the right to copy, modify, create derivative works, redistribute, and make non-production, non-commercial use of the Licensed Work. The Licensor may have trademarks, service marks, or trade names associated with the Licensed Work, and this license does not grant you rights to use them, other than as necessary to display the notice below and to identify the Licensed Work.
+
+You may make non-production use of the Licensed Work only in accordance with the Additional Use Grant above, which may specify terms under which the Licensed Work may be used without obtaining a separate commercial license from Licensor.
+
+The Licensor may not decrease the Additional Use Grant while this license is in effect. You must reproduce this license, including all parameters, and any copyright notices in any copy of the Licensed Work that you make or distribute.
+
+Effective on the Change Date, or the fourth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the terms of this License will not apply. The Licensor agrees that the Change License must be an open source or source available license that complies with the Open Source Definition as published by the Open Source Initiative.
+
+THE LICENSED WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS, LICENSOR, OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
