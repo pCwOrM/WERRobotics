@@ -6,13 +6,17 @@
 # Datatypes (KEYWORD1)
 #######################################
 WerrSeed	KEYWORD1
+WerrConfig	KEYWORD1
 WerrPatchMetrics	KEYWORD1
+WerrChoiceResult	KEYWORD1
 WerrDynamicCalibration	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+werrEvaluateWithConfig	KEYWORD2
 werrEvaluateState	KEYWORD2
+werrEvaluate4TierChoice	KEYWORD2
 werrComputeSingleScale	KEYWORD2
 werrApplyCadenceBifurcation	KEYWORD2
 werrBoundaryWeight	KEYWORD2
@@ -33,3 +37,7 @@ WERR_SEED_IOT_SAFETY	LITERAL1
 WERR_SEED_GAME_COMBAT	LITERAL1
 WERR_SEED_FINANCIAL_RISK	LITERAL1
 WERR_SEED_ECOMMERCE_FRAUD	LITERAL1
+WERR_CFG_OBSTACLE_REFLEX	LITERAL1
+WERR_CFG_BIONIC_KINEMATICS	LITERAL1
+WERR_CFG_MARKET_ROUTER	LITERAL1
+WERR_CFG_ESP32_CANONICAL	LITERAL1
