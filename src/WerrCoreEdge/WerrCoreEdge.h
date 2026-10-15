@@ -5,7 +5,7 @@
  * Canonical Repository : https://github.com/pCwOrM/werr
  * Edge Robotics Repo   : https://github.com/pCwOrM/WERRobotics
  * Licensor & Protection: ITouch Systems (ITOUCH BILISIM SISTEMLERI MUH. DAN. SAN. VE TIC. LTD. STI.)
- * License              : Business Source License 1.1 (BSL 1.1) -> Apache 2.0 (2030-01-01)
+ * License              : BBL v1.0 (Baris, Bilim, Liyakat & Beerware Rev. 53) + BSL 1.1 Hybrid
  * Theory & Architecture: Volkan Dagli (@pCwOrM), Zerrin Dagli, Daghan Dagli
  * Robotics Integration : Volkan Dagli (@pCwOrM) & Prenses Metin (@PrensesMTN)
  * DOI / Preprint       : arXiv:2609.25498 | Zenodo: 10.5281/zenodo.22939253
