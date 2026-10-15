@@ -2,10 +2,16 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>WERRobotics: Sıfır-Bellek Edge AI & Arduino Robotik Simülasyon Portalı</title>
   <meta name="description" content="WERR v0.5.1 Sıfır-Bellek (0 Byte Heap) Sistem-1 Edge AI Çekirdeği, Arduino Robotik Etkileşimli Simülasyonu, Halka ve Akademik Teknik Anlatım Portalı.">
   <link rel="icon" type="image/svg+xml" href="assets/werr_logo_core_fav_trans.svg">
+  
+  <!-- KaTeX for High Quality Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
   <style>
     :root {
       --bg-dark: #0a0e17;
@@ -29,8 +35,11 @@
       font-family: var(--font-sans);
       line-height: 1.6;
       padding: 0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* HEADER & MOBILE NAV */
     header {
       background: linear-gradient(180deg, rgba(16, 24, 39, 0.95) 0%, rgba(10, 14, 23, 0.95) 100%);
       border-bottom: 1px solid var(--bg-card-border);
@@ -43,47 +52,51 @@
     .nav-container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1rem 1.5rem;
+      padding: 0.75rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.5rem;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       text-decoration: none;
       color: var(--text-main);
+      min-width: 0;
     }
-    .brand img { width: 40px; height: 40px; }
-    .brand-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.025em; }
+    .brand img { width: 36px; height: 36px; flex-shrink: 0; }
+    .brand-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.025em; white-space: nowrap; }
     .brand-title span { color: var(--accent-cyan); }
     .brand-badge {
       background: rgba(0, 229, 255, 0.1);
       color: var(--accent-cyan);
       border: 1px solid rgba(0, 229, 255, 0.3);
-      padding: 0.15rem 0.5rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 9999px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 600;
+      white-space: nowrap;
     }
 
-    nav { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    nav { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
     .nav-btn {
-      padding: 0.45rem 0.85rem;
+      padding: 0.45rem 0.75rem;
       border-radius: 6px;
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       font-weight: 600;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.35rem;
       cursor: pointer;
       border: 1px solid transparent;
+      user-select: none;
+      touch-action: manipulation;
     }
     .nav-btn.primary {
       background: linear-gradient(135deg, var(--accent-cyan), #0099ff);
@@ -94,108 +107,128 @@
       color: var(--text-main);
       border-color: var(--bg-card-border);
     }
-    .nav-btn:hover { transform: translateY(-1px); opacity: 0.95; }
+    .nav-btn:hover, .nav-btn:active { transform: translateY(-1px); opacity: 0.95; }
 
+    /* HERO */
     .hero {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 3rem 1.5rem 2rem 1.5rem;
+      padding: 2.5rem 1rem 1.5rem 1rem;
       text-align: center;
     }
     .hero-badge-wall {
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.35rem;
       flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
-    .hero-badge-wall img { height: 22px; }
+    .hero-badge-wall img { height: 20px; }
     .hero h1 {
-      font-size: 2.75rem;
+      font-size: clamp(1.8rem, 5vw, 2.75rem);
       font-weight: 900;
       letter-spacing: -0.03em;
       line-height: 1.2;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     .hero p {
       max-width: 850px;
-      margin: 0 auto 2rem auto;
-      font-size: 1.15rem;
+      margin: 0 auto 1.5rem auto;
+      font-size: clamp(0.95rem, 2.5vw, 1.15rem);
       color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    .tabs {
+    /* SCROLLABLE TABS FOR MOBILE ERGONOMICS */
+    .tabs-wrapper {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 1.5rem;
-      display: flex;
-      gap: 0.5rem;
       border-bottom: 1px solid var(--bg-card-border);
+      position: sticky;
+      top: 55px;
+      background: rgba(10, 14, 23, 0.95);
+      z-index: 40;
+      backdrop-filter: blur(10px);
     }
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    
     .tab-btn {
-      padding: 0.85rem 1.5rem;
+      padding: 0.75rem 1.25rem;
       background: none;
       border: none;
-      border-bottom: 2px solid transparent;
+      border-bottom: 3px solid transparent;
       color: var(--text-muted);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       transition: all 0.2s ease;
+      flex-shrink: 0;
+      touch-action: manipulation;
     }
     .tab-btn.active {
       color: var(--accent-cyan);
       border-bottom-color: var(--accent-cyan);
-      background: rgba(0, 229, 255, 0.04);
+      background: rgba(0, 229, 255, 0.05);
     }
-    .tab-btn:hover { color: #fff; }
 
     .content-container {
       max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1.5rem 4rem 1.5rem;
+      margin: 1.5rem auto;
+      padding: 0 1rem 4rem 1rem;
     }
 
     .tab-pane { display: none; }
-    .tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
+    .tab-pane.active { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* SIMULATION STYLES */
+    /* RESPONSIVE SIMULATION GRID */
     .sim-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
-    @media (max-width: 900px) {
-      .sim-grid { grid-template-columns: 1fr; }
+    @media (max-width: 640px) {
+      .sim-grid { grid-template-columns: 1fr; gap: 1.25rem; }
     }
 
     .card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
       border-radius: 12px;
-      padding: 1.5rem;
+      padding: 1.25rem;
       position: relative;
     }
     .card-title {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.35rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
     .card-subtitle {
-      font-size: 0.875rem;
+      font-size: 0.825rem;
       color: var(--text-muted);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
+      word-break: break-word;
     }
 
     .canvas-container {
@@ -205,15 +238,34 @@
       overflow: hidden;
       border: 1px solid #1e293b;
       margin-bottom: 1rem;
+      touch-action: none; /* Allows fluid touch controls inside canvas */
+      cursor: crosshair;
     }
-    canvas { display: block; width: 100%; height: auto; }
+    .canvas-overlay-tip {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.65);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 340px;
+    }
 
     .control-panel {
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.75rem;
       background: rgba(0,0,0,0.3);
-      padding: 1rem;
+      padding: 0.85rem;
       border-radius: 8px;
       border: 1px solid var(--bg-card-border);
     }
@@ -221,68 +273,95 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
-    .control-row label { font-weight: 600; color: var(--text-muted); }
+    .control-row label { font-weight: 600; color: var(--text-muted); flex-shrink: 0; }
     .control-row input[type="range"] {
-      width: 55%;
+      flex: 1;
+      min-width: 140px;
       accent-color: var(--accent-cyan);
+      cursor: pointer;
     }
     .val-badge {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       background: #1e293b;
       padding: 0.15rem 0.45rem;
       border-radius: 4px;
       color: var(--accent-cyan);
-      min-width: 55px;
+      min-width: 50px;
       text-align: right;
     }
 
+    /* TELEMETRY BOX RESPONSIVE FOR MOBILE */
     .telemetry-box {
       font-family: var(--font-mono);
-      font-size: 0.825rem;
+      font-size: 0.8rem;
       background: #05070c;
       border: 1px solid #1e293b;
-      padding: 0.85rem;
+      padding: 0.75rem;
       border-radius: 6px;
       color: #38bdf8;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.5rem;
     }
-    .tele-item { display: flex; justify-content: space-between; }
+    @media (max-width: 480px) {
+      .telemetry-box { grid-template-columns: 1fr; gap: 0.35rem; }
+    }
+    .tele-item { display: flex; justify-content: space-between; gap: 0.5rem; }
     .tele-label { color: var(--text-muted); }
-    .tele-val { font-weight: bold; color: #fff; }
+    .tele-val { font-weight: bold; color: #fff; text-align: right; }
 
-    /* EXPLANATION CARDS */
+    /* ACTION BADGES */
+    .action-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+    .action-cruise { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .action-left { background: rgba(0, 229, 255, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .action-right { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+    .action-emergency { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+    /* GUIDE & ACADEMIC SECTIONS */
     .guide-section {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
       border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .guide-section { padding: 2rem; margin-bottom: 2rem; }
     }
     .guide-section h2 {
-      font-size: 1.75rem;
+      font-size: clamp(1.35rem, 3.5vw, 1.75rem);
       color: #fff;
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
     .guide-section h3 {
-      font-size: 1.25rem;
+      font-size: clamp(1.1rem, 2.5vw, 1.25rem);
       color: var(--accent-cyan);
       margin: 1.5rem 0 0.75rem 0;
     }
     .guide-section p {
       color: #d1d5db;
       margin-bottom: 1rem;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
     }
     .guide-section ul, .guide-section ol {
-      margin-left: 1.5rem;
+      margin-left: 1.25rem;
       margin-bottom: 1.25rem;
       color: #d1d5db;
     }
@@ -291,37 +370,41 @@
     .quote-box {
       border-left: 4px solid var(--accent-cyan);
       background: rgba(0, 229, 255, 0.05);
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1rem;
       border-radius: 0 8px 8px 0;
       margin: 1.25rem 0;
       font-style: italic;
       color: #e2e8f0;
+      font-size: 0.95rem;
     }
 
     .code-box {
       background: #05070c;
       border: 1px solid var(--bg-card-border);
       border-radius: 8px;
-      padding: 1rem;
+      padding: 0.85rem;
       font-family: var(--font-mono);
-      font-size: 0.875rem;
+      font-size: 0.825rem;
       color: #a5b4fc;
       overflow-x: auto;
       margin: 1rem 0;
+      -webkit-overflow-scrolling: touch;
     }
 
     .table-container {
       overflow-x: auto;
-      margin: 1.5rem 0;
+      margin: 1.25rem 0;
+      -webkit-overflow-scrolling: touch;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      min-width: 580px;
     }
     th, td {
       border: 1px solid var(--bg-card-border);
-      padding: 0.75rem 1rem;
+      padding: 0.65rem 0.85rem;
       text-align: left;
     }
     th {
@@ -331,25 +414,14 @@
     }
     tr:nth-child(even) { background: rgba(255,255,255,0.015); }
 
-    .action-badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-weight: 700;
-      font-size: 0.75rem;
-    }
-    .action-cruise { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
-    .action-left { background: rgba(0, 229, 255, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
-    .action-right { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
-    .action-emergency { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
-
+    /* FOOTER */
     footer {
       background: #080c14;
       border-top: 1px solid var(--bg-card-border);
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1rem;
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.875rem;
+      font-size: 0.85rem;
     }
     footer a { color: var(--accent-cyan); text-decoration: none; }
   </style>
@@ -367,10 +439,10 @@
         <span class="brand-badge">Edge AI v0.5.1</span>
       </a>
       <nav>
-        <button class="nav-btn secondary" onclick="switchTab('sim')">🎮 Canlı Simülatör</button>
+        <button class="nav-btn secondary" onclick="switchTab('sim')">🎮 Simülatör</button>
         <button class="nav-btn secondary" onclick="switchTab('public')">📢 Halka Anlatım</button>
-        <button class="nav-btn secondary" onclick="switchTab('academic')">🎓 Akademik & Teknik</button>
-        <button class="nav-btn primary" onclick="window.open('https://github.com/pCwOrM/WERRobotics', '_blank')">⭐ GitHub Repo</button>
+        <button class="nav-btn secondary" onclick="switchTab('academic')">🎓 Akademik</button>
+        <button class="nav-btn primary" onclick="window.open('https://github.com/pCwOrM/WERRobotics', '_blank')">⭐ GitHub</button>
       </nav>
     </div>
   </header>
@@ -393,17 +465,19 @@
     </p>
   </section>
 
-  <!-- TABS NAVIGATION -->
-  <div class="tabs">
-    <button class="tab-btn active" id="tab-btn-sim" onclick="switchTab('sim')">
-      🤖 1. İnteraktif Robotik Simülatörü
-    </button>
-    <button class="tab-btn" id="tab-btn-public" onclick="switchTab('public')">
-      🌱 2. Halka Açık Anlatım Rehberi
-    </button>
-    <button class="tab-btn" id="tab-btn-academic" onclick="switchTab('academic')">
-      🔬 3. Akademik & Teknik Mimari Rehberi
-    </button>
+  <!-- TABS WRAPPER WITH HORIZONTAL SCROLL FOR MOBILE -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-btn-sim" onclick="switchTab('sim')">
+        🤖 1. İnteraktif Robotik Simülatörü
+      </button>
+      <button class="tab-btn" id="tab-btn-public" onclick="switchTab('public')">
+        🌱 2. Halka Açık Anlatım Rehberi
+      </button>
+      <button class="tab-btn" id="tab-btn-academic" onclick="switchTab('academic')">
+        🔬 3. Akademik & Teknik Mimari Rehberi
+      </button>
+    </div>
   </div>
 
   <div class="content-container">
@@ -424,8 +498,9 @@
             Profil: <code>WERR_CFG_OBSTACLE_REFLEX</code> &bull; Tohumlar: <code>iot_safety</code> + <code>game_combat</code>
           </div>
 
-          <div class="canvas-container">
+          <div class="canvas-container" id="canvas1-container">
             <canvas id="canvas-robot1" width="500" height="320"></canvas>
+            <div class="canvas-overlay-tip">👆 Tıkla / Dokun: Robotu Işınla</div>
           </div>
 
           <div class="control-panel">
@@ -439,8 +514,9 @@
               <input type="range" id="lat-slider" min="-10" max="10" value="0" oninput="updateRobot1FromSlider()">
               <span class="val-badge" id="lat-val">0.0</span>
             </div>
-            <div class="control-row">
-              <button class="nav-btn secondary" style="width:100%" onclick="spawnRandomObstacles()">🎯 Rastgele Engeller Yerleştir</button>
+            <div class="control-row" style="gap: 0.5rem;">
+              <button class="nav-btn secondary" style="flex:1;" onclick="spawnRandomObstacles()">🎯 Rastgele Engeller</button>
+              <button class="nav-btn primary" style="flex:1;" onclick="testCornerTrap()">⚔️ Köşe Tuzağı Testi</button>
             </div>
           </div>
 
@@ -468,6 +544,7 @@
 
           <div class="canvas-container">
             <canvas id="canvas-robot2" width="500" height="320"></canvas>
+            <div class="canvas-overlay-tip">Akustik Rezonans &amp; Dalga</div>
           </div>
 
           <div class="control-panel">
@@ -477,7 +554,7 @@
               <span class="val-badge" id="sound-val">320 dB</span>
             </div>
             <div class="control-row" style="gap: 0.5rem;">
-              <button class="nav-btn primary" style="flex:1" onclick="triggerClap()">👏 Çift Alkış Sinyali Gönder</button>
+              <button class="nav-btn primary" style="flex:1" onclick="triggerClap()">👏 Çift Alkış (Refleks)</button>
               <button class="nav-btn secondary" style="flex:1" onclick="triggerWhisper()">🍃 Sakin Esinti</button>
             </div>
           </div>
@@ -508,19 +585,21 @@
         <div class="sim-grid" style="margin-bottom: 0;">
           <div class="canvas-container" style="height: 240px;">
             <canvas id="canvas-robot3" width="500" height="240"></canvas>
+            <div class="canvas-overlay-tip">3-Sensörlü Optik Takip</div>
           </div>
           <div>
             <div class="control-panel">
               <div class="control-row">
                 <label>3'lü Sensör Durumu (Sol, Orta, Sağ):</label>
-                <div style="display: flex; gap: 0.5rem;">
+                <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
                   <button class="nav-btn secondary" id="sen-l" onclick="toggleSensor('l')">Sol: BEYAZ</button>
                   <button class="nav-btn secondary" id="sen-m" onclick="toggleSensor('m')">Orta: SİYAH</button>
                   <button class="nav-btn secondary" id="sen-r" onclick="toggleSensor('r')">Sağ: BEYAZ</button>
                 </div>
               </div>
-              <div class="control-row">
-                <button class="nav-btn primary" style="width:100%" onclick="setIntersection()">⚔️ Simetrik 4'lü Yol Ayrımı (Deadlock Tuzağı Simüle Et)</button>
+              <div class="control-row" style="gap: 0.5rem;">
+                <button class="nav-btn primary" style="flex:1" onclick="setIntersection()">⚔️ 4'lü Yol Ayrımı (Simetrik Çıkmaz)</button>
+                <button class="nav-btn secondary" style="flex:1" onclick="resetLineNormal()">🔄 Düz Çizgiye Sıfırla</button>
               </div>
             </div>
             <div style="margin-top: 1rem;">
@@ -598,7 +677,7 @@
         <div class="code-box">
 // WerrCoreEdge.h içindeki statik bellek yapısı:
 // Dynamic Heap: 0 Bytes!
-// Max Stack Footprint: < 128 Bytes!
+// Max Stack Footprint: &lt; 128 Bytes!
 // 16 MHz Saat Frekansında Ortalama Gecikme: 1.15 ms (System-1 Reflex Bound)
         </div>
 
@@ -606,11 +685,13 @@
         <p>
           Kanonik WERR motorunda olduğu gibi çok ölçekli rezonansı yakalamak için 3-noktalı Tripod kullanılır:
         </p>
-        <p>
+        <p style="text-align: center; margin: 0.75rem 0;">
           $$\text{Tripod Zoom Faktörleri} = \{0.60\times, 1.00\times, 1.60\times\}, \quad \text{Ağırlıklar} = \{0.25, 0.50, 0.25\}$$
         </p>
         <p>
           Mandelbrot sınırına yaklaşırken kaçış adımlarının kesilmesini dengelemek için Abramowitz & Stegun 7.1.26 Gauss CDF sınır ağırlığı uygulanır:
+        </p>
+        <p style="text-align: center; margin: 0.75rem 0;">
           $$\omega(u, h) = \Phi\left(\frac{u}{h}\right) + \Phi\left(\frac{1-u}{h}\right) - 1, \quad W(u, h) = \frac{1}{\text{clamp}(\omega, 0.45, 1.0)}$$
         </p>
 
@@ -620,9 +701,9 @@
         </p>
         <div class="code-box">
 float eff_lambda = lambda_param * (1.0f + (deadlock_threshold - top_gap) / deadlock_threshold);
-for (uint8_t i = 0; i < K; ++i) {
+for (uint8_t i = 0; i &lt; K; ++i) {
     float bif_force = 0.0f;
-    for (uint8_t j = 0; j < K; ++j) {
+    for (uint8_t j = 0; j &lt; K; ++j) {
         if (i == j) continue;
         float diff = scores[i] - scores[j];
         bif_force += sgn(diff) * powf(fabsf(diff) + 1e-5f, alpha) + beta * (fractal_fields[i] - fractal_fields[j]);
@@ -703,8 +784,15 @@ for (uint8_t i = 0; i < K; ++i) {
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      document.getElementById('tab-btn-' + tabId).classList.add('active');
-      document.getElementById('pane-' + tabId).classList.add('active');
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      const activePane = document.getElementById('pane-' + tabId);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activePane) activePane.classList.add('active');
+      
+      // Auto-render math when switching to academic tab
+      if (tabId === 'academic' && window.renderMathInElement) {
+        renderMathInElement(activePane);
+      }
     }
 
     // --- MATHEMATICAL WERR EDGE ENGINE IN JAVASCRIPT (Identical to WerrCoreEdge.h) ---
@@ -841,42 +929,107 @@ for (uint8_t i = 0; i < K; ++i) {
     const cvs1 = document.getElementById('canvas-robot1');
     const ctx1 = cvs1.getContext('2d');
     let robot1_x = 250, robot1_y = 260, robot1_angle = -Math.PI / 2;
+    let manualOverride = false;
     let obstacles = [
-      { x: 250, y: 140, r: 25 },
+      { x: 250, y: 130, r: 24 },
       { x: 160, y: 180, r: 20 },
       { x: 340, y: 180, r: 20 }
     ];
 
+    // Click/Touch canvas to teleport robot
+    const cvs1Container = document.getElementById('canvas1-container');
+    function handleCanvas1Pointer(e) {
+      const rect = cvs1.getBoundingClientRect();
+      const scaleX = cvs1.width / rect.width;
+      const scaleY = cvs1.height / rect.height;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      robot1_x = clamp((clientX - rect.left) * scaleX, 30, cvs1.width - 30);
+      robot1_y = clamp((clientY - rect.top) * scaleY, 30, cvs1.height - 30);
+      manualOverride = false;
+    }
+    cvs1.addEventListener('click', handleCanvas1Pointer);
+    cvs1.addEventListener('touchstart', (e) => { e.preventDefault(); handleCanvas1Pointer(e); }, { passive: false });
+
     function spawnRandomObstacles() {
       obstacles = [
-        { x: 150 + Math.random() * 200, y: 80 + Math.random() * 120, r: 18 + Math.random() * 15 },
-        { x: 100 + Math.random() * 150, y: 120 + Math.random() * 100, r: 15 + Math.random() * 15 },
-        { x: 250 + Math.random() * 150, y: 120 + Math.random() * 100, r: 15 + Math.random() * 15 }
+        { x: 130 + Math.random() * 240, y: 70 + Math.random() * 110, r: 18 + Math.random() * 14 },
+        { x: 80 + Math.random() * 140, y: 130 + Math.random() * 90, r: 16 + Math.random() * 12 },
+        { x: 270 + Math.random() * 150, y: 130 + Math.random() * 90, r: 16 + Math.random() * 12 }
       ];
     }
 
+    function testCornerTrap() {
+      // V-shaped symmetric deadlock corner trap
+      robot1_x = 250;
+      robot1_y = 240;
+      robot1_angle = -Math.PI / 2;
+      obstacles = [
+        { x: 200, y: 120, r: 26 },
+        { x: 300, y: 120, r: 26 }
+      ];
+      document.getElementById('lat-slider').value = 0;
+      document.getElementById('dist-slider').value = 18;
+      updateRobot1FromSlider();
+    }
+
     function updateRobot1FromSlider() {
+      manualOverride = true;
       const dist = parseFloat(document.getElementById('dist-slider').value);
       const lat = parseFloat(document.getElementById('lat-slider').value);
-      document.getElementById('dist-val').innerText = dist + ' cm';
+      document.getElementById('dist-val').innerText = Math.round(dist) + ' cm';
       document.getElementById('lat-val').innerText = lat.toFixed(1);
     }
 
     function runRobot1Tick() {
-      const dist = parseFloat(document.getElementById('dist-slider').value);
-      const lat = parseFloat(document.getElementById('lat-slider').value);
+      // Raycasting: find actual distance to nearest obstacle in front of robot
+      let nearestDist = 999;
+      let lateralBias = 0;
+
+      obstacles.forEach(obs => {
+        const dx = obs.x - robot1_x;
+        const dy = obs.y - robot1_y;
+        const distToCenter = Math.sqrt(dx * dx + dy * dy);
+        const angleToObs = Math.atan2(dy, dx);
+        let relAngle = angleToObs - robot1_angle;
+        while (relAngle > Math.PI) relAngle -= 2 * Math.PI;
+        while (relAngle < -Math.PI) relAngle += 2 * Math.PI;
+
+        // Inside forward ultrasonic sensor cone (-35 deg to +35 deg)
+        if (Math.abs(relAngle) < 0.65) {
+          const edgeDist = Math.max(2, distToCenter - obs.r);
+          if (edgeDist < nearestDist) {
+            nearestDist = edgeDist;
+            lateralBias = -relAngle * 12.0; // Left/Right asymmetry in degrees
+          }
+        }
+      });
+
+      // Scale distance to cm (scale factor ~ 3.5 px per cm)
+      const measured_cm = clamp(nearestDist / 3.5, 4, 80);
+
+      // If user hasn't overridden with slider recently, update slider with real physical raycast
+      if (!manualOverride) {
+        document.getElementById('dist-slider').value = Math.round(measured_cm);
+        document.getElementById('dist-val').innerText = Math.round(measured_cm) + ' cm';
+        document.getElementById('lat-slider').value = clamp(lateralBias, -10, 10).toFixed(1);
+        document.getElementById('lat-val').innerText = clamp(lateralBias, -10, 10).toFixed(1);
+      }
+
+      const activeDist = parseFloat(document.getElementById('dist-slider').value);
+      const activeLat = parseFloat(document.getElementById('lat-slider').value);
 
       // Normalize states
-      const norm_prox = clamp((45.0 - dist) / 30.0, -1.5, 2.5);
+      const norm_prox = clamp((45.0 - activeDist) / 30.0, -1.5, 2.5);
       const net_risk = norm_prox * 1.4;
 
       // 1. IoTSafetyGate
-      const safetyMetrics = evaluateWerrTripod(-0.7450, 0.1120, 85.0, norm_prox, lat * 0.1, net_risk, 6, 18);
+      const safetyMetrics = evaluateWerrTripod(-0.7450, 0.1120, 85.0, norm_prox, activeLat * 0.1, net_risk, 6, 18);
       const noul_allowed = (safetyMetrics.qw[0] + safetyMetrics.qw[1]) >= (safetyMetrics.qw[2] + safetyMetrics.qw[3]);
 
       // 2. GameCombatGate 4-Tier Choice
-      const combatMetrics = evaluateWerrTripod(-0.7445, 0.1250, 65.0, lat * 0.15, norm_prox, net_risk, 6, 18);
-      const choice = evaluate4TierChoice(combatMetrics, net_risk, lat * 0.5, 0.22, 0.28);
+      const combatMetrics = evaluateWerrTripod(-0.7445, 0.1250, 65.0, activeLat * 0.15, norm_prox, net_risk, 6, 18);
+      const choice = evaluate4TierChoice(combatMetrics, net_risk, activeLat * 0.5, 0.22, 0.28);
 
       const actionNames = ['ACT_CRUISE_FORWARD', 'ACT_AGILE_LEFT', 'ACT_AGILE_RIGHT', 'ACT_EMERGENCY_PIVOT'];
       const actionBadge = document.getElementById('sim1-badge');
@@ -886,22 +1039,22 @@ for (uint8_t i = 0; i < K; ++i) {
         actionBadge.className = 'action-badge action-cruise';
         actionBadge.innerText = 'FORWARD (Seyir)';
         pwm_r = 240; pwm_l = 240;
-        robot1_angle += (lat * 0.005);
+        robot1_angle += (activeLat * 0.005);
       } else if (choice.best_idx === 1) {
         actionBadge.className = 'action-badge action-left';
         actionBadge.innerText = 'LEFT (Sol Kavis)';
         pwm_l = 90; pwm_r = 230;
-        robot1_angle -= 0.04;
+        robot1_angle -= 0.045;
       } else if (choice.best_idx === 2) {
         actionBadge.className = 'action-badge action-right';
         actionBadge.innerText = 'RIGHT (Sağ Kavis)';
         pwm_l = 230; pwm_r = 90;
-        robot1_angle += 0.04;
+        robot1_angle += 0.045;
       } else {
         actionBadge.className = 'action-badge action-emergency';
         actionBadge.innerText = 'EMERGENCY (Acil Dönüş)';
         pwm_l = -180; pwm_r = 180;
-        robot1_angle += 0.08;
+        robot1_angle += 0.085;
       }
 
       document.getElementById('t1-noul').innerText = noul_allowed ? 'ALLOWED (True)' : 'DENIED (Reflex Halt)';
@@ -921,47 +1074,52 @@ for (uint8_t i = 0; i < K; ++i) {
       for (let y = 0; y < cvs1.height; y += 40) { ctx1.beginPath(); ctx1.moveTo(0, y); ctx1.lineTo(cvs1.width, y); ctx1.stroke(); }
 
       // Draw Obstacles
-      obstacles.forEach((obs, idx) => {
+      obstacles.forEach((obs) => {
         ctx1.fillStyle = '#ef4444';
         ctx1.beginPath();
         ctx1.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
         ctx1.fill();
         ctx1.strokeStyle = '#fca5a5';
+        ctx1.lineWidth = 2;
         ctx1.stroke();
       });
 
-      // Robot Position Update (gentle crawl in arena)
-      robot1_x += Math.cos(robot1_angle) * (choice.best_idx === 3 ? -0.5 : 1.2);
-      robot1_y += Math.sin(robot1_angle) * (choice.best_idx === 3 ? -0.5 : 1.2);
-      if (robot1_x < 30) { robot1_x = 30; robot1_angle = 0; }
-      if (robot1_x > cvs1.width - 30) { robot1_x = cvs1.width - 30; robot1_angle = Math.PI; }
-      if (robot1_y < 30) { robot1_y = 30; robot1_angle = Math.PI / 2; }
-      if (robot1_y > cvs1.height - 30) { robot1_y = cvs1.height - 30; robot1_angle = -Math.PI / 2; }
+      // Robot Motion in Arena
+      const moveSpeed = (choice.best_idx === 3) ? -0.7 : 1.35;
+      robot1_x += Math.cos(robot1_angle) * moveSpeed;
+      robot1_y += Math.sin(robot1_angle) * moveSpeed;
 
-      // Ultrasonic Cone
+      // Arena boundary collision reflection
+      if (robot1_x < 25) { robot1_x = 25; robot1_angle = 0; }
+      if (robot1_x > cvs1.width - 25) { robot1_x = cvs1.width - 25; robot1_angle = Math.PI; }
+      if (robot1_y < 25) { robot1_y = 25; robot1_angle = Math.PI / 2; }
+      if (robot1_y > cvs1.height - 25) { robot1_y = cvs1.height - 25; robot1_angle = -Math.PI / 2; }
+
+      // Ultrasonic Sensor Beam / Cone
       ctx1.save();
       ctx1.translate(robot1_x, robot1_y);
       ctx1.rotate(robot1_angle);
 
-      ctx1.fillStyle = 'rgba(0, 229, 255, 0.15)';
+      const beamRange = activeDist * 3.5;
+      ctx1.fillStyle = noul_allowed ? 'rgba(0, 229, 255, 0.15)' : 'rgba(239, 68, 68, 0.25)';
       ctx1.beginPath();
       ctx1.moveTo(0, 0);
-      ctx1.arc(0, 0, dist * 3, -0.4, 0.4);
+      ctx1.arc(0, 0, beamRange, -0.45, 0.45);
       ctx1.closePath();
       ctx1.fill();
-      ctx1.strokeStyle = 'rgba(0, 229, 255, 0.4)';
+      ctx1.strokeStyle = noul_allowed ? 'rgba(0, 229, 255, 0.5)' : 'rgba(239, 68, 68, 0.8)';
       ctx1.stroke();
 
-      // Robot Body
+      // Robot Chassis
       ctx1.fillStyle = '#0284c7';
       ctx1.fillRect(-18, -14, 36, 28);
       ctx1.fillStyle = '#0f172a';
-      ctx1.fillRect(-14, -16, 10, 4);
-      ctx1.fillRect(-14, 12, 10, 4);
-      ctx1.fillRect(4, -16, 10, 4);
-      ctx1.fillRect(4, 12, 10, 4);
+      ctx1.fillRect(-14, -17, 10, 4);
+      ctx1.fillRect(-14, 13, 10, 4);
+      ctx1.fillRect(4, -17, 10, 4);
+      ctx1.fillRect(4, 13, 10, 4);
 
-      // Head / Sensor
+      // Direction Indicator
       ctx1.fillStyle = '#38bdf8';
       ctx1.beginPath();
       ctx1.arc(14, 0, 6, 0, Math.PI * 2);
@@ -981,7 +1139,7 @@ for (uint8_t i = 0; i < K; ++i) {
     function updateRobot2FromSlider() {
       const sound = parseFloat(document.getElementById('sound-slider').value);
       document.getElementById('sound-val').innerText = sound + ' dB';
-      if (sound > 650) {
+      if (sound > 620) {
         butterflyMode = 'STARTLE_REFLEX';
         wingSpeed = 0.22;
         flapAmplitude = 75;
@@ -1092,7 +1250,7 @@ for (uint8_t i = 0; i < K; ++i) {
     const cvs3 = document.getElementById('canvas-robot3');
     const ctx3 = cvs3.getContext('2d');
     let sensors = { l: 0, m: 1, r: 0 }; // 0: White, 1: Black
-    let robot3_offset = 0;
+    let robot3_lateral_pos = 0; // -1 to +1
 
     function toggleSensor(s) {
       sensors[s] = sensors[s] ? 0 : 1;
@@ -1102,6 +1260,11 @@ for (uint8_t i = 0; i < K; ++i) {
       sensors = { l: 1, m: 1, r: 1 };
       updateSensorButtons();
     }
+    function resetLineNormal() {
+      sensors = { l: 0, m: 1, r: 0 };
+      updateSensorButtons();
+    }
+
     function updateSensorButtons() {
       document.getElementById('sen-l').innerText = 'Sol: ' + (sensors.l ? 'SİYAH' : 'BEYAZ');
       document.getElementById('sen-m').innerText = 'Orta: ' + (sensors.m ? 'SİYAH' : 'BEYAZ');
@@ -1117,33 +1280,43 @@ for (uint8_t i = 0; i < K; ++i) {
       const t3_action = document.getElementById('t3-action');
       const t3_lcd = document.getElementById('t3-lcd');
       const t3_deadlock = document.getElementById('t3-deadlock');
+      const t3_signals = document.getElementById('t3-signals');
       const badge3 = document.getElementById('sim3-badge');
 
       if (sensors.l === 1 && sensors.r === 1 && sensors.m === 1) {
         // Deadlock situation resolved by Cadence
         badge3.className = 'action-badge action-emergency';
         badge3.innerText = 'KAVŞAK ÇATALLANMASI';
-        t3_action.innerText = (m.qw[1] > m.qw[2]) ? 'WERR CADENCE: SOLA DÖN' : 'WERR CADENCE: SAĞA DÖN';
+        const goLeft = (m.qw[1] > m.qw[2]);
+        t3_action.innerText = goLeft ? 'WERR CADENCE: SOLA DÖN' : 'WERR CADENCE: SAĞA DÖN';
         t3_lcd.innerText = 'KAVSAK COZUM HIZ=' + speed;
         t3_deadlock.innerText = 'ÇÖZÜLDÜ (Cadence Supercritical)';
+        t3_signals.innerText = goLeft ? 'SOL YANIYOR / KAPALI' : 'KAPALI / SAĞ YANIYOR';
+        robot3_lateral_pos = goLeft ? -0.4 : 0.4;
       } else if (yanal < 0) {
         badge3.className = 'action-badge action-left';
         badge3.innerText = 'SOLA KAVİS';
         t3_action.innerText = 'SOLA DÖN';
         t3_lcd.innerText = 'SOLA DON HIZ=' + speed;
         t3_deadlock.innerText = 'PASIF';
+        t3_signals.innerText = 'SOL YANIYOR / KAPALI';
+        robot3_lateral_pos = -0.3;
       } else if (yanal > 0) {
         badge3.className = 'action-badge action-right';
         badge3.innerText = 'SAĞA KAVİS';
         t3_action.innerText = 'SAĞA DÖN';
         t3_lcd.innerText = 'SAGA DON HIZ=' + speed;
         t3_deadlock.innerText = 'PASIF';
+        t3_signals.innerText = 'KAPALI / SAĞ YANIYOR';
+        robot3_lateral_pos = 0.3;
       } else {
         badge3.className = 'action-badge action-cruise';
         badge3.innerText = 'ORTA HİZALI';
         t3_action.innerText = 'İLERİ DÜZ';
         t3_lcd.innerText = 'ILERI HIZ=' + speed;
         t3_deadlock.innerText = 'PASIF';
+        t3_signals.innerText = 'KAPALI / KAPALI';
+        robot3_lateral_pos = 0.0;
       }
     }
 
@@ -1151,11 +1324,11 @@ for (uint8_t i = 0; i < K; ++i) {
       ctx3.fillStyle = '#0a0e17';
       ctx3.fillRect(0, 0, cvs3.width, cvs3.height);
 
-      // Floor & Line
+      // Floor & Track Line
       ctx3.fillStyle = '#1e293b';
       ctx3.fillRect(0, 0, cvs3.width, cvs3.height);
 
-      // Track line (black tape)
+      // Black line tape
       ctx3.fillStyle = '#05070c';
       ctx3.fillRect(cvs3.width / 2 - 16, 0, 32, cvs3.height);
 
@@ -1164,8 +1337,8 @@ for (uint8_t i = 0; i < K; ++i) {
         ctx3.fillRect(40, cvs3.height / 2 - 16, cvs3.width - 80, 32);
       }
 
-      // Robot Chassis
-      const rx = cvs3.width / 2;
+      // Robot Chassis Position
+      const rx = cvs3.width / 2 + robot3_lateral_pos * 40;
       const ry = cvs3.height / 2;
 
       ctx3.fillStyle = '#1e3a8a';
