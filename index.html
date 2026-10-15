@@ -1021,7 +1021,10 @@ for (uint8_t i = 0; i &lt; K; ++i) {
           for (let j = 0; j < 4; j++) {
             if (i === j) continue;
             const diff = scores[i] - scores[j];
-            const sgn = diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+            let sgn = diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+            if (sgn === 0 && (i === 1 || i === 2)) {
+              sgn = (i === 1) ? (cadenceCounter % 2 === 1 ? 1 : -1) : (cadenceCounter % 2 === 1 ? -1 : 1);
+            }
             bif_force += sgn * Math.pow(Math.abs(diff) + 1e-5, 0.5) + beta * (metrics.qw[i] - metrics.qw[j]);
           }
           delta[i] = eff_lambda * bif_force;
@@ -1045,6 +1048,11 @@ for (uint8_t i = 0; i &lt; K; ++i) {
     const ctx1 = cvs1.getContext('2d');
     let robot1_x = 250, robot1_y = 260, robot1_angle = -Math.PI / 2;
     let manualOverride = false;
+    let manualOverrideTimer = 0;
+    let avoidanceLockFrames = 0;
+    let currentAvoidanceAction = 0;
+    let turnDirection = 1;
+    let cadenceCounter = 1;
     let obstacles = [
       { x: 250, y: 130, r: 24 },
       { x: 160, y: 180, r: 20 },
@@ -1062,16 +1070,21 @@ for (uint8_t i = 0; i &lt; K; ++i) {
       robot1_x = clamp((clientX - rect.left) * scaleX, 30, cvs1.width - 30);
       robot1_y = clamp((clientY - rect.top) * scaleY, 30, cvs1.height - 30);
       manualOverride = false;
+      manualOverrideTimer = 0;
+      avoidanceLockFrames = 0;
     }
     cvs1.addEventListener('click', handleCanvas1Pointer);
     cvs1.addEventListener('touchstart', (e) => { e.preventDefault(); handleCanvas1Pointer(e); }, { passive: false });
 
     function spawnRandomObstacles() {
       obstacles = [
-        { x: 130 + Math.random() * 240, y: 70 + Math.random() * 110, r: 18 + Math.random() * 14 },
-        { x: 80 + Math.random() * 140, y: 130 + Math.random() * 90, r: 16 + Math.random() * 12 },
-        { x: 270 + Math.random() * 150, y: 130 + Math.random() * 90, r: 16 + Math.random() * 12 }
+        { x: 130 + Math.random() * 240, y: 70 + Math.random() * 110, r: 20 + Math.random() * 8 },
+        { x: 80 + Math.random() * 140, y: 140 + Math.random() * 80, r: 18 + Math.random() * 8 },
+        { x: 270 + Math.random() * 150, y: 140 + Math.random() * 80, r: 18 + Math.random() * 8 }
       ];
+      manualOverride = false;
+      manualOverrideTimer = 0;
+      avoidanceLockFrames = 0;
     }
 
     function testCornerTrap() {
@@ -1080,16 +1093,17 @@ for (uint8_t i = 0; i &lt; K; ++i) {
       robot1_y = 240;
       robot1_angle = -Math.PI / 2;
       obstacles = [
-        { x: 200, y: 120, r: 26 },
-        { x: 300, y: 120, r: 26 }
+        { x: 215, y: 130, r: 24 },
+        { x: 285, y: 130, r: 24 }
       ];
-      document.getElementById('lat-slider').value = 0;
-      document.getElementById('dist-slider').value = 18;
-      updateRobot1FromSlider();
+      manualOverride = false;
+      manualOverrideTimer = 0;
+      avoidanceLockFrames = 0;
     }
 
     function updateRobot1FromSlider() {
       manualOverride = true;
+      manualOverrideTimer = 90; // 1.5 seconds of manual slider test, then auto-resumes live tracking
       const dist = parseFloat(document.getElementById('dist-slider').value);
       const lat = parseFloat(document.getElementById('lat-slider').value);
       document.getElementById('dist-val').innerText = Math.round(dist) + ' cm';
@@ -1097,33 +1111,82 @@ for (uint8_t i = 0; i &lt; K; ++i) {
     }
 
     function runRobot1Tick() {
-      // Raycasting: find actual distance to nearest obstacle in front of robot
+      // 1. SOLID OBSTACLE ELASTIC COLLISION & REPULSION PHYSICS
+      // Robot chassis radius = 18px. If robot touches obstacle boundary, push out immediately!
+      obstacles.forEach(obs => {
+        const dx = robot1_x - obs.x;
+        const dy = robot1_y - obs.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const minDist = obs.r + 18;
+        if (dist < minDist) {
+          const overlap = minDist - dist;
+          const nx = (dist > 0.001) ? dx / dist : 0;
+          const ny = (dist > 0.001) ? dy / dist : -1;
+          robot1_x += nx * overlap;
+          robot1_y += ny * overlap;
+
+          // Impact reflex: lock into emergency reverse & pivot away
+          avoidanceLockFrames = 28;
+          currentAvoidanceAction = 3; // ACT_EMERGENCY_PIVOT
+          const cross = nx * Math.sin(robot1_angle) - ny * Math.cos(robot1_angle);
+          turnDirection = cross >= 0 ? 1 : -1;
+        }
+      });
+
+      // 2. Physical Ultrasonic Raycasting (HC-SR04 Forward Sensor)
+      const ux = Math.cos(robot1_angle);
+      const uy = Math.sin(robot1_angle);
+      const nx = -Math.sin(robot1_angle);
+      const ny = Math.cos(robot1_angle);
+
       let nearestDist = 999;
       let lateralBias = 0;
 
       obstacles.forEach(obs => {
-        const dx = obs.x - robot1_x;
-        const dy = obs.y - robot1_y;
-        const distToCenter = Math.sqrt(dx * dx + dy * dy);
-        const angleToObs = Math.atan2(dy, dx);
-        let relAngle = angleToObs - robot1_angle;
+        const vx = obs.x - robot1_x;
+        const vy = obs.y - robot1_y;
+        const distToCenter = Math.sqrt(vx * vx + vy * vy);
+
+        // Forward distance and lateral offset
+        const d_fwd = vx * ux + vy * uy;
+        const d_lat = vx * nx + vy * ny;
+
+        // Angle between heading and obstacle
+        const ang = Math.atan2(vy, vx);
+        let relAngle = ang - robot1_angle;
         while (relAngle > Math.PI) relAngle -= 2 * Math.PI;
         while (relAngle < -Math.PI) relAngle += 2 * Math.PI;
 
-        // Inside forward ultrasonic sensor cone (-35 deg to +35 deg)
-        if (Math.abs(relAngle) < 0.65) {
-          const edgeDist = Math.max(2, distToCenter - obs.r);
+        // Cone detection: forward half-angle up to +-55 deg or direct proximity
+        const inCone = (d_fwd > 0 && Math.abs(relAngle) < 0.95);
+        const inProximity = (distToCenter < obs.r + 48 && d_fwd > -8);
+
+        if (inCone || inProximity) {
+          const edgeDist = Math.max(1, distToCenter - obs.r);
           if (edgeDist < nearestDist) {
             nearestDist = edgeDist;
-            lateralBias = -relAngle * 12.0; // Left/Right asymmetry in degrees
+            // Steering direction:
+            // Obstacle on RIGHT (d_lat > 0) -> bias MUST BE POSITIVE to boost LEFT!
+            // Obstacle on LEFT (d_lat < 0) -> bias MUST BE NEGATIVE to boost RIGHT!
+            const sign = (d_lat >= 0) ? 1.0 : -1.0;
+            const proximityFactor = Math.max(0.2, 1.0 - Math.min(1.0, edgeDist / 120.0));
+            lateralBias = sign * (proximityFactor * 6.5 + Math.abs(relAngle) * 4.5);
           }
         }
       });
 
-      // Scale distance to cm (scale factor ~ 3.5 px per cm)
-      const measured_cm = clamp(nearestDist / 3.5, 4, 80);
+      // Scale distance to real cm (scale factor ~ 3.2 px per cm)
+      const measured_cm = clamp(nearestDist / 3.2, 4, 80);
 
-      // If user hasn't overridden with slider recently, update slider with real physical raycast
+      // Handle manual override timer
+      if (manualOverride) {
+        manualOverrideTimer--;
+        if (manualOverrideTimer <= 0) {
+          manualOverride = false;
+        }
+      }
+
+      // If not manual override, update UI telemetry sliders with real sensor data
       if (!manualOverride) {
         document.getElementById('dist-slider').value = Math.round(measured_cm);
         document.getElementById('dist-val').innerText = Math.round(measured_cm) + ' cm';
@@ -1144,39 +1207,91 @@ for (uint8_t i = 0; i &lt; K; ++i) {
 
       // 2. GameCombatGate 4-Tier Choice
       const combatMetrics = evaluateWerrTripod(-0.7445, 0.1250, 65.0, activeLat * 0.15, norm_prox, net_risk, 6, 18);
-      const choice = evaluate4TierChoice(combatMetrics, net_risk, activeLat * 0.5, 0.22, 0.28);
+
+      let chosen_action = 0;
+      let in_cadence = false;
+
+      // Distance-based tier risk mapping
+      let tier_risk = -0.85;
+      if (activeDist <= 16.0 || safetyMetrics.hazard_score > 2.25) {
+        tier_risk = 2.80; // Emergency pivot
+      } else if (activeDist <= 38.0) {
+        tier_risk = 0.70; // Agile Left or Right
+      }
+
+      const choice = evaluate4TierChoice(combatMetrics, tier_risk, activeLat * 0.65, 0.25, 0.30);
+      in_cadence = choice.in_cadence;
+
+      // Maneuver lock / hysteresis to prevent 60Hz rapid flipping:
+      if (avoidanceLockFrames > 0) {
+        avoidanceLockFrames--;
+        chosen_action = currentAvoidanceAction;
+      } else {
+        chosen_action = choice.best_idx;
+        if (chosen_action !== 0) {
+          // Lock avoidance maneuver for decisive steering
+          avoidanceLockFrames = (chosen_action === 3) ? 26 : 18;
+          currentAvoidanceAction = chosen_action;
+          cadenceCounter++;
+          if (chosen_action === 3) {
+            turnDirection = (cadenceCounter % 2 === 1) ? 1 : -1;
+          }
+        }
+      }
+
+      // If road is completely clear (> 45cm) and nearest physical obstacle is far (> 140px), unlock
+      if (activeDist > 45.0 && nearestDist > 140) {
+        avoidanceLockFrames = 0;
+        chosen_action = 0;
+      }
 
       const actionNames = ['ACT_CRUISE_FORWARD', 'ACT_AGILE_LEFT', 'ACT_AGILE_RIGHT', 'ACT_EMERGENCY_PIVOT'];
       const actionBadge = document.getElementById('sim1-badge');
       let pwm_r = 240, pwm_l = 240;
+      let moveSpeed = 1.35;
+      let turnRate = 0.0;
 
-      if (choice.best_idx === 0) {
+      if (chosen_action === 0) {
         actionBadge.className = 'action-badge action-cruise';
         actionBadge.innerText = 'FORWARD (Seyir)';
         pwm_r = 240; pwm_l = 240;
-        robot1_angle += (activeLat * 0.005);
-      } else if (choice.best_idx === 1) {
+        moveSpeed = 1.35;
+        turnRate = 0.0;
+      } else if (chosen_action === 1) {
         actionBadge.className = 'action-badge action-left';
         actionBadge.innerText = 'LEFT (Sol Kavis)';
-        pwm_l = 90; pwm_r = 230;
-        robot1_angle -= 0.045;
-      } else if (choice.best_idx === 2) {
+        pwm_l = 80; pwm_r = 230;
+        moveSpeed = 0.65;
+        turnRate = -0.075;
+      } else if (chosen_action === 2) {
         actionBadge.className = 'action-badge action-right';
         actionBadge.innerText = 'RIGHT (Sağ Kavis)';
-        pwm_l = 230; pwm_r = 90;
-        robot1_angle += 0.045;
+        pwm_l = 230; pwm_r = 80;
+        moveSpeed = 0.65;
+        turnRate = 0.075;
       } else {
         actionBadge.className = 'action-badge action-emergency';
-        actionBadge.innerText = 'EMERGENCY (Acil Dönüş)';
+        actionBadge.innerText = 'EMERGENCY (Geri & Pivot)';
         pwm_l = -180; pwm_r = 180;
-        robot1_angle += 0.085;
+        moveSpeed = -0.85; // Reverses backwards away from obstacle!
+        turnRate = turnDirection * 0.12; // Sharp pivot!
       }
 
+      robot1_angle += turnRate;
+      robot1_x += Math.cos(robot1_angle) * moveSpeed;
+      robot1_y += Math.sin(robot1_angle) * moveSpeed;
+
+      // Arena boundary collision reflection
+      if (robot1_x < 25) { robot1_x = 25; robot1_angle = 0; avoidanceLockFrames = 15; currentAvoidanceAction = 2; }
+      if (robot1_x > cvs1.width - 25) { robot1_x = cvs1.width - 25; robot1_angle = Math.PI; avoidanceLockFrames = 15; currentAvoidanceAction = 1; }
+      if (robot1_y < 25) { robot1_y = 25; robot1_angle = Math.PI / 2; avoidanceLockFrames = 15; currentAvoidanceAction = (robot1_x < cvs1.width/2 ? 2 : 1); }
+      if (robot1_y > cvs1.height - 25) { robot1_y = cvs1.height - 25; robot1_angle = -Math.PI / 2; avoidanceLockFrames = 15; currentAvoidanceAction = (robot1_x < cvs1.width/2 ? 2 : 1); }
+
       document.getElementById('t1-noul').innerText = noul_allowed ? 'ALLOWED (True)' : 'DENIED (Reflex Halt)';
-      document.getElementById('t1-action').innerText = actionNames[choice.best_idx];
+      document.getElementById('t1-action').innerText = actionNames[chosen_action];
       document.getElementById('t1-pwm-r').innerText = pwm_r;
       document.getElementById('t1-pwm-l').innerText = pwm_l;
-      document.getElementById('t1-cadence').innerText = choice.in_cadence ? 'BIFURCATING (Aktif)' : 'STABLE';
+      document.getElementById('t1-cadence').innerText = in_cadence ? 'BIFURCATING (Aktif)' : 'STABLE';
 
       // Draw Robot 1 Canvas
       ctx1.fillStyle = '#0a0e17';
@@ -1188,34 +1303,23 @@ for (uint8_t i = 0; i &lt; K; ++i) {
       for (let x = 0; x < cvs1.width; x += 40) { ctx1.beginPath(); ctx1.moveTo(x, 0); ctx1.lineTo(x, cvs1.height); ctx1.stroke(); }
       for (let y = 0; y < cvs1.height; y += 40) { ctx1.beginPath(); ctx1.moveTo(0, y); ctx1.lineTo(cvs1.width, y); ctx1.stroke(); }
 
-      // Draw Obstacles
+      // Draw Obstacles (with glowing edge)
       obstacles.forEach((obs) => {
         ctx1.fillStyle = '#ef4444';
         ctx1.beginPath();
         ctx1.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
         ctx1.fill();
         ctx1.strokeStyle = '#fca5a5';
-        ctx1.lineWidth = 2;
+        ctx1.lineWidth = 2.5;
         ctx1.stroke();
       });
-
-      // Robot Motion in Arena
-      const moveSpeed = (choice.best_idx === 3) ? -0.7 : 1.35;
-      robot1_x += Math.cos(robot1_angle) * moveSpeed;
-      robot1_y += Math.sin(robot1_angle) * moveSpeed;
-
-      // Arena boundary collision reflection
-      if (robot1_x < 25) { robot1_x = 25; robot1_angle = 0; }
-      if (robot1_x > cvs1.width - 25) { robot1_x = cvs1.width - 25; robot1_angle = Math.PI; }
-      if (robot1_y < 25) { robot1_y = 25; robot1_angle = Math.PI / 2; }
-      if (robot1_y > cvs1.height - 25) { robot1_y = cvs1.height - 25; robot1_angle = -Math.PI / 2; }
 
       // Ultrasonic Sensor Beam / Cone
       ctx1.save();
       ctx1.translate(robot1_x, robot1_y);
       ctx1.rotate(robot1_angle);
 
-      const beamRange = activeDist * 3.5;
+      const beamRange = Math.min(activeDist * 3.2, 220);
       ctx1.fillStyle = noul_allowed ? 'rgba(0, 229, 255, 0.15)' : 'rgba(239, 68, 68, 0.25)';
       ctx1.beginPath();
       ctx1.moveTo(0, 0);
@@ -1228,17 +1332,23 @@ for (uint8_t i = 0; i &lt; K; ++i) {
       // Robot Chassis
       ctx1.fillStyle = '#0284c7';
       ctx1.fillRect(-18, -14, 36, 28);
-      ctx1.fillStyle = '#0f172a';
-      ctx1.fillRect(-14, -17, 10, 4);
-      ctx1.fillRect(-14, 13, 10, 4);
-      ctx1.fillRect(4, -17, 10, 4);
-      ctx1.fillRect(4, 13, 10, 4);
+      ctx1.strokeStyle = '#38bdf8';
+      ctx1.lineWidth = 1.5;
+      ctx1.strokeRect(-18, -14, 36, 28);
 
-      // Direction Indicator
-      ctx1.fillStyle = '#38bdf8';
-      ctx1.beginPath();
-      ctx1.arc(14, 0, 6, 0, Math.PI * 2);
-      ctx1.fill();
+      // Wheels
+      ctx1.fillStyle = '#0f172a';
+      ctx1.fillRect(-14, -18, 10, 4);
+      ctx1.fillRect(-14, 14, 10, 4);
+      ctx1.fillRect(4, -18, 10, 4);
+      ctx1.fillRect(4, 14, 10, 4);
+
+      // HC-SR04 Ultrasonic Sensor Eyes on Front
+      ctx1.fillStyle = '#e2e8f0';
+      ctx1.beginPath(); ctx1.arc(14, -6, 4, 0, Math.PI * 2); ctx1.fill();
+      ctx1.strokeStyle = '#0284c7'; ctx1.lineWidth = 1; ctx1.stroke();
+      ctx1.beginPath(); ctx1.arc(14, 6, 4, 0, Math.PI * 2); ctx1.fill();
+      ctx1.strokeStyle = '#0284c7'; ctx1.lineWidth = 1; ctx1.stroke();
 
       ctx1.restore();
     }
