@@ -1,43 +1,47 @@
-# 🤖 WERRobotics — WERR v0.5.1 Sıfır-Bellek (Zero-Memory) Sistem-1 Edge AI & Arduino Robotik Çekirdeği
-
 <p align="center">
-  <a href="README_TR.md"><img src="https://img.shields.io/badge/Dil-T%C3%BCrk%C3%A7e_%F0%9F%87%B9%F0%9F%87%B7-e30a17?style=for-the-badge" alt="Türkçe"></a>
-  <a href="README.md"><img src="https://img.shields.io/badge/Language-English_%F0%9F%87%AC%F0%9F%87%A7-012169?style=for-the-badge" alt="English"></a>
-  <a href="https://github.com/pCwOrM/werr"><img src="https://img.shields.io/badge/WERR_Core-v0.5.1_Synced-00e5ff?style=for-the-badge" alt="WERR Core v0.5.1"></a>
-  <a href="https://arxiv.org/abs/2609.25498"><img src="https://img.shields.io/badge/arXiv-2609.25498-b31b1b?style=for-the-badge" alt="arXiv"></a>
-  <a href="https://doi.org/10.5281/zenodo.22939253"><img src="https://img.shields.io/badge/Zenodo-10.5281%2Fzenodo.22939253-blue?style=for-the-badge" alt="Zenodo"></a>
-  <img src="https://img.shields.io/badge/Heap_Allocation-0_Bytes-00c853?style=for-the-badge" alt="Zero Heap">
+  <img src="assets/werr_answerr_twin_ecosystem.svg" alt="werr & answerr Twin Cognitive Ecosystem Banner" width="100%" />
 </p>
 
 <p align="center">
-  <b>Mandelbrot Dalga Dinamikleri ve Fraktal Sınır Tohumları ile Mikrodenetleyicilerde (ATmega328P / Mega2560 / ESP32) Gerçek Zamanlı Otonom Refleks Karar Mekanizması</b><br>
-  <i>"When the Wave meets Error, we Recurse (werr)." — "Hızlı Olan Değil, Sınırda Kararlı Kalan Kazanır."</i>
+  <img src="assets/werr_logo_core_fav_trans.svg" alt="werr Core 3D Crystal Logo" width="150" height="150" />
 </p>
+
+# 🤖 WERRobotics: WERR v0.5.1 Sıfır-Bellek (Zero-Memory) Sistem-1 Edge AI & Arduino Robotik Çekirdeği
+
+[![Lisans: BSL 1.1 (ITouch Systems)](https://img.shields.io/badge/Lisans-BSL%201.1%20(ITouch%20Systems)-blue.svg)](./LICENSE)
+[![Patent Başvurusu: TR 2026/016285 | 016633](https://img.shields.io/badge/Patent%20Korumas%C4%B1-TR%202026%2F016285%20%7C%20016633-9333ea.svg)](./LICENSE)
+[![WERR Core: v0.5.1 Synced](https://img.shields.io/badge/WERR%20Core-v0.5.1%20Senkronize-00e5ff.svg)](https://github.com/pCwOrM/werr)
+[![arXiv: 2609.25498](https://img.shields.io/badge/arXiv-2609.25498-b31b1b.svg)](https://arxiv.org/abs/2609.25498)
+[![Paper 5: arXiv 2609.33066](https://img.shields.io/badge/arXiv-2609.33066%20(Lean4%20Formal)-b31b1b.svg)](https://arxiv.org/abs/2609.33066)
+[![Werracle: arXiv 2609.30719](https://img.shields.io/badge/arXiv-2609.30719%20(Werracle)-b31b1b.svg)](https://arxiv.org/abs/2609.30719)
+[![GAP Lean 4: arXiv 2609.38492](https://img.shields.io/badge/arXiv-2609.38492%20(GAP%20Lean4)-b31b1b.svg)](https://arxiv.org/abs/2609.38492)
+[![OED: arXiv 2609.30115](https://img.shields.io/badge/arXiv-2609.30115%20(OED)-b31b1b.svg)](https://arxiv.org/abs/2609.30115)
+[![ORCID: 0009-0000-1587-8703](https://img.shields.io/badge/ORCID-0009--0000--1587--8703-a6ce39.svg)](https://orcid.org/0009-0000-1587-8703)
+[![Zenodo Werr DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22939253-024dad.svg)](https://doi.org/10.5281/zenodo.22939253)
+[![WerrSoma Whole-Brain Connectome](https://img.shields.io/badge/WerrSoma%20Konnektom-158K%20N%C3%B6ron%20%7C%203.99M%20Sinaps-00f0ff.svg)](https://github.com/Lexovian/WerrSoma)
+[![WerrAileronControls](https://img.shields.io/badge/WerrAileron-U%C3%A7u%C5%9F%20Zarf%C4%B1%20Refleksi-38bdf8.svg)](https://github.com/pCwOrM/WerrAileronControls)
+[![answerr Platform](https://img.shields.io/badge/answerr-Platform%20Repo-8b5cf6.svg)](https://github.com/pCwOrM/answerr)
+[![werracle Web3 Oracle](https://img.shields.io/badge/werracle-On--Chain%20Oracle-f59e0b.svg?logo=ethereum&logoColor=white)](https://github.com/pCwOrM/werracle)
+[![WerreduR v4.0](https://img.shields.io/badge/WerreduR%20v4.0-10.5281%2Fzenodo.23128224-059669.svg)](https://doi.org/10.5281/zenodo.23128224)
+[![Heap Allocation: 0 Bytes](https://img.shields.io/badge/Heap%20RAM-0%20Bayt%20(Zero--Malloc)-emerald.svg)](./src/WerrCoreEdge/WerrCoreEdge.h)
+[![Arduino MCU](https://img.shields.io/badge/MCU-ATmega328P%20%7C%20Mega2560%20%7C%20ESP32-ff9100.svg?logo=arduino&logoColor=white)](./firmware/)
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?logo=github&logoColor=white)](https://github.com/sponsors/pCwOrM)
+
+> **Motto:** *"When the Wave meets Error, we Recurse (werr)."*  
+> *"Hızlı Olan Değil, Sınırda Kararlı Kalan Kazanır."*
+
+🌐 **Dil Seçici / Language Switcher:**  
+**[🇬🇧 English Main Page (README.md)](README.md)** | **🇹🇷 Türkçe Dokümantasyon (Aktif)**
 
 ---
 
 ## 🌟 Proje Vizyonu ve Özeti
 
-**`WERRobotics`**, **[pCwOrM/werr](https://github.com/pCwOrM/werr) (`v0.5.1`)** sıfır-bellek (*Zero-Memory*) Sistem-1 fraktal karar motorunun ve kanonik Mandelbrot sınır tohumlarının (*Canonical Boundary Seeds*) doğrudan **8-bit AVR (Arduino Uno / Nano / Mega 2560)** ve **32-bit (ESP32 / STM32)** mikrodenetleyiciler üzerindeki robotik donanımlara entegre edildiği resmi **Edge AI Robotik** deposudur.
+**`WERRobotics`**, **[pCwOrM/werr](https://github.com/pCwOrM/werr) (`v0.5.1`)** sıfır-bellek (*Zero-Memory*) Sistem-1 fraktal karar motorunun ve kanonik Mandelbrot sınır tohumlarının (*Canonical Boundary Seeds*) **[Prenses Metin (`@PrensesMTN`)](https://github.com/PrensesMTN)** işbirliğiyle doğrudan **8-bit AVR (Arduino Uno / Nano / Mega 2560)** ve **32-bit (ESP32 / STM32)** mikrodenetleyiciler üzerindeki robotik donanımlara entegre edildiği resmi **Edge AI Robotik** deposudur.
 
 Geleneksel gömülü robotik kodları (`if (mesafe > 15)` gibi sert eşikler ve `delay(400)` gibi kör beklemeler), sensör gürültüsü, simetrik köşe tuzakları ve değişen ortam koşulları karşısında kilitlenmeye (*nodal deadlock*) uğrar. Öte yandan, klasik yapay sinir ağları (TinyML ağırlık matrisleri) 2 KB SRAM'e sahip bir Arduino Uno (`ATmega328P`) üzerinde bellek darboğazına takılır.
 
 **WERR Edge AI ([`WerrCoreEdge.h`](src/WerrCoreEdge/WerrCoreEdge.h))**, ağırlık matrislerini RAM veya Flash bellekte saklamak yerine, karar sınırlarını $z_{k+1} = z_k^2 + c$ Mandelbrot dalga dinamiklerinden **sıfır dinamik bellek (`0 Byte Heap / malloc`)** ve **$< 128\text{ Byte}$ yığın (stack)** kullanımıyla çalışma anında (*on-the-fly*) sentezler.
-
----
-
-## 🧬 WERR Ekosistemi ve `WERRobotics`'in Konumu
-
-| Ekosistem Deposu | Katman / Alan | Rolü ve `WERRobotics` Bağlantısı |
-| :--- | :--- | :--- |
-| **[`pCwOrM/werr`](https://github.com/pCwOrM/werr)** | **Çekirdek Motor (`v0.5.1`)** | 8 Kanonik Tohum, 3-Noktalı Tripod, Sınır Düzeltmeli 4-Kadran, 4-Katmanlı Gaussian Risk Çekirdeği, Cadence Dirgen Çatallanması ve GAP-0331 $\mathbb{Z}/9\mathbb{Z}$ cebiri. |
-| **[`pCwOrM/answerr`](https://github.com/pCwOrM/answerr)** | **Sistem-1 / Sistem-2 Köprüsü** | Deliberatif LLM'ler ile `< 1 ms` WERR refleks çekirdeğini birleştiren hibrit bilişsel portal. |
-| **[`pCwOrM/mandelbrot-fractal-neural-synthesis`](https://github.com/pCwOrM/mandelbrot-fractal-neural-synthesis)** | **Kuramsal Temel (MFNS & OED)** | Sıfır-depolamalı prosedürel ağırlık türetimi ve Yörünge Hata Dinamikleri (*Orbital Error Dynamics*). |
-| **[`pCwOrM/WerrSoma`](https://github.com/pCwOrM/WerrSoma)** | **Biyo-Sentetik Nöromorfik** | 158.000 nöronluk *Drosophila* konnektomu ve GABAerjik homeostatik sönümleme (`werr_kelebek_biyonik` dinlenme döngüsünün ilham kaynağı). |
-| **[`pCwOrM/WerrAileronControls`](https://github.com/pCwOrM/WerrAileronControls)** | **Aerodinamik Uçuş Zarfı** | $c = c_x + i c_y$ durum projeksiyonu ve tehlike skoru $S \in [0, 3]$ ile otonom kanatçık mikro-tork sentezi. |
-| **[`pCwOrM/werracle`](https://github.com/pCwOrM/werracle)** | **On-Chain Karar Kahini** | Tripod $\mathbb{Z}/9\mathbb{Z}$ (Tesla 3-6-9) modüler değişmezleri ve 40 Lean 4 teoremi. |
-| **[`pCwOrM/WerreduR`](https://github.com/pCwOrM/WerreduR)** | **Prosedürel Fraktal Pedagoji** | C++ hızlı Tripod çekirdeği (`werr_tripod_cpp`) ve sınır düzeltme ağırlıkları. |
-| **🤖 `pCwOrM/WERRobotics`** | **Fiziksel Edge AI & Robotik** | **Prenses Metin (`@PrensesMTN`)** robotik donanım yazılımlarının WERR v0.5.1 tohumlarıyla fiziksel dünyaya bağlandığı uç birim çekirdeği. |
 
 ---
 
@@ -98,10 +102,10 @@ flowchart LR
 
 | C++ Sabit Adı (`werr::`) | Tohum Adı | Gerçek Eks. ($c_x$) | Sanal Eks. ($c_y$) | Ölçek (`zoom`) | Eşik | Robotik Görevi / Kullanıldığı Firmware |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| `WERR_SEED_UNIVERSAL_CUSP` | `universal_cusp` | `-0.74364389` | `+0.13182590` | `50.0` | `0.50` | **Denizatı Vadisi Evrensel Kaspı**: Akustik darbe ve ritim rezonansı (`werr_kelebek_biyonik.ino`). |
-| `WERR_SEED_IOT_SAFETY` | `iot_safety` | `-0.74500000` | `+0.11200000` | `85.0` | `0.50` | **IoT Yaşam & Çarpışma Emniyeti**: Mesafe $d(t)$ ve yaklaşma hızı $\Delta d/\Delta t$ tehlike triyajı (`werr_engelden_kacan.ino`). |
-| `WERR_SEED_GAME_COMBAT` | `game_combat` | `-0.74450000` | `+0.12500000` | `65.0` | `0.50` | **Taktiksel Kaçış & Çevik Manevra**: 4-Katmanlı Gaussian Risk Çekirdeği ile sol/sağ kavis ve acil pivot seçimi (`werr_engelden_kacan.ino`). |
-| `WERR_SEED_SMART_ROUTER` | `smart_router` | `-0.10109636` | `+0.95628651` | `45.0` | `0.50` | **Dengeli 4-Kadran Yönlendirici**: Biyonik kanat kinematikleri (`werr_kelebek_biyonik.ino`) ve 3-sensörlü rota yönlendirme (`werr_alisveris_robotu.ino`). |
+| `WERR_SEED_UNIVERSAL_CUSP` | `universal_cusp` | `-0.74364389` | `+0.13182590` | `50.0` | `0.50` | **Denizatı Vadisi Evrensel Kaspı**: Akustik darbe ve ritim rezonansı ([`werr_kelebek_biyonik.ino`](firmware/werr_kelebek_biyonik/werr_kelebek_biyonik.ino)). |
+| `WERR_SEED_IOT_SAFETY` | `iot_safety` | `-0.74500000` | `+0.11200000` | `85.0` | `0.50` | **IoT Yaşam & Çarpışma Emniyeti**: Mesafe $d(t)$ ve yaklaşma hızı $\Delta d/\Delta t$ tehlike triyajı ([`werr_engelden_kacan.ino`](firmware/werr_engelden_kacan/werr_engelden_kacan.ino)). |
+| `WERR_SEED_GAME_COMBAT` | `game_combat` | `-0.74450000` | `+0.12500000` | `65.0` | `0.50` | **Taktiksel Kaçış & Çevik Manevra**: 4-Katmanlı Gaussian Risk Çekirdeği ile sol/sağ kavis ve acil pivot seçimi ([`werr_engelden_kacan.ino`](firmware/werr_engelden_kacan/werr_engelden_kacan.ino)). |
+| `WERR_SEED_SMART_ROUTER` | `smart_router` | `-0.10109636` | `+0.95628651` | `45.0` | `0.50` | **Dengeli 4-Kadran Yönlendirici**: Biyonik kanat kinematikleri ([`werr_kelebek_biyonik.ino`](firmware/werr_kelebek_biyonik/werr_kelebek_biyonik.ino)) ve 3-sensörlü rota yönlendirme ([`werr_alisveris_robotu.ino`](firmware/werr_alisveris_robotu/werr_alisveris_robotu.ino)). |
 | `WERR_SEED_SECURITY_GUARD` | `security_guard` | `-0.74364389` | `+0.13182590` | `120.0` | `0.50` | Yüksek hassasiyetli sınır geçiş koruması ve donanım güvenlik kilidi. |
 | `WERR_SEED_RISK_EVALUATOR` | `risk_evaluator` | `-0.75000000` | `+0.10000000` | `25.0` | `0.50` | Pürüzsüz gradyanlı sürekli hız ve öncelik puanlaması. |
 | `WERR_SEED_FINANCIAL_RISK` | `financial_risk` | `-0.74800000` | `+0.06500000` | `60.0` | `0.50` | Batarya / akım bütçesi devre kesici koruması. |
@@ -109,27 +113,23 @@ flowchart LR
 
 ---
 
-## 📂 Depo Dizin Yapısı ve Doküman Bağlantıları
+## ⚖️ Lisans ve Fikri Mülkiyet Hakları (BSL 1.1 — ITouch Systems)
 
-- **Ana Dokümanlar**:
-  - 🇹🇷 [`README_TR.md`](README_TR.md) — Türkçe Ana Dokümantasyon
-  - 🇬🇧 [`README.md`](README.md) — İngilizce Ana Dokümantasyon (International Master Edition)
-- **Derin Teknik ve Donanım Kılavuzları (`docs/`)**:
-  - 🇹🇷 [`docs/WERR_EDGE_ARCHITECTURE_TR.md`](docs/WERR_EDGE_ARCHITECTURE_TR.md) — Matematiksel Model, Optimum Parametre Analizi, Tripod, Cadence ve $\mathbb{Z}/9\mathbb{Z}$ Kılavuzu (Türkçe)
-  - 🇬🇧 [`docs/WERR_EDGE_ARCHITECTURE.md`](docs/WERR_EDGE_ARCHITECTURE.md) — Mathematical Model, Optimal Parameter Audit, Tripod, Cadence & $\mathbb{Z}/9\mathbb{Z}$ Guide (English)
-  - 🇹🇷 [`docs/HARDWARE_PINOUT_AND_WIRING_TR.md`](docs/HARDWARE_PINOUT_AND_WIRING_TR.md) — Arduino Pin Bağlantıları ve Devre Rehberi (Türkçe)
-  - 🇬🇧 [`docs/HARDWARE_PINOUT_AND_WIRING.md`](docs/HARDWARE_PINOUT_AND_WIRING.md) — Hardware Pinout & Wiring Guide (English)
-- **Kod Dizinleri**:
-  - [`raw/`](raw/) — Değiştirilmemiş orijinal Arduino robotik kodları (`engeldenkacan.ino`, `kelebek.ino`, `alisveris_roboti.ino`, `distance_counting.ino`, `robot_el_backend/main.py`)
-  - [`src/WerrCoreEdge/WerrCoreEdge.h`](src/WerrCoreEdge/WerrCoreEdge.h) — WERR v0.5.1 C/C++11 Sıfır-Bellek Edge AI Çekirdek Kütüphanesi
-  - [`firmware/`](firmware/) — WERR Tohumları ve Optimum Profilleri Bağlanmış Arduino Yazılımları (`werr_engelden_kacan`, `werr_kelebek_biyonik`, `werr_alisveris_robotu`)
-  - [`sim/verify_edge_parity.py`](sim/verify_edge_parity.py) — Python Donanım-Döngüde (HIL) Parite ve Yörünge Doğrulama Paketi
+Bu yazılım, gömülü C/C++11 çekirdek kütüphanesi (`WerrCoreEdge.h`) ve refleks karar algoritmaları **ITouch Systems (ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ)** kurumsal koruması altında **[Business Source License 1.1 (BSL 1.1)](LICENSE)** ile lisanslanmıştır.
+- **Akademik, Eğitim, Robotik Kulübü ve Yarışma Kullanımı:** Kâr amacı gütmeyen araştırmalar, üniversite eğitimi, öğrenci toplulukları, Teknofest vb. robotik yarışmaları ve akademik kıyaslamalar için tamamen ücretsiz ve açıktır.
+- **Ticari ve Kurumsal Kullanım:** Kodların ticari bir robotik ürün, seri üretim donanım yazılımı, SaaS platformu veya ücretli bulut/uç API servisi olarak sunulması; **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.) resmi yazılı Ticari Lisans (*Commercial Enterprise License*) alınmasını gerektirir.
+- **Patent Koruması:** Prosedürel karar algoritmaları ve nöromorfik arayüz mimarileri **TÜRKPATENT TR 2026/016285** ve **TR 2026/016633** patent başvuruları ile korunmaktadır.
+- **Dönüşüm Tarihi:** **01.01.2030** tarihinde bu yazılım otomatik olarak **Apache License, Version 2.0** açık kaynak lisansına dönüşecektir.
+- **Kurumsal İletişim & Lisanslama:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Teknokent - Adana, Türkiye) &bull; E-Posta: [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
 
 ---
 
-## 🎖️ Proje Ekibi, Katkıda Bulunanlar & Akademik Atıf
+## 💖 Sponsorluk ve Hibe Destekleri
 
-- **WERR Kuramı & Çekirdek Mimari**: **Volkan Dağlı** ([@pCwOrM](https://github.com/pCwOrM)) — *ITouch Systems / answerr.me* (ORCID: [0009-0000-1587-8703](https://orcid.org/0009-0000-1587-8703))
-- **Robotik Donanım & Gömülü Sistem Kodları**: **Prenses Metin** ([@PrensesMTN](https://github.com/PrensesMTN))
-- **WERR Araştırma Grubu**: **Volkan Dağlı**, **Zerrin Dağlı** ([0000-0001-9490-6425](https://orcid.org/0000-0001-9490-6425)), **Dağhan Dağlı** ([0009-0003-2492-8313](https://orcid.org/0009-0003-2492-8313))
-- **Makale & Kalıcı DOI**: [arXiv:2609.25498](https://arxiv.org/abs/2609.25498) | [Zenodo: 10.5281/zenodo.22939253](https://doi.org/10.5281/zenodo.22939253) | **TÜRKPATENT**: `TR 2026/016633`
+[![GitHub Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?logo=github&logoColor=white)](https://github.com/sponsors/pCwOrM)
+[![Support on USDT TRC20](https://img.shields.io/badge/Destek-USDT%20TRC20-009393?logo=tether&logoColor=white)](#-sponsorluk-ve-hibe-destekleri)
+
+| Kanal / Platform | Ağ (Network) | Alıcı Cüzdan Adresi |
+| :--- | :--- | :--- |
+| **Resmi Cüzdan (Binance)** | TRC20 (TRON) | `TLMhaDJTVYBHBSGJ9nCQGLvqnYFPSBgLJu` |
+| **Resmi Tüzel Kişilik** | Teknokent | ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ. (Çukurova Teknokent) |
