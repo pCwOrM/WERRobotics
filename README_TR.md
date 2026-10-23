@@ -52,34 +52,41 @@ Geleneksel gömülü robotik kodları (`if (mesafe > 15)` gibi sert eşikler ve 
 
 ```mermaid
 flowchart LR
-    subgraph SENSORS["1. Fiziksel Sensör Katmanı (Arduino Pinleri)"]
-        S1["Ultrasonik HC-SR04\n(trig=8/12, echo=9/11)\nd(t) & Δd/Δt"]
-        S2["Akustik Ses Modülü\n(DO=7, AO=A0/A1)\nŞiddet & Ritim Δt"]
-        S3["3'lü Kızılötesi Dizi\n(A6, A7, A8)\nYanal Asimetri"]
-        S4["LSM303 3-Eksen İvmeölçer\n(I2C SDA=A4, SCL=A5)\nPostür & Devrilme Triyajı"]
+    subgraph SENSORS ["1. Fiziksel Sensör Katmanı (Arduino Pinleri)"]
+        S1["Ultrasonik HC-SR04<br/>(trig=8/12, echo=9/11)<br/>d(t) ve delta-d/dt"]
+        S2["Akustik Ses Modülü<br/>(DO=7, AO=A0/A1)<br/>Şiddet ve Ritim dt"]
+        S3["3'lü Kızılötesi Dizi<br/>(A6, A7, A8)<br/>Yanal Asimetri"]
+        S4["LSM303 3-Eksen İvmeölçer<br/>(I2C SDA=A4, SCL=A5)<br/>Postür ve Devrilme Triyajı"]
     end
 
-    subgraph KERNEL["2. WerrCoreEdge.h (Sıfır-Bellek Sistem-1 Çekirdeği)"]
-        P["Tanjant Düzlemi Projeksiyonu\nDomainGate (0.45/zoom)\nc_eff = (cx + δx) + i(cy + δy)"]
-        T["3-Noktalı Tripod Örnekleme\n{0.60x, 1.00x, 1.60x}\n+ Gaussian CDF Sınır Düzeltmesi"]
-        Q["4-Kadran Ağırlıkları (Q1..Q4)\n+ 4-Tier Gaussian Risk Çekirdeği\n{-0.85, +0.25, +1.15, +2.80}"]
-        B["Cadence Süperkritik Dirgen Çatallanması\n+ Softmax (T=1.25) + GAP-0331 Z/9Z\nSimetrik Kilitlenme Kırıcı"]
-        E["Homeostatik EMA\nDinamik Kalibrasyon\n(α = 0.15)"]
+    subgraph KERNEL ["2. WerrCoreEdge.h (Sıfır-Bellek Sistem-1 Çekirdeği)"]
+        P["Tanjant Düzlemi Projeksiyonu<br/>DomainGate (0.45/zoom)<br/>c_eff = (cx + dx) + i(cy + dy)"]
+        T["3-Noktalı Tripod Örnekleme<br/>(0.60x, 1.00x, 1.60x)<br/>+ Gaussian CDF Sınır Düzeltmesi"]
+        Q["4-Kadran Ağırlıkları (Q1..Q4)<br/>+ 4-Tier Gaussian Risk Çekirdeği<br/>(-0.85, +0.25, +1.15, +2.80)"]
+        B["Cadence Süperkritik Dirgen Çatallanması<br/>+ Softmax (T=1.25) + GAP-0331 Z/9Z<br/>Simetrik Kilitlenme Kırıcı"]
+        E["Homeostatik EMA<br/>Dinamik Kalibrasyon<br/>(alpha = 0.15)"]
     end
 
-    subgraph ACTUATORS["3. Aktüatör & Motor Refleks Katmanı"]
-        A1["Çift DC Motor PWM\n(Pin 5,6,7,8 + PWM 9,10)\nOrantılı Hız & Kavisli Kaçış"]
-        A2["Çift Biyonik Kanat Servosu\n(Pin 9, 10) + Röle (Pin 13)\nFraktal Kanat Kinematikleri"]
-        A3["16x2 LCD Telemetri & Farlar\n(Pin 54..59, Far/Sinyal 48..53)"]
-        A4["6x Bipedal Servo Dizisi\n(Ayak 2,3 Bacak 4,5 Kol 6,7)\nAnti-Brownout Adım & Dans"]
+    subgraph ACTUATORS ["3. Aktüatör ve Motor Refleks Katmanı"]
+        A1["Çift DC Motor PWM<br/>(Pin 5,6,7,8 + PWM 9,10)<br/>Orantılı Hız ve Kavisli Kaçış"]
+        A2["Çift Biyonik Kanat Servosu<br/>(Pin 9, 10) + Röle (Pin 13)<br/>Fraktal Kanat Kinematikleri"]
+        A3["16x2 LCD Telemetri ve Farlar<br/>(Pin 54..59, Far/Sinyal 48..53)"]
+        A4["6x Bipedal Servo Dizisi<br/>(Ayak 2,3 Bacak 4,5 Kol 6,7)<br/>Anti-Brownout Adım ve Dans"]
     end
 
-    S1 & S2 & S3 & S4 --> P
-    P --> T --> Q
+    S1 --> P
+    S2 --> P
+    S3 --> P
+    S4 --> P
+    P --> T
+    T --> Q
     Q --> B
     Q --> E
     E -.->|"Adaptif Eşik"| Q
-    B --> A1 & A2 & A3 & A4
+    B --> A1
+    B --> A2
+    B --> A3
+    B --> A4
 ```
 
 ---
@@ -96,7 +103,7 @@ flowchart LR
 | **Ortogonal Durum `[D, L, R]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | `DomainGate` tanjant projeksiyon kazancını (`0.45/zoom`) ve 4-Katmanlı Gaussian keskinliğini maksimuma (`sharpness = 2.2`) çıkarır. |
 | **`bandwidth` / `cusp_cutoff`** | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `arXiv:1810.11107` Gaussian CDF sınır düzeltmesi ($\omega \in [0.45, 1.0]$) ve kasp sınırı ($u \ge 0.90$). |
 | **`cadence_lambda`** ($\lambda$) | **`0.22`** | **`0.10`** | **`0.25`** | **`0.20`** | **`0.10`** | İnsansı bipedal robotta adım/dönüş kararsızlığını ve köşe tuzaklarını kırmak için kalibre dirgen çatallanması. |
-| **`cadence_alpha`** ($\alpha$) | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | Süperkritik dirgen çatallanmasının kanonik karekök üssü ($|s_i - s_j|^{0.5}$). |
+| **`cadence_alpha`** ($\alpha$) | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | Süperkritik dirgen çatallanmasının kanonik karekök üssü ($\lvert s_i - s_j \rvert^{0.5}$). |
 | **`cadence_beta`** ($\beta$) | **`0.28`** | **`0.15`** | **`0.30`** | **`0.22`** | **`0.15`** | Bipedal robotta sağ/sol adım ve kol salınım kararsızlığını kırmak için dengeli kadran kuplajı. |
 | **`deadlock_threshold`** ($\tau$) | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | En yüksek iki aday arasındaki puan farkı $< 0.85$ olduğunda Cadence çatallanmasını devreye sokar. |
 | **`temp_choice`** ($T$) | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | JevBench ve Master Gauntlet üzerinde doğrulanmış kanonik Softmax olasılık kalibrasyon sıcaklığı. |

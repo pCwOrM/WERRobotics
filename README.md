@@ -59,34 +59,41 @@ Conventional embedded robotics sketches rely on brittle binary thresholds (e.g.,
 
 ```mermaid
 flowchart LR
-    subgraph SENSORS["1. Physical Sensor Layer (Arduino Pins)"]
-        S1["Ultrasonic HC-SR04\n(trig=12, echo=11)\nd(t) & Δd/Δt"]
-        S2["Acoustic Sound Sensor\n(DO=7, AO=A0)\nIntensity & Rhythm Δt"]
-        S3["3-Channel IR Array\n(A6, A7, A8)\nLateral Asymmetry"]
-        S4["LSM303 3-Axis Accelerometer\n(I2C SDA=A4, SCL=A5)\nPosture & Fall Triage"]
+    subgraph SENSORS ["1. Physical Sensor Layer (Arduino Pins)"]
+        S1["Ultrasonic HC-SR04<br/>(trig=12, echo=11)<br/>d(t) and delta-d/dt"]
+        S2["Acoustic Sound Sensor<br/>(DO=7, AO=A0)<br/>Intensity and Rhythm dt"]
+        S3["3-Channel IR Array<br/>(A6, A7, A8)<br/>Lateral Asymmetry"]
+        S4["LSM303 3-Axis Accelerometer<br/>(I2C SDA=A4, SCL=A5)<br/>Posture and Fall Triage"]
     end
 
-    subgraph KERNEL["2. WerrCoreEdge.h (Zero-Memory System-1 Kernel)"]
-        P["Tangent Plane Projection\nDomainGate (0.45/zoom)\nc_eff = (cx + δx) + i(cy + δy)"]
-        T["3-Point Tripod Sampling\n{0.60x, 1.00x, 1.60x}\n+ Gaussian CDF Boundary Correction"]
-        Q["4-Quadrant Weights (Q1..Q4)\n+ 4-Tier Gaussian Risk Kernel\n{-0.85, +0.25, +1.15, +2.80}"]
-        B["Cadence Supercritical Pitchfork\n+ Softmax (T=1.25) + GAP-0331 Z/9Z\nSymmetric Deadlock Breaker"]
-        E["Homeostatic EMA\nDynamic Calibration\n(α = 0.15)"]
+    subgraph KERNEL ["2. WerrCoreEdge.h (Zero-Memory System-1 Kernel)"]
+        P["Tangent Plane Projection<br/>DomainGate (0.45/zoom)<br/>c_eff = (cx + dx) + i(cy + dy)"]
+        T["3-Point Tripod Sampling<br/>(0.60x, 1.00x, 1.60x)<br/>+ Gaussian CDF Boundary Correction"]
+        Q["4-Quadrant Weights (Q1..Q4)<br/>+ 4-Tier Gaussian Risk Kernel<br/>(-0.85, +0.25, +1.15, +2.80)"]
+        B["Cadence Supercritical Pitchfork<br/>+ Softmax (T=1.25) + GAP-0331 Z/9Z<br/>Symmetric Deadlock Breaker"]
+        E["Homeostatic EMA<br/>Dynamic Calibration<br/>(alpha = 0.15)"]
     end
 
-    subgraph ACTUATORS["3. Actuator & Motor Reflex Layer"]
-        A1["Dual DC Motor PWM\n(Pins 5,6,7,8 + PWM 9,10)\nProportional Speed & Agile Vectoring"]
-        A2["Dual Bionic Wing Servos\n(Pins 9, 10) + Relay (Pin 13)\nFractal Wing Kinematics"]
-        A3["16x2 LCD Telemetry & Lights\n(Pins 54..59, Lights 48..53)"]
-        A4["6x Bipedal Servo Array\n(Feet 2,3 Legs 4,5 Arms 6,7)\nAnti-Brownout Step & Dance"]
+    subgraph ACTUATORS ["3. Actuator and Motor Reflex Layer"]
+        A1["Dual DC Motor PWM<br/>(Pins 5,6,7,8 + PWM 9,10)<br/>Proportional Speed and Agile Vectoring"]
+        A2["Dual Bionic Wing Servos<br/>(Pins 9, 10) + Relay (Pin 13)<br/>Fractal Wing Kinematics"]
+        A3["16x2 LCD Telemetry and Lights<br/>(Pins 54..59, Lights 48..53)"]
+        A4["6x Bipedal Servo Array<br/>(Feet 2,3 Legs 4,5 Arms 6,7)<br/>Anti-Brownout Step and Dance"]
     end
 
-    S1 & S2 & S3 & S4 --> P
-    P --> T --> Q
+    S1 --> P
+    S2 --> P
+    S3 --> P
+    S4 --> P
+    P --> T
+    T --> Q
     Q --> B
     Q --> E
     E -.->|"Adaptive Threshold"| Q
-    B --> A1 & A2 & A3 & A4
+    B --> A1
+    B --> A2
+    B --> A3
+    B --> A4
 ```
 
 ---
@@ -103,7 +110,7 @@ Every hyperparameter of `pCwOrM/werr` (`v0.5.1`) has been audited and configured
 | **Orthogonal State `[D, L, R]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | Activates `DomainGate` tangent projection gain (`0.45/zoom`) and maximum 4-Tier Gaussian kernel sharpness (`2.2`). |
 | **`bandwidth` / `cusp_cutoff`** | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `arXiv:1810.11107` Gaussian CDF boundary truncation correction ($\omega \in [0.45, 1.0]$) and near-cusp threshold ($u \ge 0.90$). |
 | **`cadence_lambda`** ($\lambda$) | **`0.22`** | **`0.10`** | **`0.25`** | **`0.20`** | **`0.10`** | Calibrated supercritical pitchfork force on bipedal humanoid to resolve step/sway deadlocks and evade obstacles. |
-| **`cadence_alpha`** ($\alpha$) | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | Canonical square-root pitchfork exponent ($|s_i - s_j|^{0.5}$). |
+| **`cadence_alpha`** ($\alpha$) | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | Canonical square-root pitchfork exponent ($\lvert s_i - s_j \rvert^{0.5}$). |
 | **`cadence_beta`** ($\beta$) | **`0.28`** | **`0.15`** | **`0.30`** | **`0.22`** | **`0.15`** | Balanced fractal quadrant field ($W_{q,i} - W_{q,j}$) coupling for harmonious bipedal step and arm swing coordination. |
 | **`deadlock_threshold`** ($\tau$) | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | Triggers Cadence bifurcation whenever top-1 vs. top-2 candidate score gap is $< 0.85$. |
 | **`temp_choice`** ($T$) | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | Canonical calibrated Softmax temperature validated across JevBench and the Master Gauntlet. |
