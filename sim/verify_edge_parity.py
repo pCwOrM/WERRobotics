@@ -72,6 +72,9 @@ PURPOSE_PROFILES: Dict[str, WerrConfig] = {
     "WERR_CFG_ESP32_CANONICAL": WerrConfig(
         "WERR_CFG_ESP32_CANONICAL", 36, 36, True, True, True, True, 0.12, 0.90, 0.10, 0.50, 0.15, 0.85, 1.25
     ),
+    "WERR_CFG_BIPED_HUMANOID": WerrConfig(
+        "WERR_CFG_BIPED_HUMANOID", 6, 18, True, True, True, True, 0.12, 0.90, 0.20, 0.50, 0.22, 0.85, 1.25
+    ),
 }
 
 

@@ -47,7 +47,7 @@
 
 ## 🌟 Vision & Executive Summary
 
-**`WERRobotics`** is the official **Physical Edge AI & Embedded Robotics** repository of the **WERR** ecosystem, integrating the **[pCwOrM/werr](https://github.com/pCwOrM/werr) (`v0.5.1`)** zero-memory System-1 fractal decision engine and its canonical Mandelbrot boundary seeds ($\partial\mathcal{M}$) directly into bare-metal **8-bit AVR (Arduino Uno / Nano / Mega 2560)** and **32-bit (ESP32 / STM32)** robotic hardware developed in collaboration with **[Prenses Metin (`@PrensesMTN`)](https://github.com/PrensesMTN)**.
+**`WERRobotics`** is the official **Physical Edge AI & Embedded Robotics** repository of the **WERR** ecosystem, integrating the **[pCwOrM/werr](https://github.com/pCwOrM/werr) (`v0.5.1`)** zero-memory System-1 fractal decision engine and its canonical Mandelbrot boundary seeds ($\partial\mathcal{M}$) directly into bare-metal **8-bit AVR (Arduino Uno / Nano / Mega 2560)** and **32-bit (ESP32 / STM32)** robotic hardware developed in collaboration with **[Prenses Metin (`@PrensesMTN`)](https://github.com/PrensesMTN)** and **Burak Salar**.
 
 Conventional embedded robotics sketches rely on brittle binary thresholds (e.g., `if (distance > 15)`) and blind blocking delays (`delay(400)`), which suffer from nodal deadlocks in symmetric corners and noisy environments. Conversely, conventional TinyML neural networks struggle to fit weight tensors into the `2 KB SRAM` of an Arduino Uno (`ATmega328P`).
 
@@ -63,6 +63,7 @@ flowchart LR
         S1["Ultrasonic HC-SR04\n(trig=12, echo=11)\nd(t) & Δd/Δt"]
         S2["Acoustic Sound Sensor\n(DO=7, AO=A0)\nIntensity & Rhythm Δt"]
         S3["3-Channel IR Array\n(A6, A7, A8)\nLateral Asymmetry"]
+        S4["LSM303 3-Axis Accelerometer\n(I2C SDA=A4, SCL=A5)\nPosture & Fall Triage"]
     end
 
     subgraph KERNEL["2. WerrCoreEdge.h (Zero-Memory System-1 Kernel)"]
@@ -77,14 +78,15 @@ flowchart LR
         A1["Dual DC Motor PWM\n(Pins 5,6,7,8 + PWM 9,10)\nProportional Speed & Agile Vectoring"]
         A2["Dual Bionic Wing Servos\n(Pins 9, 10) + Relay (Pin 13)\nFractal Wing Kinematics"]
         A3["16x2 LCD Telemetry & Lights\n(Pins 54..59, Lights 48..53)"]
+        A4["6x Bipedal Servo Array\n(Feet 2,3 Legs 4,5 Arms 6,7)\nAnti-Brownout Step & Dance"]
     end
 
-    S1 & S2 & S3 --> P
+    S1 & S2 & S3 & S4 --> P
     P --> T --> Q
     Q --> B
     Q --> E
     E -.->|"Adaptive Threshold"| Q
-    B --> A1 & A2 & A3
+    B --> A1 & A2 & A3 & A4
 ```
 
 ---
@@ -93,18 +95,18 @@ flowchart LR
 
 Every hyperparameter of `pCwOrM/werr` (`v0.5.1`) has been audited and configured into four purpose-built profiles inside [`src/WerrCoreEdge/WerrCoreEdge.h`](src/WerrCoreEdge/WerrCoreEdge.h) tailored to the exact physical mission of each robotic platform:
 
-| Parameter (`WerrConfig`) | `WERR_CFG_OBSTACLE_REFLEX` (`werr_engelden_kacan`) | `WERR_CFG_BIONIC_KINEMATICS` (`werr_kelebek_biyonik`) | `WERR_CFG_MARKET_ROUTER` (`werr_alisveris_robotu`) | `WERR_CFG_ESP32_CANONICAL` (ESP32 / STM32 / Server) | Rationale & Existential Alignment |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **`resolution`** (Grid) | **`6`** ($6\times 6=36$) | **`12`** ($12\times 12=144$) | **`6`** ($6\times 6=36$) | **`36`** ($36\times 36=1296$) | `<1.2 ms` high-frequency reflex loop with Tesla 3-6-9 harmonic symmetry ($36$ pixels) for wheeled collision avoidance; $144$ pixels for smooth bionic wing sweep angles. |
-| **`max_iter`** (Depth) | **`18`** ($2 \times 9$) | **`36`** ($4 \times 9$) | **`18`** ($2 \times 9$) | **`36`** ($4 \times 9$) | Exact multiples of $9$ ($\mathbb{Z}/9\mathbb{Z}$ alignment). Canonical `36` iterations for biomimetic servo gliding; `18` iterations for fast obstacle reflex loops. |
-| **`tripod`** (`{0.6, 1.0, 1.6}`) | **`true`** | **`true`** | **`true`** | **`true`** | 3-Point Multi-Scale sampling with weights `{0.25, 0.50, 0.25}` prevents single-scale fractal aliasing. |
-| **Orthogonal State `[D, L, R]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | Activates `DomainGate` tangent projection gain (`0.45/zoom`) and maximum 4-Tier Gaussian kernel sharpness (`2.2`). |
-| **`bandwidth` / `cusp_cutoff`** | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `arXiv:1810.11107` Gaussian CDF boundary truncation correction ($\omega \in [0.45, 1.0]$) and near-cusp threshold ($u \ge 0.90$). |
-| **`cadence_lambda`** ($\lambda$) | **`0.22`** | **`0.10`** | **`0.25`** | **`0.10`** | Reinforced supercritical pitchfork force on wheeled robots to immediately break symmetric wall/junction deadlocks. |
-| **`cadence_alpha`** ($\alpha$) | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | Canonical square-root pitchfork exponent ($|s_i - s_j|^{0.5}$). |
-| **`cadence_beta`** ($\beta$) | **`0.28`** | **`0.15`** | **`0.30`** | **`0.15`** | Elevated fractal quadrant field ($W_{q,i} - W_{q,j}$) coupling for decisive left/right evasion symmetry breaking. |
-| **`deadlock_threshold`** ($\tau$) | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | Triggers Cadence bifurcation whenever top-1 vs. top-2 candidate score gap is $< 0.85$. |
-| **`temp_choice`** ($T$) | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | Canonical calibrated Softmax temperature validated across JevBench and the Master Gauntlet. |
+| Parameter (`WerrConfig`) | `WERR_CFG_OBSTACLE_REFLEX` (`werr_engelden_kacan`) | `WERR_CFG_BIONIC_KINEMATICS` (`werr_kelebek_biyonik`) | `WERR_CFG_MARKET_ROUTER` (`werr_alisveris_robotu`) | `WERR_CFG_BIPED_HUMANOID` (`werr_teknobot`) | `WERR_CFG_ESP32_CANONICAL` (ESP32 / STM32 / Server) | Rationale & Existential Alignment |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`resolution`** (Grid) | **`6`** ($6\times 6=36$) | **`12`** ($12\times 12=144$) | **`6`** ($6\times 6=36$) | **`6`** ($6\times 6=36$) | **`36`** ($36\times 36=1296$) | `<1.2 ms` high-frequency reflex loop with Tesla 3-6-9 harmonic symmetry ($36$ pixels) for wheeled & bipedal robotics; $144$ pixels for smooth bionic wing sweep angles. |
+| **`max_iter`** (Depth) | **`18`** ($2 \times 9$) | **`36`** ($4 \times 9$) | **`18`** ($2 \times 9$) | **`18`** ($2 \times 9$) | **`36`** ($4 \times 9$) | Exact multiples of $9$ ($\mathbb{Z}/9\mathbb{Z}$ alignment). Canonical `36` iterations for biomimetic servo gliding; `18` iterations for fast bipedal humanoid & obstacle reflex loops. |
+| **`tripod`** (`{0.6, 1.0, 1.6}`) | **`true`** | **`true`** | **`true`** | **`true`** | **`true`** | 3-Point Multi-Scale sampling with weights `{0.25, 0.50, 0.25}` prevents single-scale fractal aliasing. |
+| **Orthogonal State `[D, L, R]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | **`[1, 1, 1]`** | Activates `DomainGate` tangent projection gain (`0.45/zoom`) and maximum 4-Tier Gaussian kernel sharpness (`2.2`). |
+| **`bandwidth` / `cusp_cutoff`** | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `0.12` / `0.90` | `arXiv:1810.11107` Gaussian CDF boundary truncation correction ($\omega \in [0.45, 1.0]$) and near-cusp threshold ($u \ge 0.90$). |
+| **`cadence_lambda`** ($\lambda$) | **`0.22`** | **`0.10`** | **`0.25`** | **`0.20`** | **`0.10`** | Calibrated supercritical pitchfork force on bipedal humanoid to resolve step/sway deadlocks and evade obstacles. |
+| **`cadence_alpha`** ($\alpha$) | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | **`0.50`** | Canonical square-root pitchfork exponent ($|s_i - s_j|^{0.5}$). |
+| **`cadence_beta`** ($\beta$) | **`0.28`** | **`0.15`** | **`0.30`** | **`0.22`** | **`0.15`** | Balanced fractal quadrant field ($W_{q,i} - W_{q,j}$) coupling for harmonious bipedal step and arm swing coordination. |
+| **`deadlock_threshold`** ($\tau$) | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | **`0.85`** | Triggers Cadence bifurcation whenever top-1 vs. top-2 candidate score gap is $< 0.85$. |
+| **`temp_choice`** ($T$) | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | **`1.25`** | Canonical calibrated Softmax temperature validated across JevBench and the Master Gauntlet. |
 
 ---
 
@@ -112,11 +114,11 @@ Every hyperparameter of `pCwOrM/werr` (`v0.5.1`) has been audited and configured
 
 | C++ Constant (`werr::`) | Seed Name | Real ($c_x$) | Imag ($c_y$) | Zoom | Threshold | Robotics Role & Firmware Binding |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| `WERR_SEED_UNIVERSAL_CUSP` | `universal_cusp` | `-0.74364389` | `+0.13182590` | `50.0` | `0.50` | **Seahorse Valley Universal Cusp**: Acoustic pulse & inter-clap rhythm triage ([`werr_kelebek_biyonik.ino`](firmware/werr_kelebek_biyonik/werr_kelebek_biyonik.ino)). |
-| `WERR_SEED_IOT_SAFETY` | `iot_safety` | `-0.74500000` | `+0.11200000` | `85.0` | `0.50` | **IoT Life & Collision Safety**: Real-time proximity $d(t)$ & closing rate $\Delta d/\Delta t$ hazard triage ([`werr_engelden_kacan.ino`](firmware/werr_engelden_kacan/werr_engelden_kacan.ino)). |
+| `WERR_SEED_UNIVERSAL_CUSP` | `universal_cusp` | `-0.74364389` | `+0.13182590` | `50.0` | `0.50` | **Seahorse Valley Universal Cusp**: Acoustic pulse, rhythm triage & Moonwalk dance trigger ([`werr_kelebek_biyonik.ino`](firmware/werr_kelebek_biyonik/werr_kelebek_biyonik.ino) & [`werr_teknobot.ino`](firmware/werr_teknobot/werr_teknobot.ino)). |
+| `WERR_SEED_IOT_SAFETY` | `iot_safety` | `-0.74500000` | `+0.11200000` | `85.0` | `0.50` | **IoT Life & Collision Safety**: Real-time proximity $d(t)$ & closing rate $\Delta d/\Delta t$ hazard triage ([`werr_engelden_kacan.ino`](firmware/werr_engelden_kacan/werr_engelden_kacan.ino) & [`werr_teknobot.ino`](firmware/werr_teknobot/werr_teknobot.ino)). |
 | `WERR_SEED_GAME_COMBAT` | `game_combat` | `-0.74450000` | `+0.12500000` | `65.0` | `0.50` | **Tactical Evasion & Reflex Vectoring**: 4-Tier Gaussian Risk Kernel routing between Cruise, Agile Left, Agile Right, and Emergency Pivot ([`werr_engelden_kacan.ino`](firmware/werr_engelden_kacan/werr_engelden_kacan.ino)). |
-| `WERR_SEED_SMART_ROUTER` | `smart_router` | `-0.10109636` | `+0.95628651` | `45.0` | `0.50` | **Balanced 4-Quadrant Router**: Biomimetic wing kinematics ([`werr_kelebek_biyonik.ino`](firmware/werr_kelebek_biyonik/werr_kelebek_biyonik.ino)) & 3-sensor autonomous line/market routing ([`werr_alisveris_robotu.ino`](firmware/werr_alisveris_robotu/werr_alisveris_robotu.ino)). |
-| `WERR_SEED_SECURITY_GUARD` | `security_guard` | `-0.74364389` | `+0.13182590` | `120.0` | `0.50` | High-sensitivity boundary guard & hardware interlock protection. |
+| `WERR_SEED_SMART_ROUTER` | `smart_router` | `-0.10109636` | `+0.95628651` | `45.0` | `0.50` | **Balanced 4-Quadrant Router**: Biomimetic wing kinematics, line routing, and bipedal humanoid step/breathing sway ([`werr_teknobot.ino`](firmware/werr_teknobot/werr_teknobot.ino)). |
+| `WERR_SEED_SECURITY_GUARD` | `security_guard` | `-0.74364389` | `+0.13182590` | `120.0` | `0.50` | **Posture & Fall Safety**: LSM303 3-axis accelerometer tilt & fall triage ([`werr_teknobot.ino`](firmware/werr_teknobot/werr_teknobot.ino)). |
 | `WERR_SEED_RISK_EVALUATOR` | `risk_evaluator` | `-0.75000000` | `+0.10000000` | `25.0` | `0.50` | Smooth gradient velocity and priority ranking. |
 | `WERR_SEED_FINANCIAL_RISK` | `financial_risk` | `-0.74800000` | `+0.06500000` | `60.0` | `0.50` | Battery / current-draw circuit breaker protection. |
 | `WERR_SEED_ECOMMERCE_FRAUD` | `ecommerce_fraud` | `-0.74950000` | `+0.08200000` | `70.0` | `0.50` | Sensor anomaly & ultrasonic false-echo outlier filtering. |
@@ -144,6 +146,24 @@ Every hyperparameter of `pCwOrM/werr` (`v0.5.1`) has been audited and configured
 | **Downstroke / Upstroke Profile** | Static coefficients `3 + (1 - sin)*8` & `8 + (1 - sin)*12` | **Q1 ratio** modulates downstroke thrust speed; **Q2 ratio** modulates upstroke soaring glide. |
 | **Spontaneous Idle Rest** | Fixed `5000 ms` (`otomatikhareketSuresi`) | Inspired by *WerrSoma* GABAergic homeostasis, **Q4 ratio** modulates resting intervals organically between `3500 ms` and `7000 ms`. |
 | **Harmonic Burst Mode** | None | **GAP-0331 $\mathbb{Z}/9\mathbb{Z}$** sub-ideal $I_3 = \{0, 3, 6\}$ (`MODE_TESLA_HARMONIC`) triggers resonant double-flap bursts on every 3rd/6th/9th cycle. |
+
+### 3. Autonomous Shopping & Line-Tracking Robot (`alisveris_roboti.ino` $\to$ `werr_alisveris_robotu.ino`)
+
+| Feature | Baseline Sketch (`raw/alisveris_roboti`) | WERR Edge AI Firmware (`firmware/werr_alisveris_robotu`) |
+| :--- | :--- | :--- |
+| **Tracking Geometry** | Binary `if-else` cascades across 3 analog IR pins | Projects 3-point sensor vector onto `WERR_SEED_SMART_ROUTER` 4 quadrants for smooth continuous heading. |
+| **Corner Deadlocks** | Prone to symmetric junction stalls | Cadence pitchfork bifurcation dynamically breaks symmetric multi-way branch hesitation. |
+| **Telemetry & Telematics** | Static text flickering on LCD | Real-time 16x2 LCD telemetry displaying WERR speed, heading, and indicator states. |
+
+### 4. 6-Servo Bipedal Humanoid Robot (`TeknoBotv4_ino.ino` $\to$ `werr_teknobot.ino`) (Authored by Burak Salar)
+
+| Feature | Baseline Sketch (`raw/teknobot/TeknoBotv4_ino.ino`) | WERR Edge AI Firmware (`firmware/werr_teknobot/werr_teknobot.ino`) |
+| :--- | :--- | :--- |
+| **Fall & Posture Detection** | Rigid threshold `abs(x) > 6.0`; false-trips on walking step acceleration | `WERR_SEED_SECURITY_GUARD` dynamic Euclidean norm deviation triage; immune to step vibrations while detecting true falls and tilts |
+| **Servo Current Spike (Brownout)** | All 6 servos commanded simultaneously, triggering 5V rail voltage sag & MCU reboot | Micro-staggered servo write queue (`werrStaggeredWrite`, 4ms phase delay); dampens inrush current surge by >40% |
+| **Locomotion & Dance Execution** | Blocking `delay(400)` loops; robot blind/deaf for up to 1.76s during steps | Fully non-blocking event-driven FSM; sensors sampled at 100 Hz while executing smooth bipedal walking & Moonwalk dance |
+| **Acoustic Clap Sensitivity** | Fixed raw analog threshold (`855 +/- 70`); drifts with ambient room noise | Homeostatic EMA background noise floor tracking + `WERR_SEED_UNIVERSAL_CUSP` rhythmic resonance |
+| **Autonomous Evasion Reflex** | Blind reverse + right turn with blocking delays | Non-blocking `WERR_SEED_IOT_SAFETY` proximity triage with smooth step-away gait |
 
 ---
 
@@ -174,6 +194,8 @@ The comparative matrix below is verified by a **10,000-step realistic Monte Carl
 | **Bionic Wing Kinematics (Butterfly)** | Artificial static `0° - 130°` mechanical sweep | Mandelbrot phase-modulated ($115^\circ - 140^\circ$) adaptive glide | **🦋 True Biomimetic Organic Flight Mechanics** |
 | **Acoustic / Clap Noise Sensitivity** | Binary digital trigger prone to ambient room noise | Homeostatic EMA dynamic floor + Cusp boundary seed resonance | **🎵 Noise-Immune Intelligent Clapping Rhythm** |
 | **Line & Market Navigation Routing** | Jerky stop-and-go steps with blocking `delay` | Smooth Smart-Router 4-quadrant field + 16x2 LCD telemetry | **🛒 Fluid, Continuous Autonomous Tracking** |
+| **Bipedal Humanoid Balance (Teknobot)** | Rigid accelerometer thresholds; false alarms during normal steps | `WERR_SEED_SECURITY_GUARD` dynamic posture & fall protection | **🤖 Stable Balance & Zero False Fall Alarms** |
+| **Servo Reset Protection (Anti-Brownout)** | 6 servos simultaneous draw causes 5V rail brownout / MCU reset | Phase-staggered micro-offset servo writes (inrush surge <-40%) | **⚡ Zero Brownout Hardware Resets** |
 
 ---
 
@@ -187,10 +209,11 @@ WERRobotics/
 ├── library.properties                        # Arduino IDE library metadata (WerrCoreEdge v0.5.1)
 ├── keywords.txt                              # Arduino IDE syntax coloring map
 ├── assets/                                   # Official WERR & answerr vector logos and banners
-├── raw/                                      # [PHASE 0] Unmodified Baseline Robotics Sketches (@PrensesMTN)
+├── raw/                                      # [PHASE 0] Unmodified Baseline Robotics Sketches (@PrensesMTN & Burak Salar)
 │   ├── engeldenkacan/engeldenkacan.ino       # HC-SR04 + Dual DC Motor obstacle avoidance baseline
 │   ├── kelebek/kelebek.ino                   # Acoustic double-clap + Dual Servo bionic butterfly baseline
 │   ├── alisveris_roboti/alisveris_roboti.ino # 3-sensor + 16x2 LCD autonomous shopping robot baseline
+│   ├── teknobot/TeknoBotv4_ino.ino           # 6-servo bipedal humanoid with LSM303, HC-SR04, sound & LDR (Burak Salar)
 │   ├── distance_counting/distance_counting.ino # NewPing + I2C LCD ultrasonic distance meter
 │   └── robot_el_backend/main.py              # ESP32-CAM + MediaPipe WebSocket robotic hand backend
 ├── src/
@@ -201,8 +224,10 @@ WERRobotics/
 │   │   └── werr_engelden_kacan.ino           # iot_safety + game_combat + 4-Tier Gaussian & Cadence Robot
 │   ├── werr_kelebek_biyonik/
 │   │   └── werr_kelebek_biyonik.ino          # universal_cusp + smart_router + 4-Quadrant Bionic Butterfly
-│   └── werr_alisveris_robotu/
-│       └── werr_alisveris_robotu.ino         # smart_router + LCD Telemetry Autonomous Market Robot
+│   ├── werr_alisveris_robotu/
+│   │   └── werr_alisveris_robotu.ino         # smart_router + LCD Telemetry Autonomous Market Robot
+│   └── werr_teknobot/
+│       └── werr_teknobot.ino                 # 6-servo bipedal humanoid with 4 WERR seeds & anti-brownout
 ├── sim/                                      # [PHASE 3] Hardware-in-the-Loop (HIL) Parity & Trajectory Suite
 │   ├── verify_edge_parity.py                 # Python <-> C++ kernel parity & closed-loop simulator
 │   └── hil_verification_report.json          # Sealed simulation & GAP-0331 verification output
@@ -242,7 +267,7 @@ WERRobotics/
 This repository, its embedded C/C++11 header kernel (`WerrCoreEdge.h`), and its reflex decision algorithms are governed by the **[Business Source License 1.1 (BSL 1.1)](LICENSE)** under the corporate and industrial intellectual property protection of **ITouch Systems (`ITOUCH BİLİŞİM SİSTEMLERİ MÜHENDİSLİK DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ`)**:
 
 1. **Non-Commercial Academic & Research Grant:** All source code, fractal boundary algorithms, and hardware-in-the-loop (HIL) verification proofs are open to transparent academic, educational, student robotics (e.g., TEKNOFEST), and peer-reviewed scientific verification.
-2. **Authorship & Attribution:** Authorship and contributor rights (`@pCwOrM`, `@PrensesMTN`, Dr. Zerrin Dağlı, Dağhan Dağlı), WERR corpus citations, and **ITouch Systems** corporate notices must always be preserved.
+2. **Authorship & Attribution:** Authorship and contributor rights (`@pCwOrM`, `@PrensesMTN`, Burak Salar, Dr. Zerrin Dağlı, Dağhan Dağlı), WERR corpus citations, and **ITouch Systems** corporate notices must always be preserved.
 3. **ITouch Systems Commercial & Patent Protection (BSL 1.1):** Any commercial hardware deployment, mass-manufactured robotics product, hosted SaaS, or paid cloud/edge service requires an express written Commercial Enterprise License from **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.). Procedural synthesis and neuromorphic interfacing mechanisms are protected by **TÜRKPATENT TR 2026/016285** and **TR 2026/016633** (Change Date to Apache 2.0: **2030-01-01**).
 - **Commercial & Institutional Inquiries:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Teknokent - Adana, Türkiye) via [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
 
@@ -258,4 +283,4 @@ This repository, its embedded C/C++11 header kernel (`WerrCoreEdge.h`), and its 
 | **Official Wallet (Binance)** | TRC20 (TRON) | `TLMhaDJTVYBHBSGJ9nCQGLvqnYFPSBgLJu` |
 | **Official Corporate Entity** | Teknokent | ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ. (Çukurova Teknokent) |
 
-* **Lead Author & Architect:** **Volkan Dağlı** ([@pCwOrM](https://github.com/pCwOrM)) | **Robotics Contributor:** **Prenses Metin** ([@PrensesMTN](https://github.com/PrensesMTN)) | **Co-Authors:** **Zerrin Dağlı**, **Dağhan Dağlı**
+* **Lead Author & Architect:** **Volkan Dağlı** ([@pCwOrM](https://github.com/pCwOrM)) | **Robotics Contributors:** **Prenses Metin** ([@PrensesMTN](https://github.com/PrensesMTN)), **Burak Salar** | **Co-Authors:** **Zerrin Dağlı**, **Dağhan Dağlı**

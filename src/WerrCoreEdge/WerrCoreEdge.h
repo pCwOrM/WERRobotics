@@ -203,6 +203,30 @@ static const WerrConfig WERR_CFG_ESP32_CANONICAL = {
     1.25f   // temp_choice
 };
 
+/**
+ * Profile 5: WERR_CFG_BIPED_HUMANOID (werr_teknobot.ino)
+ * Purpose: Multi-Sensor bipedal companion robot (Otto / Teknobot humanoid).
+ *   - Real-time fusion of Posture (LSM303), Proximity (HC-SR04), Light (LDR), and Sound.
+ *   - res=6 (6x6 = 36 pixels, Tesla 3-6-9 harmonic, ultra-fast 1.15ms reflex loop).
+ *   - max_iter=18 (2x9 depth for real-time ATmega328P Bare-Metal responsiveness).
+ *   - tripod=true, [1,1,1] sharpness=2.2, Cadence (lambda=0.20, alpha=0.50, beta=0.22).
+ */
+static const WerrConfig WERR_CFG_BIPED_HUMANOID = {
+    6,      // resolution
+    18,     // max_iter
+    true,   // tripod
+    true,   // enable_domain
+    true,   // enable_lexical
+    true,   // enable_resonance
+    0.12f,  // bandwidth
+    0.90f,  // cusp_cutoff
+    0.20f,  // cadence_lambda
+    0.50f,  // cadence_alpha
+    0.22f,  // cadence_beta
+    0.85f,  // deadlock_threshold
+    1.25f   // temp_choice
+};
+
 // ============================================================================
 // 3. DATA STRUCTURES FOR EDGE REFLEX DECISIONS
 // ============================================================================

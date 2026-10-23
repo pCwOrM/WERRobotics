@@ -57,3 +57,29 @@ Bu doküman, `WERRobotics` deposundaki tüm robotik yazılımların (`raw/` ve `
 | `solSin`, `sagSin` | **D53, D49** | `OUTPUT` | Sol ve sağ dönüş sinyalleri |
 | `solSen`, `ortSen`, `sagSen` | **A6, A7, A8** | `INPUT` | Sol, orta ve sağ kızılötesi engel/çizgi sensörleri |
 | `lcd` | **D54..D59 (A0..A5)** | `OUTPUT` | 16x2 paralel LCD ekran pinleri |
+
+---
+
+## 4. İki Ayaklı İnsansı Eşlikçi Robot: Teknobot (`TeknoBotv4_ino.ino` & `werr_teknobot.ino`)
+
+- **Hedef Kart**: Arduino Uno / Arduino Nano (`ATmega328P`)
+- **Orijinal Donanım Tasarımı**: Burak Salar (`TeknoBotv4_ino.ino`)
+- **Sensörler**: LSM303 3-Eksen İvmeölçer (I2C), HC-SR04 Ultrasonik, LDR Işık, Analog Ses Sensörü, Buzzer
+- **Aktüatörler**: 6x SG90 / MG90S Mikro Servo Motor (2 Ayak + 2 Bacak/Kalça + 2 Kol)
+
+| Bileşen / Sinyal | Arduino Pini | Mod | Açıklama |
+| :--- | :---: | :---: | :--- |
+| `solAyak` | **D2 (PWM)** | `SERVO` | Sol ayak bileği eğim servosu (Merkez: `90°`) |
+| `sagAyak` | **D3 (PWM)** | `SERVO` | Sağ ayak bileği eğim servosu (Merkez: `90°`) |
+| `solBacak` | **D4 (PWM)** | `SERVO` | Sol bacak/kalça adım servosu (Merkez: `90°`) |
+| `sagBacak` | **D5 (PWM)** | `SERVO` | Sağ bacak/kalça adım servosu (Merkez: `90°`) |
+| `solKol` | **D6 (PWM)** | `SERVO` | Sol kol servosu (Nötr: `45°`, Kapalı: `15°`, Yukarı: `145°`) |
+| `sagKol` | **D7 (PWM)** | `SERVO` | Sağ kol servosu (Nötr: `135°`, Kapalı: `165°`, Yukarı: `35°`) |
+| `trigPin` | **D8** | `OUTPUT` | HC-SR04 ultrasonik tetikleme darbesi |
+| `echoPin` | **D9** | `INPUT` | HC-SR04 ultrasonik yankı okuma |
+| `buzzerPin` | **D13** | `OUTPUT` | Piezo buzzer ses ve alarm çıkışı |
+| `ldrPin` | **A0** | `INPUT` | LDR ortam ışığı analog sensör girişi |
+| `sesPin` | **A1** | `INPUT` | Analog mikrofon ses şiddeti sensör girişi |
+| `LSM303 SDA` | **A4** | `I2C` | LSM303 ivmeölçer I2C veri hattı |
+| `LSM303 SCL` | **A5** | `I2C` | LSM303 ivmeölçer I2C saat hattı |
+

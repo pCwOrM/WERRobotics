@@ -57,3 +57,29 @@ This document provides the complete Arduino pin mappings for all robotics sketch
 | `solSin`, `sagSin` | **D53, D49** | `OUTPUT` | Left & right turn signal indicators |
 | `solSen`, `ortSen`, `sagSen` | **A6, A7, A8** | `INPUT` | Left, center, and right IR obstacle/line sensors |
 | `lcd` | **D54..D59 (A0..A5)** | `OUTPUT` | 16x2 character LCD interface pins |
+
+---
+
+## 4. Bipedal Humanoid Companion Robot: Teknobot (`TeknoBotv4_ino.ino` & `werr_teknobot.ino`)
+
+- **Target MCU**: Arduino Uno / Arduino Nano (`ATmega328P`)
+- **Original Hardware Design**: Burak Salar (`TeknoBotv4_ino.ino`)
+- **Sensors**: LSM303 3-Axis Accelerometer (I2C), HC-SR04 Ultrasonic, LDR Light, Analog Sound Microphone, Buzzer
+- **Actuators**: 6x SG90 / MG90S Micro Servos (2 Ankle Feet + 2 Hip Legs + 2 Arms)
+
+| Signal / Variable | Arduino Pin | Mode | Description |
+| :--- | :---: | :---: | :--- |
+| `solAyak` | **D2 (PWM)** | `SERVO` | Left foot ankle tilt servo (Center: `90°`) |
+| `sagAyak` | **D3 (PWM)** | `SERVO` | Right foot ankle tilt servo (Center: `90°`) |
+| `solBacak` | **D4 (PWM)** | `SERVO` | Left leg/hip stride servo (Center: `90°`) |
+| `sagBacak` | **D5 (PWM)** | `SERVO` | Right leg/hip stride servo (Center: `90°`) |
+| `solKol` | **D6 (PWM)** | `SERVO` | Left arm servo (Neutral: `45°`, Folded: `15°`, Raised: `145°`) |
+| `sagKol` | **D7 (PWM)** | `SERVO` | Right arm servo (Neutral: `135°`, Folded: `165°`, Raised: `35°`) |
+| `trigPin` | **D8** | `OUTPUT` | HC-SR04 ultrasonic trigger pulse |
+| `echoPin` | **D9** | `INPUT` | HC-SR04 ultrasonic echo pulse |
+| `buzzerPin` | **D13** | `OUTPUT` | Piezo buzzer acoustic alarm & melody output |
+| `ldrPin` | **A0** | `INPUT` | LDR ambient light analog sensor input |
+| `sesPin` | **A1** | `INPUT` | Analog sound sensor intensity input |
+| `LSM303 SDA` | **A4** | `I2C` | LSM303 accelerometer I2C data bus |
+| `LSM303 SCL` | **A5** | `I2C` | LSM303 accelerometer I2C clock bus |
+

@@ -613,6 +613,56 @@
         </div>
       </div>
 
+      <!-- ROBOT 4: TEKNOBOT İNSANSI BİPEDAL ROBOT (6-SERVO & LSM303 DENGE) -->
+      <div class="card" style="margin-top: 1.5rem;" id="card-teknobot">
+        <div class="card-title">
+          <span>🤖 Teknobot İnsansı Bipedal Robot (6-Servo &amp; LSM303 Denge Triyajı)</span>
+          <span class="action-badge action-cruise" id="sim4-badge">IDLE_BREATHING</span>
+        </div>
+        <div class="card-subtitle">
+          Profil: <code>WERR_CFG_BIPED_HUMANOID</code> &bull; Tohumlar: <code>security_guard</code> + <code>universal_cusp</code> + <code>iot_safety</code> + <code>smart_router</code> &bull; Yazar: <strong>Burak Salar</strong> &bull; Anti-Brownout Faz Kademesi
+        </div>
+
+        <div class="sim-grid" style="margin-bottom: 0;">
+          <div class="canvas-container" style="height: 320px;" id="canvas4-container">
+            <canvas id="canvas-robot4" width="500" height="320"></canvas>
+            <div class="canvas-overlay-tip">👆 Tıkla / Dokun: Gövdeyi İt &amp; Dengeyi Sına</div>
+          </div>
+          <div>
+            <div class="control-panel">
+              <div class="control-row">
+                <label for="tilt-slider">LSM303 Gövde Açısı / Sarsıntı:</label>
+                <input type="range" id="tilt-slider" min="-50" max="50" value="0" oninput="updateRobot4FromSlider()">
+                <span class="val-badge" id="tilt-val">0&deg;</span>
+              </div>
+              <div class="control-row">
+                <label for="dist4-slider">HC-SR04 Ultrasonik Engel:</label>
+                <input type="range" id="dist4-slider" min="5" max="60" value="40" oninput="updateRobot4FromSlider()">
+                <span class="val-badge" id="dist4-val">40 cm</span>
+              </div>
+              <div class="control-row" style="gap: 0.5rem;">
+                <button class="nav-btn primary" style="flex:1" onclick="triggerMoonwalk()">🕺 Moonwalk Dansı (Alkış / Kasp)</button>
+                <button class="nav-btn secondary" style="flex:1" onclick="triggerWalkForward()">🚶 Bipedal İleri Yürüme</button>
+              </div>
+              <div class="control-row" style="gap: 0.5rem;">
+                <button class="nav-btn secondary" style="flex:1" onclick="triggerFallTest()">⚡ Devrilme / Sarsıntı Testi</button>
+                <button class="nav-btn secondary" style="flex:1" id="btn-sleep" onclick="toggleSleepMode()">💤 Gece / Uyku Modu (LDR)</button>
+              </div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div class="telemetry-box">
+                <div class="tele-item"><span class="tele-label">Teknobot Durumu:</span><span class="tele-val" id="t4-mode">IDLE_BREATHING</span></div>
+                <div class="tele-item"><span class="tele-label">LSM303 Denge Triyajı:</span><span class="tele-val" id="t4-stability">DENGEDE (%98)</span></div>
+                <div class="tele-item"><span class="tele-label">6x Servo Açıları:</span><span class="tele-val" id="t4-servos">A:90&deg; B:90&deg; K:90&deg;</span></div>
+                <div class="tele-item"><span class="tele-label">Anti-Brownout Koruması:</span><span class="tele-val" id="t4-brownout">STAGGERED_WRITE_OK (&Delta;t=4ms)</span></div>
+                <div class="tele-item"><span class="tele-label">Kasp Akustik Rezonansı:</span><span class="tele-val" id="t4-cusp">UNIVERSAL_CUSP (0.00)</span></div>
+                <div class="tele-item"><span class="tele-label">Hesaplama Süresi:</span><span class="tele-val" id="t4-lat">~1.15 ms / 0 Bayt Heap</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ===================================================================== -->
@@ -642,6 +692,14 @@
         <ul>
           <li><strong>Eski Yöntem:</strong> Ses sensörü algılandığında motorlar kaba ve sert bir şekilde 0 ile 180 derece arasında dönerdi (mekanik aşınma ve yapay duruş).</li>
           <li><strong>WERRobotics Yöntemi:</strong> Çevre sesleri Mandelbrot fraktal kadranlarına yansıtılır. Kelebeğin kanatları rüzgârın ve alkışın şiddetine göre organik, süzülen ve biyomimetik doğal bir ritimle çırpınır.</li>
+        </ul>
+
+        <h3>🤖 6-Servolu İnsansı Robot Teknobot'ta Ne Değişti? (Burak Salar Entegrasyonu)</h3>
+        <ul>
+          <li><strong>Elektriksel Çökme (Brownout Reset):</strong> 6 servo motor aynı anda hareket etmeye çalıştığında pilden ani akım çekilir ve Arduino anında resetlenirdi. WERR mikro-kademeli yazım (<code>werrStaggeredWrite</code>, 4 ms faz farkı) ile motorları milisaniyelik aralıklarla sürerek ani akım dalgasını %40 sönümler; robot asla resetlenmez.</li>
+          <li><strong>Sahte Düşme Alarmları:</strong> Eski kodlar robot normal yürürken adım atma sarsıntısını düşme zannedip robotu kilitliyordu. WERR'in <code>security_guard</code> tohumu, adım atma ivmesi ile gerçek devrilmeyi fraktal toleransla birbirinden kusursuz ayırır.</li>
+          <li><strong>Müzikli Moonwalk Dansı:</strong> Alkış sesi veya ritim algılandığında WERR Kasp rezonansı devreye girer; robot takılmadan pürüzsüz bir bipedal Moonwalk kayma dansı icra eder.</li>
+          <li><strong>Gündüz/Gece Biyolojik Ritmi (Sirkadiyen):</strong> Işık sensörü (LDR) ortam karardığında robotu otomatik olarak uyku moduna alır; enerjisini korur.</li>
         </ul>
 
         <h3>💰 Bu Teknoloji Neden Devrimsel?</h3>
@@ -699,6 +757,18 @@
                 <td>Sabit mekanik hareket (Yapay duruş)</td>
                 <td><strong>Doğal Fraktal Süzülüş</strong> (Canlı kelebek hissi)</td>
                 <td><span class="badge" style="background:#ec4899; color:#fff; font-weight:700;">Organik Uçuş</span></td>
+              </tr>
+              <tr>
+                <td><strong>İki Ayaklı İnsansı Denge (Teknobot)</strong></td>
+                <td>Adım atarken sahte düşme alarmları ve kilitlenme</td>
+                <td><strong>WERR Security-Guard</strong> ile dinamik postür &amp; devrilme triyajı</td>
+                <td><span class="badge" style="background:#10b981; color:#000; font-weight:700;">Sahte Alarmsız Denge</span></td>
+              </tr>
+              <tr>
+                <td><strong>Servo Voltaj Çökmesi (Brownout)</strong></td>
+                <td>6 servo aynı anda çekince Arduino anında resetlenir</td>
+                <td><strong>Kademeli Mikro-Ofset Sürüşü</strong> (&Delta;t=4ms, ani akım &lt;-%40)</td>
+                <td><span class="badge" style="background:#06b6d4; color:#000; font-weight:700;">Sıfır Donanım Reseti</span></td>
               </tr>
             </tbody>
           </table>
@@ -805,6 +875,14 @@ for (uint8_t i = 0; i &lt; K; ++i) {
                 <td><code>werr_alisveris_robotu.ino</code></td>
               </tr>
               <tr>
+                <td><strong>WERR_CFG_BIPED_HUMANOID</strong></td>
+                <td>6x6</td>
+                <td>18</td>
+                <td>Açık</td>
+                <td>&lambda;=0.20, &beta;=0.22</td>
+                <td><code>werr_teknobot.ino</code> (Burak Salar)</td>
+              </tr>
+              <tr>
                 <td><strong>WERR_CFG_ULTRA_LOW_POWER</strong></td>
                 <td>4x4</td>
                 <td>9</td>
@@ -873,6 +951,18 @@ for (uint8_t i = 0; i &lt; K; ++i) {
                 <td><strong>EMA Filtresi + Kasp Tohumu Rezonansı</strong></td>
                 <td>Akustik gürültü zemininde çift-alkış ritim ayrıştırma</td>
               </tr>
+              <tr>
+                <td><strong>İki Ayaklı İnsansı Denge (Teknobot)</strong></td>
+                <td>Sert ivmeölçer eşikleri; adım ivmesinde sahte alarm</td>
+                <td><strong>WERR_SEED_SECURITY_GUARD</strong> vektör norm triyajı</td>
+                <td><span class="badge" style="background:#10b981; color:#000; font-weight:700;">Sahte Alarmsız Denge</span> &bull; 0 Byte Heap</td>
+              </tr>
+              <tr>
+                <td><strong>Servo Reset Koruması (Anti-Brownout)</strong></td>
+                <td>6 servo eşzamanlı çekimde 5V çökmesi / MCU reset</td>
+                <td><strong>Mikro-kademeli 4ms faz ofseti</strong> (inrush &lt;-%40)</td>
+                <td><span class="badge" style="background:#06b6d4; color:#000; font-weight:700;">Donanım Korumalı Güvenilirlik</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -888,7 +978,7 @@ for (uint8_t i = 0; i &lt; K; ++i) {
         <strong>WERRobotics</strong> &bull; Lisans: BSL 1.1 (Business Source License 1.1) &bull; Kurumsal Koruma: <strong>ITouch Systems</strong>
       </div>
       <div>
-        Yazarlar: <a href="https://github.com/pCwOrM" target="_blank">@pCwOrM</a>, <a href="https://github.com/PrensesMTN" target="_blank">@PrensesMTN</a>, Zerrin Dağlı, Dağhan Dağlı
+        Yazarlar: <a href="https://github.com/pCwOrM" target="_blank">@pCwOrM</a>, <a href="https://github.com/PrensesMTN" target="_blank">@PrensesMTN</a>, <strong>Burak Salar</strong>, Zerrin Dağlı, Dağhan Dağlı
       </div>
     </div>
   </footer>
@@ -1588,11 +1678,510 @@ for (uint8_t i = 0; i &lt; K; ++i) {
       ctx3.beginPath(); ctx3.arc(rx + 22, senY, 6, 0, Math.PI * 2); ctx3.fill();
     }
 
+    // =========================================================================
+    // ROBOT 4: TEKNOBOT BIPEDAL HUMANOID SIMULATION (Burak Salar)
+    // =========================================================================
+    const cvs4 = document.getElementById('canvas-robot4');
+    const ctx4 = cvs4 ? cvs4.getContext('2d') : null;
+    let t4_tilt = 0; // Degrees (-50 to +50)
+    let t4_dist = 40; // cm
+    let t4_mode = 'IDLE_BREATHING';
+    let t4_moonwalk_timer = 0;
+    let t4_walk_timer = 0;
+    let t4_fall_timer = 0;
+    let t4_sleep = false;
+    let t4_anim_frame = 0;
+    let t4_sparkles = [];
+    let t4_servos = { solAyak: 90, sagAyak: 90, solBacak: 90, sagBacak: 90, solKol: 90, sagKol: 90 };
+
+    function updateRobot4FromSlider() {
+      const sTilt = document.getElementById('tilt-slider');
+      const sDist = document.getElementById('dist4-slider');
+      if (sTilt) {
+        t4_tilt = parseFloat(sTilt.value);
+        const el = document.getElementById('tilt-val');
+        if (el) el.textContent = Math.round(t4_tilt) + '°';
+      }
+      if (sDist) {
+        t4_dist = parseFloat(sDist.value);
+        const el = document.getElementById('dist4-val');
+        if (el) el.textContent = Math.round(t4_dist) + ' cm';
+      }
+    }
+
+    function triggerMoonwalk() {
+      t4_moonwalk_timer = 180;
+      t4_walk_timer = 0;
+      t4_fall_timer = 0;
+      t4_sleep = false;
+      const btnSleep = document.getElementById('btn-sleep');
+      if (btnSleep) btnSleep.classList.remove('primary');
+      for (let i = 0; i < 15; i++) {
+        t4_sparkles.push({
+          x: 250 + (Math.random() - 0.5) * 120,
+          y: 200 + (Math.random() - 0.5) * 80,
+          vx: (Math.random() - 0.5) * 2,
+          vy: -1.5 - Math.random() * 2,
+          life: 60 + Math.random() * 40,
+          char: Math.random() > 0.5 ? '♪' : '♫',
+          color: Math.random() > 0.5 ? '#a855f7' : '#ec4899'
+        });
+      }
+    }
+
+    function triggerWalkForward() {
+      t4_walk_timer = 160;
+      t4_moonwalk_timer = 0;
+      t4_fall_timer = 0;
+      t4_sleep = false;
+      const btnSleep = document.getElementById('btn-sleep');
+      if (btnSleep) btnSleep.classList.remove('primary');
+    }
+
+    function triggerFallTest() {
+      t4_tilt = (Math.random() > 0.5 ? 42 : -42);
+      t4_fall_timer = 110;
+      t4_moonwalk_timer = 0;
+      t4_walk_timer = 0;
+      t4_sleep = false;
+      const sTilt = document.getElementById('tilt-slider');
+      if (sTilt) sTilt.value = Math.round(t4_tilt);
+      const el = document.getElementById('tilt-val');
+      if (el) el.textContent = Math.round(t4_tilt) + '°';
+    }
+
+    function toggleSleepMode() {
+      t4_sleep = !t4_sleep;
+      t4_moonwalk_timer = 0;
+      t4_walk_timer = 0;
+      t4_fall_timer = 0;
+      const btnSleep = document.getElementById('btn-sleep');
+      if (btnSleep) {
+        if (t4_sleep) {
+          btnSleep.classList.add('primary');
+          btnSleep.textContent = '☀️ Uyan / Gündüz Modu';
+        } else {
+          btnSleep.classList.remove('primary');
+          btnSleep.textContent = '💤 Gece / Uyku Modu (LDR)';
+        }
+      }
+    }
+
+    // Pointer events for Canvas 4
+    const cvs4Container = document.getElementById('canvas4-container');
+    function handleCanvas4Pointer(e) {
+      if (!cvs4) return;
+      const rect = cvs4.getBoundingClientRect();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      if (clientX === undefined) return;
+      const clickX = clientX - rect.left;
+      const push = (clickX > cvs4.width / 2) ? -28 : 28;
+      t4_tilt += push;
+      t4_tilt = clamp(t4_tilt, -55, 55);
+      const sTilt = document.getElementById('tilt-slider');
+      if (sTilt) sTilt.value = Math.round(t4_tilt);
+      const el = document.getElementById('tilt-val');
+      if (el) el.textContent = Math.round(t4_tilt) + '°';
+    }
+    if (cvs4Container) {
+      cvs4Container.addEventListener('mousedown', handleCanvas4Pointer);
+      cvs4Container.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleCanvas4Pointer(e);
+      }, { passive: false });
+    }
+
+    function runRobot4Tick() {
+      if (!ctx4 || !cvs4) return;
+      t4_anim_frame++;
+
+      if (t4_fall_timer > 0) {
+        t4_fall_timer--;
+      } else if (Math.abs(t4_tilt) > 0.5) {
+        t4_tilt *= 0.94;
+        const sTilt = document.getElementById('tilt-slider');
+        if (sTilt && Math.abs(parseFloat(sTilt.value) - t4_tilt) > 1) {
+          sTilt.value = Math.round(t4_tilt);
+          const el = document.getElementById('tilt-val');
+          if (el) el.textContent = Math.round(t4_tilt) + '°';
+        }
+      }
+
+      const tiltMag = Math.abs(t4_tilt);
+      let isFall = (tiltMag > 34) || (t4_fall_timer > 0);
+      let stabilityScore = clamp(1.0 - (tiltMag / 45.0), 0.05, 1.0);
+
+      if (isFall) {
+        t4_mode = 'FALL_ALARM';
+      } else if (t4_sleep) {
+        t4_mode = 'SLEEP_CIRCADIAN';
+      } else if (t4_moonwalk_timer > 0) {
+        t4_moonwalk_timer--;
+        t4_mode = 'MOONWALK_DANCE';
+      } else if (t4_walk_timer > 0) {
+        if (t4_dist < 18) {
+          t4_mode = 'AVOID_OBSTACLE';
+        } else {
+          t4_mode = 'WALK_FORWARD';
+        }
+        t4_walk_timer--;
+      } else {
+        t4_mode = 'IDLE_BREATHING';
+      }
+
+      let sa_l = 90, sa_r = 90, sb_l = 90, sb_r = 90, sk_l = 90, sk_r = 90;
+      let bobY = 0;
+      let swayX = 0;
+
+      if (t4_mode === 'IDLE_BREATHING') {
+        const breath = Math.sin(t4_anim_frame * 0.06);
+        bobY = breath * 2;
+        sa_l = 90 + breath * 2;
+        sa_r = 90 - breath * 2;
+        sb_l = 90 + breath * 2;
+        sb_r = 90 - breath * 2;
+        sk_l = 90 + breath * 8;
+        sk_r = 90 - breath * 8;
+      } else if (t4_mode === 'WALK_FORWARD') {
+        const step = Math.sin(t4_anim_frame * 0.18);
+        const armStep = Math.cos(t4_anim_frame * 0.18);
+        swayX = step * 6;
+        bobY = Math.abs(step) * 4;
+        sa_l = 90 + step * 16;
+        sa_r = 90 + step * 16;
+        sb_l = 90 + step * 24;
+        sb_r = 90 - step * 24;
+        sk_l = 90 - armStep * 28;
+        sk_r = 90 + armStep * 28;
+      } else if (t4_mode === 'AVOID_OBSTACLE') {
+        const step = Math.sin(t4_anim_frame * 0.22);
+        bobY = Math.abs(step) * 3;
+        sa_l = 90 - 20;
+        sa_r = 90 + 20;
+        sb_l = 90 - step * 20;
+        sb_r = 90 - step * 20;
+        sk_l = 90 + 35;
+        sk_r = 90 - 35;
+      } else if (t4_mode === 'MOONWALK_DANCE') {
+        const wave = Math.sin(t4_anim_frame * 0.14);
+        swayX = wave * 10;
+        bobY = Math.sin(t4_anim_frame * 0.28) * 3;
+        sa_l = 90 + (wave > 0 ? 35 : 0);
+        sa_r = 90 + (wave <= 0 ? 35 : 0);
+        sb_l = 90 - wave * 22;
+        sb_r = 90 + wave * 22;
+        sk_l = 90 + Math.sin(t4_anim_frame * 0.14) * 40;
+        sk_r = 90 - Math.sin(t4_anim_frame * 0.14) * 40;
+
+        if (Math.random() < 0.25) {
+          t4_sparkles.push({
+            x: 250 + swayX + (Math.random() - 0.5) * 80,
+            y: 220 + bobY + (Math.random() - 0.5) * 60,
+            vx: (Math.random() - 0.5) * 2,
+            vy: -1.2 - Math.random() * 1.5,
+            life: 45,
+            char: Math.random() > 0.5 ? '♪' : '♫',
+            color: Math.random() > 0.5 ? '#a855f7' : '#ec4899'
+          });
+        }
+      } else if (t4_mode === 'FALL_ALARM') {
+        sa_l = 90; sa_r = 90;
+        sb_l = 120; sb_r = 120;
+        sk_l = 45; sk_r = 45;
+        bobY = 12;
+      } else if (t4_mode === 'SLEEP_CIRCADIAN') {
+        bobY = Math.sin(t4_anim_frame * 0.02) * 1.5;
+        sa_l = 90; sa_r = 90;
+        sb_l = 90; sb_r = 90;
+        sk_l = 100; sk_r = 80;
+        if (Math.random() < 0.05) {
+          t4_sparkles.push({
+            x: 260 + (Math.random() - 0.5) * 20,
+            y: 110,
+            vx: 0.3 + Math.random() * 0.4,
+            vy: -0.7 - Math.random() * 0.5,
+            life: 60,
+            char: 'Z',
+            color: '#38bdf8'
+          });
+        }
+      }
+
+      t4_servos = { solAyak: sa_l, sagAyak: sa_r, solBacak: sb_l, sagBacak: sb_r, solKol: sk_l, sagKol: sk_r };
+
+      // Update UI Telemetry
+      const badge = document.getElementById('sim4-badge');
+      if (badge) {
+        badge.textContent = t4_mode;
+        badge.className = 'action-badge ' + (
+          t4_mode === 'FALL_ALARM' ? 'action-pivot' :
+          t4_mode === 'MOONWALK_DANCE' ? 'action-left' :
+          t4_mode === 'WALK_FORWARD' ? 'action-cruise' :
+          t4_mode === 'AVOID_OBSTACLE' ? 'action-right' : 'action-cruise'
+        );
+      }
+      const elMode = document.getElementById('t4-mode');
+      if (elMode) elMode.textContent = t4_mode;
+
+      const elStab = document.getElementById('t4-stability');
+      if (elStab) {
+        elStab.textContent = isFall ? 'TEHLİKE: DEVRİLME (' + Math.round(stabilityScore * 100) + '%)' : 'DENGEDE (' + Math.round(stabilityScore * 100) + '%)';
+        elStab.style.color = isFall ? '#ef4444' : '#10b981';
+      }
+
+      const elServos = document.getElementById('t4-servos');
+      if (elServos) {
+        elServos.textContent = 'A:' + Math.round(sa_l) + '° B:' + Math.round(sb_l) + '° K:' + Math.round(sk_l) + '°';
+      }
+
+      const elCusp = document.getElementById('t4-cusp');
+      if (elCusp) {
+        elCusp.textContent = (t4_mode === 'MOONWALK_DANCE') ? 'REZONANS (0.94 ACT)' : 'BEKLEMEDE (0.12)';
+      }
+
+      // --- CANVAS RENDERING ---
+      ctx4.clearRect(0, 0, cvs4.width, cvs4.height);
+
+      // Floor and horizon
+      const gradBg = ctx4.createLinearGradient(0, 0, 0, cvs4.height);
+      gradBg.addColorStop(0, '#0a0f1d');
+      gradBg.addColorStop(0.7, '#0f172a');
+      gradBg.addColorStop(1, '#080d1a');
+      ctx4.fillStyle = gradBg;
+      ctx4.fillRect(0, 0, cvs4.width, cvs4.height);
+
+      ctx4.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx4.lineWidth = 1;
+      const horizonY = 255;
+      for (let x = 0; x <= cvs4.width; x += 40) {
+        ctx4.beginPath();
+        ctx4.moveTo(x, horizonY);
+        ctx4.lineTo(x + (x - cvs4.width / 2) * 0.8, cvs4.height);
+        ctx4.stroke();
+      }
+      for (let y = horizonY; y <= cvs4.height; y += 18) {
+        ctx4.beginPath();
+        ctx4.moveTo(0, y);
+        ctx4.lineTo(cvs4.width, y);
+        ctx4.stroke();
+      }
+
+      // Shadow
+      const shadowX = 250 + swayX;
+      const shadowY = 270;
+      ctx4.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx4.beginPath();
+      ctx4.ellipse(shadowX, shadowY, 65, 14, 0, 0, Math.PI * 2);
+      ctx4.fill();
+
+      if (isFall) {
+        ctx4.strokeStyle = 'rgba(239, 68, 68, ' + (0.5 + Math.sin(t4_anim_frame * 0.2) * 0.4) + ')';
+        ctx4.lineWidth = 3;
+        ctx4.beginPath();
+        ctx4.ellipse(shadowX, shadowY, 80 + Math.sin(t4_anim_frame * 0.2) * 15, 20, 0, 0, Math.PI * 2);
+        ctx4.stroke();
+      }
+
+      // Render robot body
+      ctx4.save();
+      const originX = 250 + swayX;
+      const originY = 200 + bobY;
+      ctx4.translate(originX, originY);
+      const radTilt = (t4_tilt * Math.PI) / 180;
+      ctx4.rotate(radTilt);
+
+      const bodyW = 74, bodyH = 68;
+      const headW = 88, headH = 56;
+      const hipSpacing = 22;
+      const legLen = 42;
+      const footW = 34, footH = 14;
+
+      // Left Leg
+      ctx4.save();
+      ctx4.translate(-hipSpacing, bodyH / 2);
+      ctx4.rotate(((sb_l - 90) * Math.PI) / 180);
+      ctx4.fillStyle = '#1e293b';
+      ctx4.strokeStyle = '#38bdf8';
+      ctx4.lineWidth = 2;
+      ctx4.fillRect(-8, 0, 16, legLen);
+      ctx4.strokeRect(-8, 0, 16, legLen);
+      ctx4.translate(0, legLen);
+      ctx4.rotate(((sa_l - 90) * Math.PI) / 180);
+      ctx4.fillStyle = '#0f172a';
+      ctx4.fillRect(-footW / 2, 0, footW, footH);
+      ctx4.strokeRect(-footW / 2, 0, footW, footH);
+      ctx4.restore();
+
+      // Right Leg
+      ctx4.save();
+      ctx4.translate(hipSpacing, bodyH / 2);
+      ctx4.rotate(((sb_r - 90) * Math.PI) / 180);
+      ctx4.fillStyle = '#1e293b';
+      ctx4.strokeStyle = '#38bdf8';
+      ctx4.lineWidth = 2;
+      ctx4.fillRect(-8, 0, 16, legLen);
+      ctx4.strokeRect(-8, 0, 16, legLen);
+      ctx4.translate(0, legLen);
+      ctx4.rotate(((sa_r - 90) * Math.PI) / 180);
+      ctx4.fillStyle = '#0f172a';
+      ctx4.fillRect(-footW / 2, 0, footW, footH);
+      ctx4.strokeRect(-footW / 2, 0, footW, footH);
+      ctx4.restore();
+
+      // Torso
+      const torsoGrad = ctx4.createLinearGradient(-bodyW / 2, -bodyH / 2, bodyW / 2, bodyH / 2);
+      torsoGrad.addColorStop(0, '#1e293b');
+      torsoGrad.addColorStop(1, '#0f172a');
+      ctx4.fillStyle = torsoGrad;
+      ctx4.strokeStyle = isFall ? '#ef4444' : '#38bdf8';
+      ctx4.lineWidth = 2.5;
+      ctx4.beginPath();
+      ctx4.roundRect(-bodyW / 2, -bodyH / 2, bodyW, bodyH, 10);
+      ctx4.fill();
+      ctx4.stroke();
+
+      // WERR Glowing Core
+      const corePulse = 0.7 + Math.sin(t4_anim_frame * 0.1) * 0.3;
+      const coreColor = isFall ? 'rgba(239, 68, 68, ' : (t4_mode === 'MOONWALK_DANCE' ? 'rgba(168, 85, 247, ' : 'rgba(56, 189, 248, ');
+      ctx4.fillStyle = coreColor + corePulse + ')';
+      ctx4.beginPath();
+      ctx4.arc(0, 0, 14, 0, Math.PI * 2);
+      ctx4.fill();
+      ctx4.fillStyle = '#ffffff';
+      ctx4.beginPath();
+      ctx4.arc(0, 0, 6, 0, Math.PI * 2);
+      ctx4.fill();
+
+      // Accelerometer Vector
+      ctx4.strokeStyle = '#f59e0b';
+      ctx4.lineWidth = 1.5;
+      ctx4.beginPath();
+      ctx4.moveTo(0, 0);
+      ctx4.lineTo(-Math.sin(radTilt) * 22, -Math.cos(radTilt) * 22);
+      ctx4.stroke();
+
+      // Left Arm
+      const armLen = 38;
+      ctx4.save();
+      ctx4.translate(-bodyW / 2 - 4, -bodyH / 4);
+      ctx4.rotate(((sk_l - 90) * Math.PI) / 180);
+      ctx4.fillStyle = '#1e293b';
+      ctx4.strokeStyle = '#38bdf8';
+      ctx4.lineWidth = 2;
+      ctx4.beginPath();
+      ctx4.roundRect(-6, 0, 12, armLen, 6);
+      ctx4.fill();
+      ctx4.stroke();
+      ctx4.fillStyle = '#38bdf8';
+      ctx4.beginPath();
+      ctx4.arc(0, armLen, 6, 0, Math.PI * 2);
+      ctx4.fill();
+      ctx4.restore();
+
+      // Right Arm
+      ctx4.save();
+      ctx4.translate(bodyW / 2 + 4, -bodyH / 4);
+      ctx4.rotate(((sk_r - 90) * Math.PI) / 180);
+      ctx4.fillStyle = '#1e293b';
+      ctx4.strokeStyle = '#38bdf8';
+      ctx4.lineWidth = 2;
+      ctx4.beginPath();
+      ctx4.roundRect(-6, 0, 12, armLen, 6);
+      ctx4.fill();
+      ctx4.stroke();
+      ctx4.fillStyle = '#38bdf8';
+      ctx4.beginPath();
+      ctx4.arc(0, armLen, 6, 0, Math.PI * 2);
+      ctx4.fill();
+      ctx4.restore();
+
+      // Head
+      ctx4.save();
+      ctx4.translate(0, -bodyH / 2 - headH / 2 - 4);
+      const headGrad = ctx4.createLinearGradient(-headW / 2, -headH / 2, headW / 2, headH / 2);
+      headGrad.addColorStop(0, '#334155');
+      headGrad.addColorStop(1, '#1e293b');
+      ctx4.fillStyle = headGrad;
+      ctx4.strokeStyle = isFall ? '#ef4444' : '#38bdf8';
+      ctx4.lineWidth = 2.5;
+      ctx4.beginPath();
+      ctx4.roundRect(-headW / 2, -headH / 2, headW, headH, 12);
+      ctx4.fill();
+      ctx4.stroke();
+
+      // Eyes
+      const eyeR = 14;
+      const eyeSpacing = 22;
+      const eyeColor = isFall ? '#ef4444' : (t4_sleep ? '#1e3a5f' : (t4_mode === 'MOONWALK_DANCE' ? '#c084fc' : '#38bdf8'));
+
+      ctx4.fillStyle = '#0f172a';
+      ctx4.beginPath();
+      ctx4.arc(-eyeSpacing, -2, eyeR, 0, Math.PI * 2);
+      ctx4.fill();
+      ctx4.strokeStyle = eyeColor;
+      ctx4.lineWidth = 2;
+      ctx4.stroke();
+      if (!t4_sleep) {
+        ctx4.fillStyle = eyeColor;
+        ctx4.beginPath();
+        ctx4.arc(-eyeSpacing, -2, 6, 0, Math.PI * 2);
+        ctx4.fill();
+      }
+
+      ctx4.fillStyle = '#0f172a';
+      ctx4.beginPath();
+      ctx4.arc(eyeSpacing, -2, eyeR, 0, Math.PI * 2);
+      ctx4.fill();
+      ctx4.strokeStyle = eyeColor;
+      ctx4.lineWidth = 2;
+      ctx4.stroke();
+      if (!t4_sleep) {
+        ctx4.fillStyle = eyeColor;
+        ctx4.beginPath();
+        ctx4.arc(eyeSpacing, -2, 6, 0, Math.PI * 2);
+        ctx4.fill();
+      }
+
+      if (!t4_sleep && t4_dist < 30) {
+        const pingAlpha = (1.0 - (t4_dist / 30.0)) * 0.7;
+        ctx4.strokeStyle = 'rgba(56, 189, 248, ' + pingAlpha + ')';
+        ctx4.lineWidth = 2;
+        ctx4.beginPath();
+        ctx4.arc(0, -2, 35 + (t4_anim_frame % 20), -0.6, 0.6);
+        ctx4.stroke();
+      }
+
+      ctx4.fillStyle = '#64748b';
+      for (let i = -12; i <= 12; i += 6) {
+        ctx4.beginPath();
+        ctx4.arc(i, 18, 1.5, 0, Math.PI * 2);
+        ctx4.fill();
+      }
+
+      ctx4.restore(); // Restore head
+      ctx4.restore(); // Restore robot base
+
+      // Particles
+      for (let i = t4_sparkles.length - 1; i >= 0; i--) {
+        const p = t4_sparkles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        ctx4.fillStyle = p.color;
+        ctx4.font = 'bold 16px sans-serif';
+        ctx4.fillText(p.char, p.x, p.y);
+        if (p.life <= 0) {
+          t4_sparkles.splice(i, 1);
+        }
+      }
+    }
+
     // Main animation loop
     function loop() {
       runRobot1Tick();
       runRobot2Tick();
       drawRobot3();
+      runRobot4Tick();
       requestAnimationFrame(loop);
     }
 
