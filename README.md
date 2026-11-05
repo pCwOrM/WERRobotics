@@ -341,7 +341,7 @@ This repository, its embedded C/C++11 header kernel (`WerrCoreEdge.h`), and its 
 1. **Non-Commercial Academic & Research Grant:** All source code, fractal boundary algorithms, and hardware-in-the-loop (HIL) verification proofs are open to transparent academic, educational, student robotics (e.g., TEKNOFEST), and peer-reviewed scientific verification.
 2. **Authorship & Attribution:** Authorship and contributor rights (`@pCwOrM`, `@PrensesMTN`, Burak Salar, Dr. Zerrin Dağlı, Dağhan Dağlı), WERR corpus citations, and **ITouch Systems** corporate notices must always be preserved.
 3. **ITouch Systems Commercial & Patent Protection (BSL 1.1):** Any commercial hardware deployment, mass-manufactured robotics product, hosted SaaS, or paid cloud/edge service requires an express written Commercial Enterprise License from **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.). Procedural synthesis and neuromorphic interfacing mechanisms are protected by **TÜRKPATENT TR 2026/016285** and **TR 2026/016633** (Change Date to Apache 2.0: **2030-01-01**).
-- **Commercial & Institutional Inquiries:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Teknokent - Adana, Türkiye) via [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
+- **Commercial & Institutional Inquiries:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Cukurova University Science Park - Adana, Türkiye) via [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
 
 ---
 
@@ -353,6 +353,6 @@ This repository, its embedded C/C++11 header kernel (`WerrCoreEdge.h`), and its 
 | Channel / Platform | Network | Receiving Address |
 | :--- | :--- | :--- |
 | **Official Wallet (Binance)** | TRC20 (TRON) | `TLMhaDJTVYBHBSGJ9nCQGLvqnYFPSBgLJu` |
-| **Official Corporate Entity** | Teknokent | ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ. (Çukurova Teknokent) |
+| **Official Corporate Entity** | Teknokent | ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ. (Cukurova University Science Park) |
 
 * **Lead Author & Architect:** **Volkan Dağlı** ([@pCwOrM](https://github.com/pCwOrM)) | **Robotics Contributors:** **Prenses Metin** ([@PrensesMTN](https://github.com/PrensesMTN)), **Burak Salar** | **Co-Authors:** **Zerrin Dağlı**, **Dağhan Dağlı**

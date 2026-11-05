@@ -152,7 +152,7 @@ Bu depo, gömülü C/C++11 çekirdek kütüphanesi (`WerrCoreEdge.h`) ve refleks
 1. **Akademik, Eğitim ve Bilimsel Araştırma İzni (Non-Commercial Grant):** Kodlar, fraktal karar motoru ve donanım-döngüde (HIL) doğrulama testleri kâr amacı gütmeyen akademik araştırmalara, üniversite eğitimine, öğrenci robotik yarışmalarına (örn. TEKNOFEST) ve hakemli bilimsel doğrulamaya tamamen açıktır.
 2. **Liyakat ve Atıf Hakkı:** Geliştirici ve katkıcı hakları (`@pCwOrM`, `@PrensesMTN`, Burak Salar, Dr. Zerrin Dağlı, Dağhan Dağlı), WERR külliyatı atıf zinciri ve **ITouch Systems** kurumsal fikri mülkiyet şerhi korunmalıdır.
 3. **Ticari ve Endüstriyel Kısıtlama (BSL 1.1):** Kodların ticari bir robotik ürün, seri üretim donanım yazılımı, SaaS platformu veya ücretli bulut/uç API servisi olarak sunulması; **ITouch Systems** (ITouch Bilişim Sistemleri Ltd. Şti.) resmi yazılı Ticari Lisans (*Commercial Enterprise License*) alınmasını gerektirir. Prosedürel karar algoritmaları ve nöromorfik arayüz mimarileri **TÜRKPATENT TR 2026/016285** ve **TR 2026/016633** patent başvuruları ile korunmaktadır (Apache 2.0 Dönüşüm Tarihi: **01.01.2030**).
-- **Kurumsal İletişim & Lisanslama:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Teknokent - Adana, Türkiye) &bull; E-Posta: [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
+- **Kurumsal İletişim & Lisanslama:** **ITouch Systems** (MERSİS: `0469094455800001`, VKN: `4690944558`, Sanayi Sicil: `827254`, Çukurova Üniversitesi Teknokent - Adana, Türkiye) &bull; E-Posta: [info@itouch.com.tr](mailto:info@itouch.com.tr) &bull; [ask@answerr.me](mailto:ask@answerr.me) &bull; KEP: `itouchbilisim@hs01.kep.tr` &bull; [answerr.me](https://answerr.me).
 
 ---
 
@@ -164,4 +164,4 @@ Bu depo, gömülü C/C++11 çekirdek kütüphanesi (`WerrCoreEdge.h`) ve refleks
 | Kanal / Platform | Ağ (Network) | Alıcı Cüzdan Adresi |
 | :--- | :--- | :--- |
 | **Resmi Cüzdan (Binance)** | TRC20 (TRON) | `TLMhaDJTVYBHBSGJ9nCQGLvqnYFPSBgLJu` |
-| **Resmi Tüzel Kişilik** | Teknokent | ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ. (Çukurova Teknokent) |
+| **Resmi Tüzel Kişilik** | Teknokent | ITOUCH BİLİŞİM SİSTEMLERİ LTD. ŞTİ. (Çukurova Üniversitesi Teknokent) |
