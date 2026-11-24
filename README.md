@@ -43,6 +43,24 @@
 > - 📐 **[Türkçe Edge AI Mimari ve Optimum Parametre Kılavuzu (`docs/WERR_EDGE_ARCHITECTURE_TR.md`)](docs/WERR_EDGE_ARCHITECTURE_TR.md)**: Tanjant düzlemi projeksiyonu, 3-Noktalı Tripod, 4-Katmanlı Gaussian Risk Çekirdeği, Cadence Süperkritik Dirgen Çatallanması, GAP-0331 $\mathbb{Z}/9\mathbb{Z}$ (ZMod 9 Principal Ideal I_3 = {0, 3, 6}) modüler cebiri ve her robot için seçilen optimum `WerrConfig` parametrelerinin teknik gerekçeleri.
 > - 🔌 **[Türkçe Donanım Pin Bağlantıları ve Devre Rehberi (`docs/HARDWARE_PINOUT_AND_WIRING_TR.md`)](docs/HARDWARE_PINOUT_AND_WIRING_TR.md)**: Engelden Kaçan Robot, Biyonik Kelebek ve Otonom Market Robotu için eksiksiz Arduino bacak (pin) tabloları.
 
+<p align="center">
+  <img src="assets/demo.gif" alt="WERRobotics Edge AI Parity Demo" width="820" />
+</p>
+
+## ⚡ 30-Second Quick Start
+
+```bash
+git clone https://github.com/pCwOrM/WERRobotics.git && cd WERRobotics
+python sim/verify_edge_parity.py
+```
+
+**Observed Output:**
+```text
+GAP-0331 Status: PASSED | Units: {1: 1, 2: 5, 4: 7, 5: 2, 7: 4, 8: 8}
+  Profile [WERR_CFG_OBSTACLE_REFLEX  ] -> res= 6x6  | iter=18 | Tripod=True
+  Seed [smart_router   ] -> S=2.152 | P(noul)=0.606 | DomQ=Q1
+```
+
 ---
 
 ## 🌟 Vision & Executive Summary
