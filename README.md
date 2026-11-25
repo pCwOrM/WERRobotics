@@ -61,6 +61,14 @@ GAP-0331 Status: PASSED | Units: {1: 1, 2: 5, 4: 7, 5: 2, 7: 4, 8: 8}
   Seed [smart_router   ] -> S=2.152 | P(noul)=0.606 | DomQ=Q1
 ```
 
+## 🧠 Codebase Knowledge Graph & Call-Flow
+
+<p align="center">
+  <img src="assets/architecture_graph.svg" alt="WERRobotics Codebase Knowledge Graph" width="860" />
+</p>
+
+> Explore the interactive AST dependency graph ([`docs/architecture/graph.html`](docs/architecture/graph.html)) or the Mermaid call-flow explorer ([`docs/architecture/callflow.html`](docs/architecture/callflow.html)), generated deterministically via `graphify`.
+
 ---
 
 ## 🌟 Vision & Executive Summary

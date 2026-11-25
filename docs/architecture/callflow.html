@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WERRobotics — Complete Call Flow &amp; Architecture Documentation</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8;
+  --warn: #fbbf24; --err: #f87171; --ok: #34d399;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+h1 { font-size: 2.4rem; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+h2 { font-size: 1.7rem; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+h3 { font-size: 1.25rem; margin: 32px 0 12px; color: var(--accent); }
+h4 { font-size: 1.05rem; margin: 20px 0 8px; color: var(--warn); }
+p { margin: 8px 0; color: var(--muted); }
+.subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 32px; }
+.mermaid { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; overflow-x: auto; position: relative; }
+.mermaid.is-enhanced { padding: 0; overflow: hidden; min-height: 260px; }
+.mermaid-viewport { padding: 54px 24px 24px; overflow: hidden; cursor: grab; touch-action: none; min-height: 260px; }
+.mermaid-viewport.is-dragging { cursor: grabbing; }
+.mermaid-viewport svg { max-width: none !important; height: auto; transform-origin: 0 0; transition: transform 120ms ease; }
+.mermaid-toolbar { position: absolute; top: 10px; right: 10px; z-index: 3; display: flex; align-items: center; gap: 6px; padding: 6px; background: rgba(15,23,42,0.92); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+.mermaid-toolbar button, .mermaid-toolbar .zoom-level { height: 28px; min-width: 32px; border: 1px solid var(--border); border-radius: 6px; background: #1e293b; color: var(--text); font: 600 0.78rem system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; }
+.mermaid-toolbar button { cursor: pointer; }
+.mermaid-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+.mermaid-toolbar .zoom-level { min-width: 52px; color: var(--muted); background: transparent; }
+.call-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92rem; }
+.call-table th { background: #1a2744; color: var(--accent); text-align: left; padding: 10px 14px; border: 1px solid var(--border); }
+.call-table td { padding: 8px 14px; border: 1px solid var(--border); vertical-align: top; }
+.call-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+.tag-async { background: #7c3aed33; color: #a78bfa; }
+.tag-class { background: #05966933; color: var(--ok); }
+.tag-func { background: #2563eb33; color: var(--accent); }
+.tag-cmd { background: #d9770633; color: var(--warn); }
+.tag-endpoint { background: #dc262633; color: var(--err); }
+.tag-hook { background: #db277733; color: #f472b6; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin: 16px 0; }
+.arrow-chain { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--accent); padding: 10px; background: rgba(56,189,248,0.06); border-radius: 6px; }
+code { font-family: 'Fira Code', 'Cascadia Code', monospace; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-size: 0.88em; }
+ul, ol { margin: 8px 0 8px 24px; color: var(--muted); }
+li { margin: 4px 0; }
+a { color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+.nav { position: sticky; top: 0; background: var(--bg); z-index: 10; padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.9rem; }
+.nav a { text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+@media (max-width: 768px) { .container { padding: 16px; } h1 { font-size: 1.8rem; } }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>WERRobotics — Complete Call Flow &amp; Architecture Documentation</h1>
+<p class="subtitle">Generated from graphify knowledge graph: 192 nodes, 236 edges, 12 communities. Commit: 25d2a43</p>
+
+<div class="nav">
+    <a href="#overview">Architecture Overview</a>
+    <a href="#build-graph">Graph Build</a>
+    <a href="#cli-skills">CLI &amp; Skill Installers</a>
+    <a href="#werrcoreedge-h">WerrCoreEdge.h</a>
+    <a href="#werrconfig">WerrConfig</a>
+    <a href="#pages-yml">pages.yml</a>
+    <a href="#steps">steps</a>
+    <a href="#werrpatchmetrics">WerrPatchMetrics</a>
+</div>
+
+<!-- ====== Architecture Overview ====== -->
+<h2 id="overview">1. Architecture Overview</h2>
+
+<div class="mermaid">
+
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    BUILD_GRAPH_321CBB04("Graph Build<br/><small>104 nodes</small>")
+    class BUILD_GRAPH_321CBB04 module;
+    CLI_SKILLS_9964CBB8("CLI &amp; Skill Installers<br/><small>7 nodes</small>")
+    class CLI_SKILLS_9964CBB8 module;
+    WERRCOREEDGE_H_85C6C5B6("WerrCoreEdge.h<br/><small>29 nodes</small>")
+    class WERRCOREEDGE_H_85C6C5B6 module;
+    WERRCONFIG_A4150293("WerrConfig<br/><small>14 nodes</small>")
+    class WERRCONFIG_A4150293 module;
+    PAGES_YML_1F45F768("pages.yml<br/><small>13 nodes</small>")
+    class PAGES_YML_1F45F768 module;
+    STEPS_6578912E("steps<br/><small>13 nodes</small>")
+    class STEPS_6578912E module;
+    WERRPATCHMETRICS_58C9815D("WerrPatchMetrics<br/><small>12 nodes</small>")
+    class WERRPATCHMETRICS_58C9815D module;
+    WERRCOREEDGE_H_85C6C5B6 -->|contains x4| BUILD_GRAPH_321CBB04
+    WERRCOREEDGE_H_85C6C5B6 -->|references x3| WERRPATCHMETRICS_58C9815D
+    BUILD_GRAPH_321CBB04 -->|references x3| WERRCOREEDGE_H_85C6C5B6
+    WERRCOREEDGE_H_85C6C5B6 -->|references x2| WERRCONFIG_A4150293
+    BUILD_GRAPH_321CBB04 -->|references| WERRCONFIG_A4150293
+    BUILD_GRAPH_321CBB04 -->|references| WERRPATCHMETRICS_58C9815D
+    PAGES_YML_1F45F768 -->|contains| STEPS_6578912E
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h4>Architecture Layers</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
+      <tr><td>Graph Build</td><td>104</td><td><code>1, 2, 3, 4, 8, 9</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>7</td><td><code>11</code></td></tr><tr><td>WerrCoreEdge.h</td><td>29</td><td><code>0</code></td></tr><tr><td>WerrConfig</td><td>14</td><td><code>5</code></td></tr><tr><td>pages.yml</td><td>13</td><td><code>6</code></td></tr><tr><td>steps</td><td>13</td><td><code>7</code></td></tr><tr><td>WerrPatchMetrics</td><td>12</td><td><code>10</code></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Core Flow</h4>
+    <div class="arrow-chain">CLI &amp; Skill Installers -&gt; Graph Build -&gt; WerrCoreEdge.h -&gt; WerrPatchMetrics -&gt; WerrConfig -&gt; pages.yml -&gt; steps</div>
+  </div>
+</div>
+<div class="grid">
+  <div class="card">
+    <h4>Graph Report Highlights</h4>
+    <ul>
+      <li>192 nodes · 236 edges · 12 communities (11 shown, 1 thin omitted)</li>
+      <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.95)</li>
+      <li>Token cost: 0 input · 0 output</li>
+      <li>1. `WerrConfig` - 16 edges</li>
+      <li>2. `🤖 WERRobotics: Zero-Memory Procedural System-1 Edge AI &amp; Embedded Robotics Core (`v0.5.1`)` - 16 edges</li>
+      <li>3. `WerrPatchMetrics` - 15 edges</li>
+    </ul>
+  </div>
+</div>
+<hr>
+<!-- ====== 2. Graph Build ====== -->
+<h2 id="build-graph">2. Graph Build</h2>
+<p>Graph Build groups implementation around werr, readme, edge, trmd, mostly in README.md, _archive/readme_history/README_2026_11_05_pre_standardization.md, sim/verify_edge_parity.py. This section covers 104 nodes and 124 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Graph Build (104 nodes, 124 edges)
+    subgraph build_graph_sim_verify_edge_parity_py_bc42c9df["sim/verify_edge_parity.py"]
+        sim_verify_edge_parity_9a7f4ad0("verify_edge_parity.py")
+        sim_verify_edge_parity_run_hil_simulations_991c5acd("run_hil_simulations()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_evaluate_with_config_277d27c9("werr_evaluate_with_config()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_boundary_weight_bd643b7e("werr_boundary_weight()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_verify_gap0331_mod9_adf182db("verify_gap0331_mod9()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_clamp_569bed8f("werr_clamp()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_evaluate_4tier_choic_47872387("werr_evaluate_4tier_choice()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_normal_cdf_71d95a93("werr_normal_cdf()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_compute_single_scale_93b0cf7f("werr_compute_single_scale()<br/><small>sim/verify_edge_parity.py</small>")
+        sim_verify_edge_parity_werr_erf_db528d84("werr_erf()<br/><small>sim/verify_edge_parity.py</small>")
+    end
+    subgraph build_graph_External_generated_653891f5["External / generated"]
+        random_a415ab5c("random")
+        math_7a488390("math")
+        typing_02d7d347("typing")
+        json_05d97e6e("json")
+    end
+    subgraph build_graph_sim_bench_prod_realism_py_b9b00c41["sim/bench_prod_realism.py"]
+        sim_bench_prod_realism_7b2c9a1a("bench_prod_realism.py")
+        sim_bench_prod_realism_run_simulation_3fe924a4("run_simulation()<br/><small>sim/bench_prod_realism.py</small>")
+    end
+    subgraph build_graph_src_WerrCoreEdge_WerrCoreEdge_h_456c15b9["src/WerrCoreEdge/WerrCoreEdge.h"]
+        src_werrcoreedge_werrcoreedge_werrevaluate4tierc_cdd420b5("werrEvaluate4TierChoice()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrapplycadencebi_7288733c("werrApplyCadenceBifurcation()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    end
+    sim_bench_prod_realism_run_simulation_3fe924a4 -->|calls| random_a415ab5c
+    sim_bench_prod_realism_run_simulation_3fe924a4 -->|calls| math_7a488390
+    sim_verify_edge_parity_run_hil_simulations_991c5acd -->|calls| sim_verify_edge_parity_verify_gap0331_mod9_adf182db
+    sim_verify_edge_parity_run_hil_simulations_991c5acd -->|calls| sim_verify_edge_parity_werr_evaluate_with_config_277d27c9
+    sim_verify_edge_parity_run_hil_simulations_991c5acd -->|calls| sim_verify_edge_parity_werr_clamp_569bed8f
+    sim_verify_edge_parity_run_hil_simulations_991c5acd -->|calls| sim_verify_edge_parity_werr_evaluate_4tier_choic_47872387
+    sim_verify_edge_parity_werr_boundary_weight_bd643b7e -->|calls| sim_verify_edge_parity_werr_clamp_569bed8f
+    sim_verify_edge_parity_werr_boundary_weight_bd643b7e -->|calls| sim_verify_edge_parity_werr_normal_cdf_71d95a93
+    sim_verify_edge_parity_werr_compute_single_scale_93b0cf7f -->|calls| sim_verify_edge_parity_werr_boundary_weight_bd643b7e
+    sim_verify_edge_parity_werr_erf_db528d84 -->|calls| math_7a488390
+    sim_verify_edge_parity_werr_evaluate_4tier_choic_47872387 -->|calls| math_7a488390
+    sim_verify_edge_parity_werr_evaluate_4tier_choic_47872387 -->|calls| sim_verify_edge_parity_werr_clamp_569bed8f
+    sim_verify_edge_parity_werr_evaluate_with_config_277d27c9 -->|calls| math_7a488390
+    sim_verify_edge_parity_werr_evaluate_with_config_277d27c9 -->|calls| sim_verify_edge_parity_werr_compute_single_scale_93b0cf7f
+    sim_verify_edge_parity_werr_evaluate_with_config_277d27c9 -->|calls| sim_verify_edge_parity_werr_clamp_569bed8f
+    sim_verify_edge_parity_werr_normal_cdf_71d95a93 -->|calls| math_7a488390
+    sim_verify_edge_parity_werr_normal_cdf_71d95a93 -->|calls| sim_verify_edge_parity_werr_erf_db528d84
+    src_werrcoreedge_werrcoreedge_werrevaluate4tierc_cdd420b5 -->|calls| src_werrcoreedge_werrcoreedge_werrapplycadencebi_7288733c
+    sim_bench_prod_realism_7b2c9a1a -->|imports| math_7a488390
+    sim_bench_prod_realism_7b2c9a1a -->|imports| random_a415ab5c
+    sim_bench_prod_realism_7b2c9a1a -->|imports| typing_02d7d347
+    sim_verify_edge_parity_9a7f4ad0 -->|imports| math_7a488390
+    sim_verify_edge_parity_9a7f4ad0 -->|imports| json_05d97e6e
+    sim_verify_edge_parity_9a7f4ad0 -->|imports| typing_02d7d347
+    %% Omitted for readability: 86 nodes, 0 edges
+    class sim_verify_edge_parity_9a7f4ad0 module;
+    class sim_verify_edge_parity_run_hil_simulations_991c5acd function;
+    class sim_verify_edge_parity_werr_evaluate_with_config_277d27c9 function;
+    class sim_verify_edge_parity_werr_boundary_weight_bd643b7e function;
+    class sim_verify_edge_parity_verify_gap0331_mod9_adf182db function;
+    class sim_verify_edge_parity_werr_clamp_569bed8f function;
+    class sim_verify_edge_parity_werr_evaluate_4tier_choic_47872387 function;
+    class sim_verify_edge_parity_werr_normal_cdf_71d95a93 function;
+    class sim_verify_edge_parity_werr_compute_single_scale_93b0cf7f function;
+    class sim_verify_edge_parity_werr_erf_db528d84 function;
+    class random_a415ab5c function;
+    class math_7a488390 function;
+    class typing_02d7d347 function;
+    class json_05d97e6e function;
+    class sim_bench_prod_realism_7b2c9a1a module;
+    class sim_bench_prod_realism_run_simulation_3fe924a4 function;
+    class src_werrcoreedge_werrcoreedge_werrevaluate4tierc_cdd420b5 function;
+    class src_werrcoreedge_werrcoreedge_werrapplycadencebi_7288733c function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>WerrConfig</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>WerrSeed</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>WerrSeed node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>run_simulation()</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>math</code><br><code>random</code></td>
+  <td>run_simulation() node in sim/bench_prod_realism.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>run_hil_simulations()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>verify_gap0331_mod9()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br><code>werr_clamp()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br><code>werr_evaluate_4tier_choice()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br>+1 more</td>
+  <td>run_hil_simulations() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>verify_gap0331_mod9()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>run_hil_simulations()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>verify_gap0331_mod9() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>werr_boundary_weight()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werr_compute_single_scale()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><code>werr_clamp()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br><code>werr_normal_cdf()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>werr_boundary_weight() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>werr_clamp()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>run_hil_simulations()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br><code>werr_boundary_weight()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br><code>werr_evaluate_4tier_choice()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>werr_clamp() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>werr_compute_single_scale()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werr_evaluate_with_config()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><code>werr_boundary_weight()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>werr_compute_single_scale() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>werr_erf()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werr_normal_cdf()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><code>math</code></td>
+  <td>werr_erf() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>werr_evaluate_4tier_choice()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>run_hil_simulations()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><code>math</code><br><code>werr_clamp()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>werr_evaluate_4tier_choice() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>werr_evaluate_with_config()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>run_hil_simulations()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><code>math</code><br><code>werr_clamp()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br><code>werr_compute_single_scale()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>werr_normal_cdf()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werr_boundary_weight()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><code>math</code><br><code>werr_erf()</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>werr_normal_cdf() node in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Any</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Any node in project.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>bench_prod_realism.py</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>math</code><br><code>random</code><br><code>typing</code></td>
+  <td>Module file in sim/bench_prod_realism.py.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>verify_edge_parity.py</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>dataclasses</code><br><code>json</code><br><code>math</code><br>+1 more</td>
+  <td>Module file in sim/verify_edge_parity.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>bench_prod_realism.py — Deep Production Benchmark &amp; Before/After Comparative…</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for bench_prod_realism.py — Deep Production Benchmark &amp; Before/After Comparative….</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>verify_edge_parity.py — Hardware-in-the-Loop (HIL) Verification &amp; Parity Suite…</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for verify_edge_parity.py — Hardware-in-the-Loop (HIL) Verification &amp; Parity Suite….</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>dataclasses</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-async">Async</span></td>
+  <td><code>verify_edge_parity.py</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>dataclasses node in project.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>json</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>verify_edge_parity.py</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>json node in project.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>math</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>bench_prod_realism.py</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small><br><code>run_simulation()</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small><br><code>verify_edge_parity.py</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small><br>+5 more</td>
+  <td>No direct outbound edge</td>
+  <td>math node in project.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>random</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>bench_prod_realism.py</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small><br><code>run_simulation()</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>random node in project.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>typing</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>bench_prod_realism.py</code><br><small style="color:var(--muted)">sim/bench_prod_realism.py</small><br><code>verify_edge_parity.py</code><br><small style="color:var(--muted)">sim/verify_edge_parity.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>typing node in project.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>HARDWARE_PINOUT_AND_WIRING.md</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing HARDWARE_PINOUT_AND_WIRING.md.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>1. Autonomous Obstacle Avoidance Robot (`engeldenkacan.ino` &amp; `werr_engelden_kacan.ino`)</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing 1. Autonomous Obstacle Avoidance Robot (`engeldenkacan.ino` &amp; `werr_engelden_kacan.ino`).</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>2. Biomimetic Bionic Butterfly (`kelebek.ino` &amp; `werr_kelebek_biyonik.ino`)</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing 2. Biomimetic Bionic Butterfly (`kelebek.ino` &amp; `werr_kelebek_biyonik.ino`).</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>3. Autonomous Market / Line Robot (`alisveris_roboti.ino` &amp; `werr_alisveris_robotu.ino`)</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing 3. Autonomous Market / Line Robot (`alisveris_roboti.ino` &amp; `werr_alisveris_robotu.ino`).</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>4. Bipedal Humanoid Companion Robot: Teknobot (`TeknoBotv4_ino.ino` &amp; `werr_teknobot.ino`)</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing 4. Bipedal Humanoid Companion Robot: Teknobot (`TeknoBotv4_ino.ino` &amp; `werr_teknobot.ino`).</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>🔌 Hardware Pinout &amp; Wiring Guide (`HARDWARE_PINOUT_AND_WIRING.md`)</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing 🔌 Hardware Pinout &amp; Wiring Guide (`HARDWARE_PINOUT_AND_WIRING.md`).</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>HARDWARE_PINOUT_AND_WIRING_TR.md</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING_TR.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing HARDWARE_PINOUT_AND_WIRING_TR.md.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>1. Otonom Engelden Kaçan Robot (`engeldenkacan.ino` &amp; `werr_engelden_kacan.ino`)</code><br><small style="color:var(--muted)">docs/HARDWARE_PINOUT_AND_WIRING_TR.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing 1. Otonom Engelden Kaçan Robot (`engeldenkacan.ino` &amp; `werr_engelden_kacan.ino`).</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>README.md</code></td><td>24 nodes</td></tr>
+<tr><td><code>_archive/readme_history/README_2026_11_05_pre_standardization.md</code></td><td>18 nodes</td></tr>
+<tr><td><code>sim/verify_edge_parity.py</code></td><td>13 nodes</td></tr>
+<tr><td><code>README_TR.md</code></td><td>9 nodes</td></tr>
+<tr><td><code>src/WerrCoreEdge/WerrCoreEdge.h</code></td><td>7 nodes</td></tr>
+<tr><td><code>docs/HARDWARE_PINOUT_AND_WIRING.md</code></td><td>6 nodes</td></tr>
+<tr><td><code>docs/HARDWARE_PINOUT_AND_WIRING_TR.md</code></td><td>6 nodes</td></tr>
+<tr><td><code>docs/WERR_EDGE_ARCHITECTURE.md</code></td><td>6 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x80, calls x18, references x13, defines x4. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 3. CLI & Skill Installers ====== -->
+<h2 id="cli-skills">3. CLI &amp; Skill Installers</h2>
+<p>CLI &amp; Skill Installers groups implementation around mainpy, websocket, raw, robot, mostly in raw/robot_el_backend/main.py. This section covers 7 nodes and 8 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: CLI &amp; Skill Installers (7 nodes, 8 edges)
+    subgraph cli_skills_External_generated_0c226fa1["External / generated"]
+        numpy_a65e1d38("numpy")
+        cv2_fd3024fc("cv2")
+        mediapipe_3d2cb6e6("mediapipe")
+        fastapi_41a1373c("fastapi")
+        websocket_67c371fd("websocket")
+    end
+    subgraph cli_skills_raw_robot_el_backend_main_py_567f52f9["raw/robot_el_backend/main.py"]
+        raw_robot_el_backend_main_c2a8d018("main.py")
+        raw_robot_el_backend_main_websocket_endpoint_765a3d44("websocket_endpoint()<br/><small>raw/robot_el_backend/main.py</small>")
+    end
+    raw_robot_el_backend_main_websocket_endpoint_765a3d44 -->|calls| numpy_a65e1d38
+    raw_robot_el_backend_main_websocket_endpoint_765a3d44 -->|calls| cv2_fd3024fc
+    raw_robot_el_backend_main_c2a8d018 -->|imports| cv2_fd3024fc
+    raw_robot_el_backend_main_c2a8d018 -->|imports| numpy_a65e1d38
+    raw_robot_el_backend_main_c2a8d018 -->|imports| mediapipe_3d2cb6e6
+    raw_robot_el_backend_main_c2a8d018 -->|imports| fastapi_41a1373c
+    class numpy_a65e1d38 function;
+    class cv2_fd3024fc function;
+    class mediapipe_3d2cb6e6 api;
+    class fastapi_41a1373c api;
+    class websocket_67c371fd function;
+    class raw_robot_el_backend_main_c2a8d018 module;
+    class raw_robot_el_backend_main_websocket_endpoint_765a3d44 api;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>websocket_endpoint()</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cv2</code><br><code>numpy</code></td>
+  <td>websocket_endpoint() node in raw/robot_el_backend/main.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cv2</code><br><code>fastapi</code><br><code>mediapipe</code><br>+1 more</td>
+  <td>Module file in raw/robot_el_backend/main.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>websocket</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>websocket node in project.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>cv2</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small><br><code>websocket_endpoint()</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>cv2 node in project.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>fastapi</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>fastapi node in project.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>mediapipe</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>mediapipe node in project.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>numpy</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>main.py</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small><br><code>websocket_endpoint()</code><br><small style="color:var(--muted)">raw/robot_el_backend/main.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>numpy node in project.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>raw/robot_el_backend/main.py</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: imports x3, calls x2, references x1, imports x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 4. WerrCoreEdge.h ====== -->
+<h2 id="werrcoreedge-h">4. WerrCoreEdge.h</h2>
+<p>WerrCoreEdge.h groups implementation around werrcoreedgeh, werrcoreedge, werrdynamiccalibration, threshold, mostly in src/WerrCoreEdge/WerrCoreEdge.h. This section covers 29 nodes and 41 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: WerrCoreEdge.h (29 nodes, 41 edges)
+    subgraph werrcoreedge_h_src_WerrCoreEdge_WerrCoreEdge_h_938f5f47["src/WerrCoreEdge/WerrCoreEdge.h"]
+        src_werrcoreedge_werrcoreedge_8d620f3d("WerrCoreEdge.h")
+        src_werrcoreedge_werrcoreedge_werrevaluatewithco_26300f22("werrEvaluateWithConfig()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrdynamiccalibra_2104c8cf("WerrDynamicCalibration<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrboundaryweight_2f747196("werrBoundaryWeight()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrevaluatestate_ffd52f65("werrEvaluateState()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrneutralizepert_e9e68233("werrNeutralizePerturbationMod9()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrdynamiccalibra_a4df23d3("WerrDynamicCalibration()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrdynamiccalibra_60165912("observeAndCalibrate()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrclamp_55f2896c("werrClamp()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrnormalcdf_13e9dc37("werrNormalCdf()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrcomputesingles_5b905b58("werrComputeSingleScale()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrsigmoid_20cb3bb9("werrSigmoid()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrconstructivein_a14a43da("werrConstructiveInverseMod9()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrerf_11553da9("werrErf()<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+        src_werrcoreedge_werrcoreedge_werrseed_19dee044("WerrSeed<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    end
+    subgraph werrcoreedge_h_External_generated_cb785f4c["External / generated"]
+        arduino_4a0a8679("arduino")
+        stdbool_e1f5f2f4("stdbool")
+        stdint_5620b8e8("stdint")
+    end
+    src_werrcoreedge_werrcoreedge_werrdynamiccalibra_2104c8cf -->|method| src_werrcoreedge_werrcoreedge_werrdynamiccalibra_a4df23d3
+    src_werrcoreedge_werrcoreedge_werrdynamiccalibra_2104c8cf -->|method| src_werrcoreedge_werrcoreedge_werrdynamiccalibra_60165912
+    src_werrcoreedge_werrcoreedge_werrdynamiccalibra_60165912 -->|calls| src_werrcoreedge_werrcoreedge_werrclamp_55f2896c
+    src_werrcoreedge_werrcoreedge_werrboundaryweight_2f747196 -->|calls| src_werrcoreedge_werrcoreedge_werrclamp_55f2896c
+    src_werrcoreedge_werrcoreedge_werrboundaryweight_2f747196 -->|calls| src_werrcoreedge_werrcoreedge_werrnormalcdf_13e9dc37
+    src_werrcoreedge_werrcoreedge_werrcomputesingles_5b905b58 -->|calls| src_werrcoreedge_werrcoreedge_werrboundaryweight_2f747196
+    src_werrcoreedge_werrcoreedge_werrevaluatestate_ffd52f65 -->|calls| src_werrcoreedge_werrcoreedge_werrevaluatewithco_26300f22
+    src_werrcoreedge_werrcoreedge_werrevaluatewithco_26300f22 -->|calls| src_werrcoreedge_werrcoreedge_werrcomputesingles_5b905b58
+    src_werrcoreedge_werrcoreedge_werrevaluatewithco_26300f22 -->|calls| src_werrcoreedge_werrcoreedge_werrclamp_55f2896c
+    src_werrcoreedge_werrcoreedge_werrevaluatewithco_26300f22 -->|calls| src_werrcoreedge_werrcoreedge_werrsigmoid_20cb3bb9
+    src_werrcoreedge_werrcoreedge_werrneutralizepert_e9e68233 -->|calls| src_werrcoreedge_werrcoreedge_werrconstructivein_a14a43da
+    src_werrcoreedge_werrcoreedge_werrnormalcdf_13e9dc37 -->|calls| src_werrcoreedge_werrcoreedge_werrerf_11553da9
+    src_werrcoreedge_werrcoreedge_werrsigmoid_20cb3bb9 -->|calls| src_werrcoreedge_werrcoreedge_werrclamp_55f2896c
+    src_werrcoreedge_werrcoreedge_8d620f3d -->|imports| arduino_4a0a8679
+    src_werrcoreedge_werrcoreedge_8d620f3d -->|imports| stdbool_e1f5f2f4
+    src_werrcoreedge_werrcoreedge_8d620f3d -->|imports| stdint_5620b8e8
+    %% Omitted for readability: 11 nodes, 0 edges
+    class src_werrcoreedge_werrcoreedge_8d620f3d klass;
+    class src_werrcoreedge_werrcoreedge_werrevaluatewithco_26300f22 function;
+    class src_werrcoreedge_werrcoreedge_werrdynamiccalibra_2104c8cf klass;
+    class src_werrcoreedge_werrcoreedge_werrboundaryweight_2f747196 function;
+    class src_werrcoreedge_werrcoreedge_werrevaluatestate_ffd52f65 function;
+    class src_werrcoreedge_werrcoreedge_werrneutralizepert_e9e68233 function;
+    class src_werrcoreedge_werrcoreedge_werrdynamiccalibra_a4df23d3 function;
+    class src_werrcoreedge_werrcoreedge_werrdynamiccalibra_60165912 function;
+    class src_werrcoreedge_werrcoreedge_werrclamp_55f2896c function;
+    class src_werrcoreedge_werrcoreedge_werrnormalcdf_13e9dc37 function;
+    class src_werrcoreedge_werrcoreedge_werrcomputesingles_5b905b58 function;
+    class src_werrcoreedge_werrcoreedge_werrsigmoid_20cb3bb9 function;
+    class src_werrcoreedge_werrcoreedge_werrconstructivein_a14a43da function;
+    class src_werrcoreedge_werrcoreedge_werrerf_11553da9 function;
+    class src_werrcoreedge_werrcoreedge_werrseed_19dee044 klass;
+    class arduino_4a0a8679 function;
+    class stdbool_e1f5f2f4 function;
+    class stdint_5620b8e8 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>WerrDynamicCalibration</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>observeAndCalibrate()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br><code>WerrDynamicCalibration()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>WerrDynamicCalibration node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>WerrSeed</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>WerrSeed node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>.WerrDynamicCalibration()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WerrDynamicCalibration</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>No direct outbound edge</td>
+  <td>.WerrDynamicCalibration() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>.observeAndCalibrate()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WerrDynamicCalibration</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><code>werrClamp()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>.observeAndCalibrate() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>werrBoundaryWeight()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrComputeSingleScale()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><code>werrClamp()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br><code>werrNormalCdf()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>werrBoundaryWeight() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>werrClamp()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>observeAndCalibrate()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br><code>werrBoundaryWeight()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br><code>werrEvaluate4TierChoice()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br>+2 more</td>
+  <td>No direct outbound edge</td>
+  <td>werrClamp() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>werrComputeSingleScale()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrEvaluateWithConfig()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><code>werrBoundaryWeight()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>werrComputeSingleScale() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>werrConstructiveInverseMod9()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrNeutralizePerturbationMod9()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>No direct outbound edge</td>
+  <td>werrConstructiveInverseMod9() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>werrErf()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrNormalCdf()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>No direct outbound edge</td>
+  <td>werrErf() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>werrEvaluateState()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>werrEvaluateWithConfig()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>werrEvaluateWithConfig()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrEvaluateState()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><code>werrClamp()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br><code>werrComputeSingleScale()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small><br><code>werrSigmoid()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>werrIsResonantSubidealI3()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>werrIsResonantSubidealI3() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>werrIsUnitMod9()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>werrIsUnitMod9() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>werrNeutralizePerturbationMod9()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>werrConstructiveInverseMod9()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>werrNeutralizePerturbationMod9() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>werrNormalCdf()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrBoundaryWeight()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><code>werrErf()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>werrNormalCdf() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>werrSigmoid()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>werrEvaluateWithConfig()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><code>werrClamp()</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>werrSigmoid() node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>WerrCoreEdge.h</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>arduino</code><br><code>math</code><br><code>stdbool</code><br>+1 more</td>
+  <td>WerrCoreEdge.h node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>adaptive_threshold</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>adaptive_threshold node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>alpha</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>alpha node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>ema_score</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ema_score node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>observations</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>observations node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>cx</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cx node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>cy</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cy node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>default_threshold</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>default_threshold node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>name</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>name node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>zoom</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>zoom node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>arduino</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WerrCoreEdge.h</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>No direct outbound edge</td>
+  <td>arduino node in project.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>stdbool</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WerrCoreEdge.h</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>No direct outbound edge</td>
+  <td>stdbool node in project.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>stdint</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WerrCoreEdge.h</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td>No direct outbound edge</td>
+  <td>stdint node in project.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/WerrCoreEdge/WerrCoreEdge.h</code></td><td>26 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x14, calls x11, defines x9, imports x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 5. WerrConfig ====== -->
+<h2 id="werrconfig">5. WerrConfig</h2>
+<p>WerrConfig groups implementation around werrcoreedge, werrcoreedgeh, cadence, enable, mostly in src/WerrCoreEdge/WerrCoreEdge.h. This section covers 14 nodes and 13 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: WerrConfig (14 nodes, 13 edges)
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f("WerrConfig<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_resolut_87fbb670("resolution<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_max_ite_49155a92("max_iter<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_tripod_b31d6acd("tripod<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_enable_df0005e0("enable_domain<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_enable_f197038b("enable_lexical<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_enable_7a38cb6e("enable_resonance<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_bandwid_6d9cc230("bandwidth<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_cusp_cu_7937818e("cusp_cutoff<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_cadence_d92d17e8("cadence_lambda<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_cadence_a1b5aa59("cadence_alpha<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_cadence_a07a263b("cadence_beta<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_deadloc_d0820ac3("deadlock_threshold<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_temp_ch_5b46006f("temp_choice<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_resolut_87fbb670
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_max_ite_49155a92
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_tripod_b31d6acd
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_enable_df0005e0
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_enable_f197038b
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_enable_7a38cb6e
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_bandwid_6d9cc230
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_cusp_cu_7937818e
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_cadence_d92d17e8
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_cadence_a1b5aa59
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_cadence_a07a263b
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_deadloc_d0820ac3
+    src_werrcoreedge_werrcoreedge_werrconfig_3d29092f -->|defines| src_werrcoreedge_werrcoreedge_werrconfig_temp_ch_5b46006f
+    class src_werrcoreedge_werrcoreedge_werrconfig_3d29092f klass;
+    class src_werrcoreedge_werrcoreedge_werrconfig_resolut_87fbb670 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_max_ite_49155a92 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_tripod_b31d6acd function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_enable_df0005e0 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_enable_f197038b function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_enable_7a38cb6e function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_bandwid_6d9cc230 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_cusp_cu_7937818e function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_cadence_d92d17e8 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_cadence_a1b5aa59 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_cadence_a07a263b function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_deadloc_d0820ac3 function;
+    class src_werrcoreedge_werrcoreedge_werrconfig_temp_ch_5b46006f function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>WerrConfig</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>bandwidth</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>bandwidth node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>cadence_alpha</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cadence_alpha node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>cadence_beta</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cadence_beta node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>cadence_lambda</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cadence_lambda node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>cusp_cutoff</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cusp_cutoff node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>deadlock_threshold</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>deadlock_threshold node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>enable_domain</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>enable_domain node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>enable_lexical</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>enable_lexical node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>enable_resonance</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>enable_resonance node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>max_iter</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>max_iter node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>resolution</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>resolution node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>temp_choice</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>temp_choice node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>tripod</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>tripod node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/WerrCoreEdge/WerrCoreEdge.h</code></td><td>14 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: defines x13. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 6. pages.yml ====== -->
+<h2 id="pages-yml">6. pages.yml</h2>
+<p>pages.yml groups implementation around pagesyml, github, workflows, concurrency, mostly in .github/workflows/pages.yml. This section covers 13 nodes and 12 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: pages.yml (13 nodes, 12 edges)
+    github_workflows_pages_09356283("pages.yml")
+    github_workflows_pages_permissions_b2a28be0("permissions<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_concurrency_f7e3b1bd("concurrency<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_on_63268a5e("on<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_on_push_68d381de("push<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_name_fcef72cc("name<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_concurrency_group_0b089688("group<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_concurrency_cancel_in_pro_829d83f5("cancel-in-progress<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_on_workflow_dispatch_9242c77c("workflow_dispatch<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_push_branches_32479540("branches<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_permissions_contents_41bda952("contents<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_permissions_pages_9fdc28c7("pages<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_permissions_id_token_5475c11d("id-token<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_09356283 -->|contains| github_workflows_pages_name_fcef72cc
+    github_workflows_pages_09356283 -->|contains| github_workflows_pages_concurrency_f7e3b1bd
+    github_workflows_pages_09356283 -->|contains| github_workflows_pages_on_63268a5e
+    github_workflows_pages_09356283 -->|contains| github_workflows_pages_permissions_b2a28be0
+    github_workflows_pages_concurrency_f7e3b1bd -->|contains| github_workflows_pages_concurrency_group_0b089688
+    github_workflows_pages_concurrency_f7e3b1bd -->|contains| github_workflows_pages_concurrency_cancel_in_pro_829d83f5
+    github_workflows_pages_on_63268a5e -->|contains| github_workflows_pages_on_push_68d381de
+    github_workflows_pages_on_63268a5e -->|contains| github_workflows_pages_on_workflow_dispatch_9242c77c
+    github_workflows_pages_on_push_68d381de -->|contains| github_workflows_pages_push_branches_32479540
+    github_workflows_pages_permissions_b2a28be0 -->|contains| github_workflows_pages_permissions_contents_41bda952
+    github_workflows_pages_permissions_b2a28be0 -->|contains| github_workflows_pages_permissions_pages_9fdc28c7
+    github_workflows_pages_permissions_b2a28be0 -->|contains| github_workflows_pages_permissions_id_token_5475c11d
+    class github_workflows_pages_09356283 function;
+    class github_workflows_pages_permissions_b2a28be0 function;
+    class github_workflows_pages_concurrency_f7e3b1bd function;
+    class github_workflows_pages_on_63268a5e function;
+    class github_workflows_pages_on_push_68d381de function;
+    class github_workflows_pages_name_fcef72cc function;
+    class github_workflows_pages_concurrency_group_0b089688 function;
+    class github_workflows_pages_concurrency_cancel_in_pro_829d83f5 function;
+    class github_workflows_pages_on_workflow_dispatch_9242c77c function;
+    class github_workflows_pages_push_branches_32479540 function;
+    class github_workflows_pages_permissions_contents_41bda952 function;
+    class github_workflows_pages_permissions_pages_9fdc28c7 function;
+    class github_workflows_pages_permissions_id_token_5475c11d function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>pages.yml</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>concurrency</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>concurrency node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>cancel-in-progress</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>cancel-in-progress node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>group</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>group node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>name</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>name node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>on</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>on node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>push</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>push node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>workflow_dispatch</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>workflow_dispatch node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>permissions</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>permissions node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>contents</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>contents node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>id-token</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>id-token node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>pages</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Organizes documentation pages, navigation, or content lookup.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>branches</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>branches node in .github/workflows/pages.yml.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>.github/workflows/pages.yml</code></td><td>13 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x12. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 7. steps ====== -->
+<h2 id="steps">7. steps</h2>
+<p>steps groups implementation around github, workflows, pagesyml, name, mostly in .github/workflows/pages.yml. This section covers 13 nodes and 12 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: steps (13 nodes, 12 edges)
+    github_workflows_pages_deploy_steps_76914235("steps<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_jobs_deploy_c23b3c1c("deploy<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_deploy_environment_ad38bc7b("environment<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_jobs_2869de18("jobs<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_steps_with_ec1efc4f("with<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_environment_name_7eca05a3("name<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_environment_url_7176f4ae("url<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_steps_name_7ee5d94d("name<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_steps_uses_98136efc("uses<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_steps_run_3d01acc9("run<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_steps_id_5b6d6cc2("id<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_deploy_runs_on_3950646f("runs-on<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_with_path_85a2e694("path<br/><small>.github/workflows/pages.yml</small>")
+    github_workflows_pages_deploy_environment_ad38bc7b -->|contains| github_workflows_pages_environment_name_7eca05a3
+    github_workflows_pages_deploy_environment_ad38bc7b -->|contains| github_workflows_pages_environment_url_7176f4ae
+    github_workflows_pages_deploy_steps_76914235 -->|contains| github_workflows_pages_steps_name_7ee5d94d
+    github_workflows_pages_deploy_steps_76914235 -->|contains| github_workflows_pages_steps_uses_98136efc
+    github_workflows_pages_deploy_steps_76914235 -->|contains| github_workflows_pages_steps_run_3d01acc9
+    github_workflows_pages_deploy_steps_76914235 -->|contains| github_workflows_pages_steps_with_ec1efc4f
+    github_workflows_pages_deploy_steps_76914235 -->|contains| github_workflows_pages_steps_id_5b6d6cc2
+    github_workflows_pages_jobs_2869de18 -->|contains| github_workflows_pages_jobs_deploy_c23b3c1c
+    github_workflows_pages_jobs_deploy_c23b3c1c -->|contains| github_workflows_pages_deploy_environment_ad38bc7b
+    github_workflows_pages_jobs_deploy_c23b3c1c -->|contains| github_workflows_pages_deploy_runs_on_3950646f
+    github_workflows_pages_jobs_deploy_c23b3c1c -->|contains| github_workflows_pages_deploy_steps_76914235
+    github_workflows_pages_steps_with_ec1efc4f -->|contains| github_workflows_pages_with_path_85a2e694
+    class github_workflows_pages_deploy_steps_76914235 function;
+    class github_workflows_pages_jobs_deploy_c23b3c1c function;
+    class github_workflows_pages_deploy_environment_ad38bc7b function;
+    class github_workflows_pages_jobs_2869de18 function;
+    class github_workflows_pages_steps_with_ec1efc4f function;
+    class github_workflows_pages_environment_name_7eca05a3 function;
+    class github_workflows_pages_environment_url_7176f4ae function;
+    class github_workflows_pages_steps_name_7ee5d94d function;
+    class github_workflows_pages_steps_uses_98136efc function;
+    class github_workflows_pages_steps_run_3d01acc9 function;
+    class github_workflows_pages_steps_id_5b6d6cc2 function;
+    class github_workflows_pages_deploy_runs_on_3950646f function;
+    class github_workflows_pages_with_path_85a2e694 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>environment</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>environment node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>runs-on</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>runs-on node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>steps</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>steps node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>name</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>name node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>url</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>url node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>jobs</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>jobs node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>deploy</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>deploy node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>id</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>id node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>name</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>name node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>run</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>run node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>uses</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>uses node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>with</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>with node in .github/workflows/pages.yml.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>path</code><br><small style="color:var(--muted)">.github/workflows/pages.yml</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>path node in .github/workflows/pages.yml.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>.github/workflows/pages.yml</code></td><td>13 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x12. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 8. WerrPatchMetrics ====== -->
+<h2 id="werrpatchmetrics">8. WerrPatchMetrics</h2>
+<p>WerrPatchMetrics groups implementation around werrcoreedge, werrcoreedgeh, quad, eff, mostly in src/WerrCoreEdge/WerrCoreEdge.h. This section covers 12 nodes and 11 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: WerrPatchMetrics (12 nodes, 11 edges)
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c("WerrPatchMetrics<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_ab4c46a4("eff_cx<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_311c7d95("eff_cy<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_8fb2adc1("eff_zoom<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_b_bf276823("black_ratio<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_a_abd51225("avg_escape<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_q_40a6d112("quad_ratios<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_q_69b67c5b("quad_weights<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_h_a55b63f7("hazard_score<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_n_12d477a9("noul_prob<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_r_5dd1b91c("reflex_triggered<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_d_652204bf("dominant_quad<br/><small>src/WerrCoreEdge/WerrCoreEdge.h</small>")
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_ab4c46a4
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_311c7d95
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_8fb2adc1
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_b_bf276823
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_a_abd51225
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_q_40a6d112
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_q_69b67c5b
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_h_a55b63f7
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_n_12d477a9
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_r_5dd1b91c
+    src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c -->|defines| src_werrcoreedge_werrcoreedge_werrpatchmetrics_d_652204bf
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_8f04f76c klass;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_ab4c46a4 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_311c7d95 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_e_8fb2adc1 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_b_bf276823 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_a_abd51225 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_q_40a6d112 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_q_69b67c5b function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_h_a55b63f7 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_n_12d477a9 function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_r_5dd1b91c function;
+    class src_werrcoreedge_werrcoreedge_werrpatchmetrics_d_652204bf function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>WerrPatchMetrics</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>WerrPatchMetrics node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>avg_escape</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>avg_escape node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>black_ratio</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>black_ratio node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>dominant_quad</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>dominant_quad node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>eff_cx</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>eff_cx node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>eff_cy</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>eff_cy node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>eff_zoom</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>eff_zoom node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>hazard_score</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>hazard_score node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>noul_prob</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>noul_prob node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>quad_ratios</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>quad_ratios node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>quad_weights</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>quad_weights node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>reflex_triggered</code><br><small style="color:var(--muted)">src/WerrCoreEdge/WerrCoreEdge.h</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>reflex_triggered node in src/WerrCoreEdge/WerrCoreEdge.h.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>src/WerrCoreEdge/WerrCoreEdge.h</code></td><td>12 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: defines x11. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<h2 id="stats">Project Statistics</h2>
+
+<div class="grid">
+  <div class="card">
+    <h4>Graph</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><td>Nodes</td><td>192</td></tr>
+      <tr><td>Edges</td><td>236</td></tr>
+      <tr><td>Hyperedges</td><td>0</td></tr>
+      <tr><td>Communities</td><td>12</td></tr>
+      <tr><td>Documented Sections</td><td>7</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Edge Confidence</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><td>EXTRACTED</td><td>233</td></tr>
+      <tr><td>INFERRED</td><td>3</td></tr>
+      <tr><td>AMBIGUOUS</td><td>0</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
+  <p>WERRobotics — Architecture Documentation</p>
+  <p>Generated: 2026-11-25 00:18 UTC · graphify callflow-html</p>
+</div>
+
+</div><!-- .container -->
+
+<script>
+(function () {
+  const mermaidConfig = {
+    startOnLoad: false,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { htmlLabels: true, useMaxWidth: true },
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#38bdf8',
+      secondaryColor: '#0f172a',
+      tertiaryColor: '#334155',
+      lineColor: '#64748b',
+      textColor: '#e2e8f0',
+    }
+  };
+
+  mermaid.initialize(mermaidConfig);
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function enhanceMermaidDiagrams() {
+    document.querySelectorAll('.mermaid').forEach((container) => {
+      if (container.dataset.zoomReady === 'true') return;
+      const svg = container.querySelector('svg');
+      if (!svg) return;
+
+      container.dataset.zoomReady = 'true';
+      container.classList.add('is-enhanced');
+
+      const viewport = document.createElement('div');
+      viewport.className = 'mermaid-viewport';
+      svg.parentNode.insertBefore(viewport, svg);
+      viewport.appendChild(svg);
+
+      const toolbar = document.createElement('div');
+      toolbar.className = 'mermaid-toolbar';
+      toolbar.innerHTML = [
+        '<button type="button" data-action="zoom-out" title="Zoom out">-</button>',
+        '<span class="zoom-level" data-role="level">100%</span>',
+        '<button type="button" data-action="zoom-in" title="Zoom in">+</button>',
+        '<button type="button" data-action="fit" title="Fit width">Fit</button>',
+        '<button type="button" data-action="reset" title="Reset view">Reset</button>'
+      ].join('');
+      container.insertBefore(toolbar, viewport);
+
+      const state = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+      const level = toolbar.querySelector('[data-role="level"]');
+
+      function applyTransform() {
+        svg.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+        level.textContent = `${Math.round(state.scale * 100)}%`;
+      }
+
+      function zoomBy(delta) {
+        state.scale = clamp(state.scale + delta, 0.25, 3);
+        applyTransform();
+      }
+
+      function reset() {
+        state.scale = 1;
+        state.x = 0;
+        state.y = 0;
+        applyTransform();
+      }
+
+      function fitWidth() {
+        const rawWidth = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width
+          ? svg.viewBox.baseVal.width
+          : svg.getBoundingClientRect().width / state.scale;
+        if (!rawWidth) {
+          reset();
+          return;
+        }
+        state.scale = clamp((viewport.clientWidth - 48) / rawWidth, 0.25, 1.4);
+        state.x = 0;
+        state.y = 0;
+        applyTransform();
+      }
+
+      toolbar.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+        const action = button.dataset.action;
+        if (action === 'zoom-in') zoomBy(0.15);
+        if (action === 'zoom-out') zoomBy(-0.15);
+        if (action === 'fit') fitWidth();
+        if (action === 'reset') reset();
+      });
+
+      viewport.addEventListener('wheel', (event) => {
+        if (!event.ctrlKey && !event.metaKey) return;
+        event.preventDefault();
+        zoomBy(event.deltaY < 0 ? 0.1 : -0.1);
+      }, { passive: false });
+
+      viewport.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) return;
+        state.dragging = true;
+        state.startX = event.clientX;
+        state.startY = event.clientY;
+        state.originX = state.x;
+        state.originY = state.y;
+        viewport.classList.add('is-dragging');
+        viewport.setPointerCapture(event.pointerId);
+      });
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (!state.dragging) return;
+        state.x = state.originX + event.clientX - state.startX;
+        state.y = state.originY + event.clientY - state.startY;
+        applyTransform();
+      });
+
+      function endDrag(event) {
+        if (!state.dragging) return;
+        state.dragging = false;
+        viewport.classList.remove('is-dragging');
+        if (viewport.hasPointerCapture(event.pointerId)) {
+          viewport.releasePointerCapture(event.pointerId);
+        }
+      }
+
+      viewport.addEventListener('pointerup', endDrag);
+      viewport.addEventListener('pointercancel', endDrag);
+      applyTransform();
+    });
+  }
+
+  function renderMermaid() {
+    const result = mermaid.run
+      ? mermaid.run({ querySelector: '.mermaid' })
+      : Promise.resolve();
+    Promise.resolve(result)
+      .then(enhanceMermaidDiagrams)
+      .catch((error) => {
+        console.error('Mermaid render failed:', error);
+        enhanceMermaidDiagrams();
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderMermaid);
+  } else {
+    renderMermaid();
+  }
+})();
+</script>
+
+</body>
+</html>
